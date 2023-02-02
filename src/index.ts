@@ -38,6 +38,10 @@ const publisherId = process.env.PUBLISHER_ID;
 const publisherTenantId = process.env.PUBLISHER_TENANT_ID;
 const publisherAppId = process.env.PUBLISHER_APP_ID;
 
+const webhookResponse = parseInt(process.env.INTERNAL_WEBHOOK_RESPONSE as string);
+
+const port = process.env.port ?? process.env.PORT ?? 3978;
+
 // If the publisherId has been set, then the publisherTenantId and publisherAppId should not be used
 if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAppId !== undefined)) {
   console.log(
@@ -46,7 +50,7 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
   process.exitCode = 1;
 } else {
   const config: Config = {
-    webhookUrl: process.env.WEBHOOK_URL ?? 'webhook',
+    webhookUrl: process.env.WEBHOOK_URL ?? `Http://localhost:${port}/webhook`,
     landingPageUrl: process.env.LANDING_PAGE_URL ?? 'landing.html',
     operationTimeoutMS: durationToMS(process.env.OPERATION_TIMEOUT as string),
     subscriptionUpdateDelayMS: durationToMS(process.env.SUBSCRIPTION_UPDATE_DELAY as string),
@@ -63,7 +67,7 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
 
     internal: {
       webhook: {
-        response: parseInt(process.env.INTERNAL_WEBHOOK_RESPONSE as string) ?? 200,
+        response: Number.isNaN(webhookResponse) ? 200 : webhookResponse,
         clientId: process.env.INTERNAL_CLIENT_ID,
         clientSecret: process.env.INTERNAL_CLIENT_SECRET,
         operationPatchResult: process.env.INTERNAL_PATCH_RESULT,
@@ -98,8 +102,6 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
 
   // Setup our static web content
   app.use('/', express.static(path.resolve('src', 'client')));
-
-  const port = process.env.port ?? process.env.PORT ?? 3978;
 
   // Start the server
   app.listen(port, () => {
