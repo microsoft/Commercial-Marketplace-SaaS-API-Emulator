@@ -1,0 +1,27 @@
+@publisherId=Acme
+@baseUrl=http://localhost:8080
+@apiVersion=2018-08-31
+@subscription=
+@operation_id=
+
+#########################################################################################
+# GetOutstandingOperations
+#
+GET {{baseUrl}}/api/saas/subscriptions/{{subscription}}/operations?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+#########################################################################################
+# GetOperationStatus
+# Update operation_id before use
+GET {{baseUrl}}/api/saas/subscriptions/{{subscription}}/operations/{{operation_id}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+#########################################################################################
+# UpdateOperationStatus
+# Update operation_id before use
+PATCH {{baseUrl}}/api/saas/subscriptions/{{subscription}}/operations/{{operation_id}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "status": "Success/Failure"
+}

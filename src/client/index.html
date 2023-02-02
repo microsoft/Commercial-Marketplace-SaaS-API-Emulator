@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Marketplace API Emulator</title>
+        <link rel="stylesheet" href="output.css" />
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+        <link rel="manifest" href="images/site.webmanifest">
+
+        <script type="text/javascript">
+ 
+            $(async () => {
+                const result = await fetch("/api/util/subscription", {method: "GET"});
+
+                if (result.status != 200) {
+                    // ?
+                }
+
+                const subscription = await result.json();
+
+                createFormFields($("#form-container") , subscription, "");
+
+                $("#generate-token").click(generateToken).addClass("bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1 text-sm");
+            });
+
+            function generateToken() {
+                const obj = {};
+                const controls = $("#form-container input");
+                for (let i = 0; i < controls.length; i++) {
+                    const $c = $(controls[i]);
+                    const isBool = $c.attr("type") == "checkbox";
+                    const val = $c.val();
+                    if (!val) {
+                        continue;
+                    }
+                    const path = $c.data("json-path");
+                    const parts = path.split(".");
+                    
+                    let o = obj;
+
+                    for (let j = 0; j < parts.length - 1; j++) {
+                        if (o[parts[j]]) {
+                            o = o[parts[j]];
+                        }
+                        else {
+                            o = (o[parts[j]] = { });
+                        }
+                    }
+
+                    o[parts[parts.length - 1]] = isBool ? $c.prop("checked") : val;
+                }
+
+                const json = JSON.stringify(obj, null, 2);
+                const base64 = btoa(json);
+
+                $("#json-result").text(json);
+                $("#base64-result").text(base64);
+
+                $("#json-button").show();
+                $("#base64-button").show();
+                $("#posttoken-button").show();              
+            }
+            
+            const oid = guid();
+            const tid = guid();
+
+            function createFormFields(parent, obj, path) {
+
+                if (path.length > 0) {
+                    path += ".";
+                }
+
+                for (const i in obj) {
+                    if (!obj.hasOwnProperty(i)) {
+                        continue;
+                    }
+
+                    if (!obj[i]) {
+                        continue;
+                    }
+
+                    const formRow = $(document.createElement("div")).addClass("text-sm text-gray-800 dark:text-gray-50");
+
+                    if (typeof obj[i] == "object") {
+                        formRow.append($(document.createElement("label")).text(i).addClass("form-label inline-block w-24 text-gray-800 dark:text-gray-50"));
+                        const container = $(document.createElement("div")).addClass("container pl-10");
+                        createFormFields(container, obj[i], path + i);
+                        formRow.append(container).addClass("form-container");
+                    }
+                    else {
+                        formRow.append($(document.createElement("label")).text(i).addClass("form-label inline-block w-24"));
+                        const input = $(document.createElement("input")).attr({
+                            type: typeof obj[i] === "number" ? "number" : typeof obj[i] === "boolean" ? "checkbox" : "text"
+                        });
+                        input.data("json-path", path + i);
+                        formRow.append(input).addClass("mb-1");
+                        if (i === "quantity"){ input.attr({"min" : 1}); }
+
+                        switch (obj[i]) {
+                            case "guid":
+                                formRow.append($(document.createElement("button")).data("input", input).text("Refresh").addClass("bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1").click(e => $(e.target).data("input").val(guid())));
+                                input.val(guid());
+                                break;
+                            case "email":
+                                input.val("test@test.com");
+                                break;
+                            case "oid":
+                                input.val(oid);
+                                break;
+                            case "tid":
+                                input.val(tid);
+                                break;
+                        }
+                    }             
+                    parent.append(formRow);
+                }
+            }
+
+            function guid() {
+                return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            // button copy to clipboard 
+            function copyToClipboard(element) {
+                let $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($(element).html()).select();
+                document.execCommand("copy");
+                $temp.remove();
+            }
+
+            // post the token to the given landing page URL
+            async function posttoLanding(element) {  
+
+                const response = await fetch("/api/util/config", {method: "GET"});
+
+                if (response != 200) {
+                    // ?
+                }
+
+                const result = await response.json();
+                const landingPage = result.landingPageUrl;
+
+                if (!landingPage) {
+                alert("No landing page URL set in config.");
+                }
+
+                const mtoken = $(element).html();
+                const target = landingPage + "?token=" + mtoken;
+
+                window.open(target, "_blank");
+            }
+
+        </script>
+
+    </head>
+
+    <body>
+        <!-- Form styles in template override - input.css -->
+        <!-- Page div -->
+        <div class="min-h-screen bg-gray-200 dark:bg-slate-800 px-6 lg:px-8">
+            <!-- Header div -->
+            <!-- <div class="static h-28"> -->
+            <div class="static h-36">
+                <div>
+                <p class="text-4xl font-bold text-gray-800 dark:text-gray-50 py-5 pl-6 ">Azure Marketplace API Emulator <code class="text-xl font-bold text-gray-800 dark:text-gray-50">BETA</code></p>
+                </div>
+                <div class="pt-2">
+                    <nav class="relative w-full flex flex-wrap items-center justify-between rounded-md text-white 
+                        bg-slate-700 shadow-lg navbar navbar-expand-lg navbar-light py-2 ">
+                        <div class="px-4">
+                            <ul class="flex">
+                                <li class="display: inline px-3 text-orange-400">Marketplace Token</li>
+                                <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
+                                <li class="display: inline px-3 hover:text-cyan-400"><a href="config.html">Config</a></li>
+                                <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>   
+                                <li class="display: inline px-3 hover:text-cyan-400"><a href="https://github.com/mormond/marketplace-api-emulator/issues" target="_blank">
+                                    <img src="images/github-mark-white.png" title="Report an issue" height="25" width="25"></a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div> 
+            <!-- horizontal wrapper -->
+            <div class="flex flex-wrap">
+                <div class="relative max-w-[400px] bg-slate-100 dark:bg-slate-700 px-6 pt-6 pb-4 shadow-xl rounded-xl ring-1 ring-gray-900/5 mr-4">
+                    <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">Information</div>
+                    <div class="text-sm text-gray-900 dark:text-gray-50"><p>On this page, you configure a synthetic purchase token that can be used with the emulator. 
+                        This is the token that is passed to your landing page.</p>
+                        <p class="pt-2">There are some default values for some of the fields. You can override these or any other values on the page.</p>
+                        <p class="pt-2"><span class="font-semibold">As a minimum</span>, you will want to set the offerId and planId to match an existing offer / plan combination.</p>
+                        <p class="pt-2">The emulator ships with two sample offers:
+                        <ul class="list-disc pl-4">
+                        <li><span class="font-semibold">offerId </span> "flat-rate", <span class="font-semibold">planId</span> "flat-rate-1", "flat-rate-2", "flat-rate-3"</li>
+                        <li><span class="font-semibold">offerId </span> "per-seat", <span class="font-semibold">planId</span> "per-seat-1", "per-seat-2", "per-seat-3"</li>
+                        </ul>
+                        </p>
+                        <p>If you are using a "per-user" offer, you also need to set the quantity.</p>
+                        <p class="pt-2">For full documentation on the APIs visit: 
+                            <a class="text-cyan-800 hover:text-cyan-500" target="_blank" href="https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription">
+                            SaaS fulfillment Subscription APIs v2 in Microsoft commercial marketplace</a></p>    
+                    </div>
+                </div>
+                <!-- Marketplace token box -->
+                <div class="relative max-w-[970px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
+                    <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">Configure and generate a Marketplace Token</div>
+                    <div class="flex flex-wrap">
+                        <!--Form side-->
+                        <div class="w-[460px]">
+                            <div id="form-container">
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <button id="generate-token">Generate token</button>
+                            </div>
+                        </div>
+                        <!--Result side-->
+                        <div class="w-[460px] text-sm bg-slate-100 dark:bg-slate-700 rounded-lg">
+                            <div class="mb-1">
+                                <label class="form-label inline-block text-gray-800 dark:text-gray-50 w-24 pl-2">JSON Result</label>
+                            </div>
+                            <div class="rounded-md border border-gray-300 dark:border-gray-900 px-2 py-1 mb-1">
+                                <pre id="json-result" class="text-sm text-gray-600 dark:text-gray-50">
+                                
+                                </pre>
+                                <button id="json-button" onclick="copyToClipboard('#json-result')" class="bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1" style="display: none;">Copy to clipboard</button>
+                            </div>
+                            <div class="mb-1">
+                                <label class="form-label inline-block text-gray-800 dark:text-gray-50 w-24 pl-2">Token</label>
+                            </div>
+                            <div class="rounded-md border border-gray-300 dark:border-gray-900 px-2 py-1">
+                                <pre id="base64-result" class="text-sm overflow-auto text-gray-600 dark:text-gray-50">
+                                
+                                </pre>
+                                <button id="base64-button" onclick="copyToClipboard('#base64-result')" class="bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1" style="display: none;">Copy to clipboard</button>
+                                <button id="posttoken-button" onclick="posttoLanding('#base64-result')" class="text-sm rounded-md border border-purple-500 bg-purple-200 dark:bg-bg-gray-900 hover:bg-purple-100 px-1" style="display: none;">Post to landing page</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+    </body>
+</html>

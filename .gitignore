@@ -1,0 +1,7 @@
+/.donotcommit
+/dist
+/node_modules
+/config
+.env
+/src/client/output.css
+.VSCodeCounter/*

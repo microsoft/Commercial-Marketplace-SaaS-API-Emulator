@@ -1,0 +1,65 @@
+@publisherId=Acme
+@baseUrl=http://localhost:8080
+@apiVersion=2018-08-31
+@purchaseToken=
+@subscription={{resolve.response.body.$.subscription.id}}
+
+#########################################################################################
+# Resolve
+# @name resolve
+POST {{baseUrl}}/api/saas/subscriptions/resolve?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+content-type: application/json
+x-ms-marketplace-token: {{purchaseToken}} 
+
+#########################################################################################
+# Activate
+# Update planId before use
+POST {{baseUrl}}/api/saas/subscriptions/{{subscription}}/activate?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "planId": "123"
+}
+
+#########################################################################################
+# GetSubscriptions
+#
+GET {{baseUrl}}/api/saas/subscriptions?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+#########################################################################################
+# GetSubscription(id)
+GET  {{baseUrl}}/api/saas/subscriptions/{{subscription}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+content-type: application/json
+
+#########################################################################################
+# UpdateSubscription - change plan
+# Update planId before use
+PATCH {{baseUrl}}/api/saas/subscriptions/{{subscription}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "planId": "metered"
+}
+
+#########################################################################################
+# UpdateSubscription - change quantity
+# Update quantity before use
+PATCH {{baseUrl}}/api/saas/subscriptions/{{subscription}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "quantity": 5
+}
+
+#########################################################################################
+# DeleteSubscription
+#
+DELETE {{baseUrl}}/api/saas/subscriptions/{{subscription}}?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
+
+#########################################################################################
+# ListAvailablePlans
+#
+GET {{baseUrl}}/api/saas/subscriptions/{{subscription}}/listAvailablePlans?publisherId={{publisherId}}&api-version={{apiVersion}} HTTP/1.1
+Content-Type: application/json
