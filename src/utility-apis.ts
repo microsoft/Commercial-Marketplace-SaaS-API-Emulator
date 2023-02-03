@@ -45,10 +45,17 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   app.patch('/api/util/config', (async (req, res) => {
     for (const i in req.body) {
       if (Object.prototype.hasOwnProperty.call(services.config, i)) {
+        // If it's the webhookUrl/landingPageUrl being set, a relative path wont work
+        if (i === 'webhookUrl' || i === 'landingPageUrl') {
+          const url = req.body[i] as string;
+          if (!url.startsWith('http')) {
+            res.status(400).send('URLs must be a fully qualified.');
+            return;
+          }
+        }
         (services.config as any)[i] = req.body[i];
       }
     }
-
     res.sendStatus(200);
   }) as RequestHandler);
 };

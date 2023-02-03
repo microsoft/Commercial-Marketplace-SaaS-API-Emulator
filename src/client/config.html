@@ -49,13 +49,20 @@
             const config = {};
             config[key] = value;
 
-            await fetch('/api/util/config', {
+            const response = await fetch('/api/util/config', {
               method: 'PATCH',
               body: JSON.stringify(config),
               headers: {
                 'Content-Type': 'application/json'
               }
             });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log(response.status + '-' + text);
+              alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
+              window.location.reload(true);
+            }
           } else {
             window.location.reload(true);
           }
