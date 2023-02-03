@@ -36,13 +36,13 @@ export const generateSubscription: (publisherId: string, from: PurchasePropertie
     name: 'Contoso Cloud Solution',
     saasSubscriptionStatus: 'PendingFulfillmentStart',
     beneficiary: {
-      emailId: 'test@test.com',
+      emailId: 'test@fourthcoffee.com',
       objectId: 'cbb6d5aa-4887-444f-ac9e-b56f8f6e66c2',
       tenantId: '2694e9dc-29a5-4017-958d-68314a91f2d2',
       puid: '78307556-1eba-41d9-b07a-b7f0c78c2c12'
     },
     purchaser: {
-      emailId: 'test@test.com',
+      emailId: 'test@fourthcoffee.com',
       objectId: 'cbb6d5aa-4887-444f-ac9e-b56f8f6e66c2',
       tenantId: '2694e9dc-29a5-4017-958d-68314a91f2d2',
       puid: '78307556-1eba-41d9-b07a-b7f0c78c2c12'
