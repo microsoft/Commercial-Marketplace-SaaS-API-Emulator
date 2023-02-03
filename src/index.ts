@@ -37,21 +37,19 @@ const defaultPublisherId = 'FourthCoffee';
 const publisherId = process.env.PUBLISHER_ID;
 const publisherTenantId = process.env.PUBLISHER_TENANT_ID;
 const publisherAppId = process.env.PUBLISHER_APP_ID;
-
 const webhookResponse = parseInt(process.env.INTERNAL_WEBHOOK_RESPONSE as string);
-
 const port = process.env.port ?? process.env.PORT ?? 3978;
 
 // If the publisherId has been set, then the publisherTenantId and publisherAppId should not be used
 if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAppId !== undefined)) {
   console.log(
-    'Enviornment variable conflict. Either the PUBLISHER_ID should be set or PUBLISHER_TENANT_ID / PUBLISHER_APP_ID combination should be set, but not both.'
+    'Environment variable conflict. Either the PUBLISHER_ID should be set or PUBLISHER_TENANT_ID / PUBLISHER_APP_ID combination should be set, but not both.'
   );
   process.exitCode = 1;
 } else {
   const config: Config = {
-    webhookUrl: process.env.WEBHOOK_URL ?? `Http://localhost:${port}/webhook`,
-    landingPageUrl: process.env.LANDING_PAGE_URL ?? 'landing.html',
+    webhookUrl: process.env.WEBHOOK_URL ?? `http://localhost:${port}/webhook`,
+    landingPageUrl: process.env.LANDING_PAGE_URL ?? `http://localhost:${port}/landing.html`,
     operationTimeoutMS: durationToMS(process.env.OPERATION_TIMEOUT as string),
     subscriptionUpdateDelayMS: durationToMS(process.env.SUBSCRIPTION_UPDATE_DELAY as string),
     webhookCallDelayMS: durationToMS(process.env.WEBHOOK_CALL_DELAY as string),
