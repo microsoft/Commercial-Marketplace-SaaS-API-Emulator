@@ -116,9 +116,11 @@
               </div>
               <div class="py-4">
                 <hr />
-                <span class="inline-block py-2">
-                  Optionally, collect some additional details from the customer (eg below)
-                </span>
+                  <ul class="py-2">
+                    <li>For the commercial marketplace, this page must be AAD SSO enabled</li>
+                    <li>You should check the user identity against the resolved token to ensure they match</li>
+                    <li>Optionally, you can collect additional details from the customer for onboarding (eg below)</li>
+                  </ul>
                 <hr />
               </div>
               <div class="py-1">
@@ -136,7 +138,7 @@
                   onclick="activateSubscription()"
                   disabled
                   class="disabled:bg-slate-100 disabled:border-slate-400 disabled:text-slate-400 bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1">
-                  Activate My Subscription
+                  Activate subscription
                 </button>
               </div>
             </div>
