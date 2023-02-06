@@ -17,8 +17,8 @@ Integrating with the commercial marketplace has a number of scaffolding requirem
 
 - Keep things simple
 - Implement the minimum required whilst being fully functional out of the box
-- Be consistent with the **behaviour** of APIs, document differences from the documented behaviour
-- Support unauthenticated use for simplicity and authenticated use for closer fidelity with the marketplace api.
+- Be consistent with the **behaviour** of APIs, note differences from the documented behaviour
+- Support both unauthenticated use for simplicity and authenticated use for closer fidelity with the marketplace APIs.
 - Flexible implementation that offers multiple hosting options to suit the user
 - Offer configuration options to tailor the behaviour
 
@@ -37,7 +37,7 @@ There are many different ways to access the emulator.
 
 ### Using the emulator
 
-Once the emulator is running, you can connect to it using a browser and standard tools such as the REST Client extension for VSCode, Postman etc. The URL and port will depend chosen deployment method ([see below](#running-the-emulator)). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
+Once the emulator is running, you can connect to it using a browser and standard tools such as the [REST Client extension for VSCode](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc. The URL and port will depend chosen deployment method ([see below](#running-the-emulator)). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
 
 1. Run the emulator using your [chosen method](#running-the-emulator)
 1. With a browser, connect to `http://<domain>:<port>` (domain, port depend on your run method)
@@ -108,7 +108,7 @@ For more details on the available APIs and their operation, see
 
 ## Functionality
 
-The solution emulates all operations on the [SaaS Fulfillment APIs v2](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-life-cycle) closely. It is close to but not 100% fidelity (see [Limitations](#limitations) below.
+The solution emulates all operations on the [SaaS Fulfillment APIs v2](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-life-cycle) closely. It is close-to, but not 100% fidelity (see [Limitations](#limitations) below.
 
 Any solution should be [thoroughly tested against the marketplace APIs](https://learn.microsoft.com/azure/marketplace/test-saas-overview) before final release.
 
@@ -213,7 +213,7 @@ All options can be passed as environment variables in the `docker run` command. 
 - When prompted, opt to "Re-open in container" or select "Dev Containers: Reopen in Container" from the command palette
 - You should now be able to "Run & Debug"
 - The emulator will be listening on `http://localhost:3978`
-- You can set environment variables by [creating  a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
+- You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
 
 ## Examples
 
