@@ -40,6 +40,10 @@ const publisherAppId = process.env.PUBLISHER_APP_ID;
 const webhookResponse = parseInt(process.env.INTERNAL_WEBHOOK_RESPONSE as string);
 const port = process.env.port ?? process.env.PORT ?? 3978;
 
+//
+// NB, the publisherId is not currently used. It was implemented to allow the validation of publisherID on activate
+// This would require the publishedId to be saved on token creation before sending the user to the landing page
+//
 // If the publisherId has been set, then the publisherTenantId and publisherAppId should not be used
 if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAppId !== undefined)) {
   console.log(
