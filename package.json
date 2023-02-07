@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node ./dist/index.js",
-    "build": "npm install && tsc",
+    "build": "npm install && tsc && npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css",
     "test": "jest",
     "eslint": "eslint . --ext ts",
     "prettier-format": "prettier --config .prettierrc '**/*.ts' --write",

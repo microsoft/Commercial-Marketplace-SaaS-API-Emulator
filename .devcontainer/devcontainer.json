@@ -10,13 +10,14 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.	
-	"postCreateCommand": "npm install",
+	"postCreateCommand": "npm install -g npm@9.4.1  && npm install",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
 				"humao.rest-client"
 			],
 			"settings": {
