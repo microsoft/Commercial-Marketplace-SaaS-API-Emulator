@@ -2,16 +2,17 @@
 
 This repository contains a Node.js implementation of an emulator for the Microsoft commercial marketplace SaaS Fulfillment APIs.
 
-To make hosting the emulator as simple as possible, the repo also includes a Dockerfile for a container image hosting the emulated APIs.
+To make hosting the emulator as simple as possible, the repo includes a Dockerfile for a building a containerised version.
 
-## What problem(s) does this project solve?
+## What challenges does this project address?
 
-Integrating with the commercial marketplace has a number of scaffolding requirements that can act as a barrier to getting up and running quickly. The emulator is designed to break the dependency on these requirements for early-stage development to allow teams to get started building for marketplace with zero friction. Specifically:
+Integrating with the commercial marketplace has a few scaffolding requirements; a barrier to getting up and running quickly. The emulator breaks that dependency, allowing teams to start building for marketplace with zero friction. Specifically:
 
 - Remove dependency on Partner Center
-  - Partner Center onboarding and permissions can take some time to setup and get right. You can get started right away without waiting for this process.
+  - Partner Center onboarding and permissions can take some time to setup correctly. You can get started right away without waiting for this process.
+  - Ordinarily, testing API flows against plans can only happen after they have been created in Partner Center. Emulated plans allow development to happen in parallel. Only final testing is required against Partner Center plans.
 - Remove the AAD requirement
-  - A SaaS transactable offer, or at least the integration with marketplace, must be built with AAD. The integration with the marketplace APIs requires the app to be registered in AAD and API calls are secured with OAuth2. Similarly, your landing page must support AAD SSO. The emulator removes these requirements to make it simpler (and quicker) to start implememting your integration flows.
+  - A SaaS transactable offer, or at least the integration with marketplace, must be built with AAD. The integration with the marketplace APIs requires the app to be registered in AAD and API calls are secured with OAuth2. Similarly, your landing page must support AAD SSO. The emulator removes these requirements to make it simpler (and quicker) to start implementing your integration flows.
 
 ## Design goals
 
@@ -21,30 +22,33 @@ Integrating with the commercial marketplace has a number of scaffolding requirem
 - Support both unauthenticated use for simplicity and authenticated use for closer fidelity with the marketplace APIs.
 - Flexible implementation that offers multiple hosting options to suit the user
 - Offer configuration options to tailor the behaviour
+- Provide a UI to step through and visualise certain actions
 
 ## Getting started
 
-The emulator is a Node.js application designed to be run as a Docker container.
+The emulator is a Node.js application designed to be run as a Docker container for portability. Other hosting options are available.
 
 ### Hosting the emulator
 
 There are many different ways to access the emulator.
 
-1. Run the emulator locally (build image yourself - requires Docker)
-1. Host the emulator in Azure (no Docker required, there is a cost)
-1. Debug the emulator
-1. etc
+1. Run the emulator locally as a Docker container (build image yourself - requires Docker)
+1. Host the emulator in Azure (no Docker required, there is a hosting cost)
+1. Run & debug the emulator (eg in VSCode)
+1. Build and run the emulator locally (Node.js required)
+
+See [Running the emulator](#running-the-emulator) (below)
 
 ### Using the emulator
 
-Once the emulator is running, you can connect to it using a browser and standard tools such as the [REST Client extension for VSCode](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc. The URL and port will depend chosen deployment method ([see below](#running-the-emulator)). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
+With the emulator running, you can connect to it using a browser and standard tools such as the [REST Client extension for VSCode](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc. The URL and port will depend chosen deployment method ([see below](#running-the-emulator)). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
 
 1. Run the emulator using your [chosen method](#running-the-emulator)
 1. With a browser, connect to `http://<domain>:<port>` (domain, port depend on your run method)
-   - You should be presented with a page for configuring your purchase token
+   - You should be presented with a page for configuring a synthetic marketplace purchase token
 1. Configure a purchase token
-   1. (If desired) configure properties on the purchase token
-   1. Click on the `Generate Token` button
+   1. (Optionally) configure properties on the purchase token (otherwise defaults will be populated)
+   1. Click the `Generate Token` button
    1. Observe the generated JSON result
 1. You can now either
    1. Use the emulator's simple, built-in landing page implementation to resolve & activate a subscription
@@ -56,14 +60,14 @@ Once the emulator is running, you can connect to it using a browser and standard
 1. You will be taken to the emulator's built-in landing page
 1. The purchase token is passed to the landing page as a query string parameter
 1. When it loads, the landing page automatically calls the `resolve API` to decode the token
-1. A few key token properties are displayed on the page
-1. Click on the `Activate subscription` button to call the `activate API`
-1. You should see a message indicating a OK / 200 response
+1. Key token properties are displayed on the page
+1. Click the `Activate subscription` button to call the `activate API`
+1. You should see a message indicating a `200 OK` status response
 1. Navigate to the `Subscriptions` page to see your new subscription has been activated
 
 #### Exercise the APIs manually
 
-1. Click on the `Copy to clipboard` button in the Token area (**not** the JSON result)
+1. Click the `Copy to clipboard` button in the Token area (**not** the JSON result)
 1. This copies the base64 encoded purchase token to the clipboard
 1. Call the `resolve API` to resolve (decode) the purchase token
    1. This repo includes helpers to call the emulated APIs using the REST Client extension for VS Code
@@ -74,7 +78,7 @@ Once the emulator is running, you can connect to it using a browser and standard
       - `publisherId [string]` simulates the Publisher ID (can be anything you like eg Contoso Corp)
       - `baseUrl [sting]` format as above eg `http://localhost:8080`
       - `purchaseToken [string]` the base64 encoded purchase token (paste from the clipboard)
-   1. Click on `Send Request` (under ### Resolve)
+   1. Click `Send Request` (under ### Resolve)
       - You should see a Response appear with a `200 OK` status
       - The payload will include the decoded purchase token
 1. Call the `activate API` to activate the purchase
@@ -93,7 +97,7 @@ At this point you have
 You can now call other APIs to see their response
 
 - eg the `GetSubscriptions` API would return a list of all subscriptions
-- Currently this will return a collection with one item, the subscription you activated in the previous steps
+- Having completed the above steps, this will return a collection with one item, the subscription you activated
 
 There are helpers for all available SaaS Fulfillment v2 APIs in
 
@@ -114,7 +118,7 @@ Any solution should be [thoroughly tested against the marketplace APIs](https://
 
 Capabilities include the following:
 
-- Generate a 'faux' [purchase identification token](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription)
+- Generate a synthetic [purchase identification token](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription)
 - This token has customisable subscription properties that can be resolved by the emulated `resolve` API
 - Publisher ID can be set by query string parameter (`publisherId`) or authorization header (bearer token)
 - Testing the following flows:
@@ -128,7 +132,7 @@ The format of the marketplace [purchase identification token](https://learn.micr
 
 ## Limitations
 
-- The activate call does not validate the publisher (as the 'faux' purchase token isn't associated with a specific publisher. This may be implemented at a later date.
+- The activate call does not validate the publisher (as the 'faux' purchase token isn't associated with a specific publisher. This may be implemented in future.
 
 ## Building the image
 
@@ -168,7 +172,7 @@ There are a number of configuration options that can be set on the emulator.
     - Value is either a [number of seconds] or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
     - `Default: 0`
   - SUBSCRIPTION_UPDATE_DELAY
-    - Subscriptions updates do not happen immediately. This value defines the time between an operation completing and the subscription being updated.
+    - Subscription updates do not happen immediately. This value defines the time between an operation completing and the subscription being updated.
     - Value is either a [number of seconds] or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
     - `Default: 0`
   - WEBHOOK_CALL_DELAY
@@ -187,7 +191,7 @@ All options can be passed as environment variables in the `docker run` command. 
 
 ## Running the emulator
 
-### Run the emulator locally
+### Run the emulator locally as a Docker container
 
 - First, [build the image locally](#building-the-image). You can then run the image as follows:
   ```bash
@@ -205,7 +209,7 @@ All options can be passed as environment variables in the `docker run` command. 
 - The emulator will be listening on port 80
 - Consider additional network security measures as this port is open on the internet
 
-### Run the emulator in a debug configuration
+### Run & debug the emulator in VSCode
 
 - There is a [.devcontainer](https://code.visualstudio.com/docs/devcontainers/tutorial) environment included as part of this repo
 - The dev container contains all the dependencies required
@@ -214,6 +218,14 @@ All options can be passed as environment variables in the `docker run` command. 
 - You should now be able to "Run & Debug"
 - The emulator will be listening on `http://localhost:3978`
 - You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
+
+### Build and run the emulator locally
+
+- Make sure you have Node.js installed (tested with Version 18)
+- Use `npm run build` to install dependencies and build 
+- Use `npm run start` to run the emulator
+  - Port details will be displayed the in the console 
+- You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder 
 
 ## Examples
 
