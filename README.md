@@ -206,7 +206,10 @@ All options can be passed as environment variables in the `docker run` command. 
 - Tag and push the image to a suitable container registry (eg [Azure Container Registry](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-acr), [Docker Hub](https://docs.docker.com/engine/reference/commandline/push/))
 - [Create a new Container Instance](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-deploy-app)
   - Ensure port 80 is exposed
-- The emulator will be listening on port 80
+- The emulator will be listening on port 80 on the public IP address of the contianer instance
+- You will need to update the `LANDING_PAGE_URL` with this IP or FQDN as the default value (`localhost`) only works when running locally
+  - eg `LANDING_PAGE_URL=http://1.2.3.4/landing.html`
+  - You can set this as an [env variable](#examples) or through the config UI
 - Consider additional network security measures as this port is open on the internet
 
 ### Run & debug the emulator in VSCode
@@ -227,19 +230,26 @@ All options can be passed as environment variables in the `docker run` command. 
   - Port details will be displayed the in the console 
 - You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder 
 
-## Examples
+### Examples
 
-1. Run the emulator setting the WEBHOOK_URL
-   ```bash
-   docker run -d -p 8080:80 -e WEBHOOK_URL=https://www.fourthcoffee.com/webhook marketplace-api-emulator
+1. Run the emulator setting the `LANDING_PAGE_URL`
+   ```bash 
+   docker run -d \
+    -p '8080:80' \
+    -e LANDING_PAGE_URL='https://www.fourthcoffee.com/landing.html' \
+    'marketplace-api-emulator'
    ```
-1. Run the emulator setting the WEBHOOK_URL and OPERATION_TIMEOUT
+1. Run the emulator setting the `WEBHOOK_URL` and `OPERATION_TIMEOUT`
 
-   ```bash
+   ```bash  
    export WEBHOOK_URL='https://www.fourthcoffee.com/webhook'
    export OPERATION_TIMEOUT='PT1M'
 
-   docker run -d -p 8080:80 -e WEBHOOK_URL -e OPERATION_TIMEOUT marketplace-api-emulator
+   docker run -d \
+    -p '8080:80' \
+    -e 'WEBHOOK_URL' \
+    -e 'OPERATION_TIMEOUT' \
+    'marketplace-api-emulator'
    ```
 
 ## Contributing
