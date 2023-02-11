@@ -100,6 +100,7 @@
             const input = $(document.createElement('input')).attr({
               type: typeof obj[i] === 'number' ? 'number' : typeof obj[i] === 'boolean' ? 'checkbox' : 'text'
             });
+            input.attr('aria-label', i);
             input.data('json-path', path + i);
             formRow.append(input).addClass('mb-1');
             if (i === 'quantity') {
@@ -249,7 +250,7 @@
             <p class="pt-2">
               For full documentation on the APIs visit:
               <a
-                class="text-cyan-800 hover:text-cyan-500"
+                class="text-cyan-600 hover:underline"
                 target="_blank"
                 href="https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription">
                 SaaS fulfillment Subscription APIs v2 in Microsoft commercial marketplace</a
@@ -281,6 +282,7 @@
                 <button
                   id="json-button"
                   onclick="copyToClipboard('#json-result')"
+                  aria-label="Copy JSON to Clipboard"
                   class="bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1"
                   style="display: none">
                   Copy to clipboard
@@ -294,6 +296,7 @@
                 <button
                   id="base64-button"
                   onclick="copyToClipboard('#base64-result')"
+                  aria-label="Copy Token to Clipboard"
                   class="bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1"
                   style="display: none">
                   Copy to clipboard
@@ -301,6 +304,7 @@
                 <button
                   id="posttoken-button"
                   onclick="posttoLanding('#base64-result')"
+                  aria-label="Post to Landing Page"
                   class="text-sm rounded-md border border-purple-500 bg-purple-200 dark:bg-bg-gray-900 hover:bg-purple-100 px-1"
                   style="display: none">
                   Post to landing page
