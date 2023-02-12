@@ -1,4 +1,4 @@
-FROM node:18.13-alpine3.16
+FROM node:18-alpine3.16
 
 WORKDIR /usr/src/app
 
@@ -13,7 +13,10 @@ ENV PORT=80
 
 RUN apk update && apk upgrade
 
-RUN npm install && ./node_modules/typescript/bin/tsc
+RUN npm install && \
+    find ./node_modules/ ! -user root | xargs chown root:root && \
+    ./node_modules/typescript/bin/tsc
+    
 RUN npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --minify
 
 EXPOSE 80
