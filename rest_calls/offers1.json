@@ -1,0 +1,63 @@
+{
+  "my-custom-offer": {
+    "offerId": "my-custom-offer",
+    "plans": {
+      "custom1": {
+        "planId": "custom1",
+        "displayName": "Gold",
+        "isPrivate": false,
+        "description": "Gold Plan",
+        "hasFreeTrials": false,
+        "isPricePerSeat": false,
+        "isStopSell": false,
+        "market": "GB",
+        "planComponents": {
+          "recurrentBillingTerms": [
+            { "currency": "GBP", "price": 0, "termUnit": "P1M", "termDescription": "1 Month Subscription" }
+          ],
+          "meteringDimensions": []
+        }
+      }
+    },
+    "persist": false
+  },
+  "my-custom-offer1": {
+    "offerId": "my-custom-offer1",
+    "plans": {
+      "custom1": {
+        "planId": "custom1",
+        "displayName": "Gold",
+        "isPrivate": false,
+        "description": "Gold Plan",
+        "hasFreeTrials": false,
+        "isPricePerSeat": false,
+        "isStopSell": false,
+        "market": "GB",
+        "planComponents": {
+          "recurrentBillingTerms": [
+            { "currency": "GBP", "price": 0, "termUnit": "P1M", "termDescription": "1 Month Subscription" }
+          ],
+          "meteringDimensions": []
+        }
+      },
+      "custom2": {
+        "planId": "custom2",
+        "displayName": "Gold",
+        "isPrivate": false,
+        "description": "Gold Plan",
+        "hasFreeTrials": false,
+        "isPricePerSeat": false,
+        "isStopSell": false,
+        "market": "GB",
+        "planComponents": {
+          "recurrentBillingTerms": [
+            { "currency": "GBP", "price": 0, "termUnit": "P1M", "termDescription": "1 Month Subscription" }
+          ],
+          "meteringDimensions": []
+        }
+      }
+    },
+
+    "persist": false
+  }
+}
