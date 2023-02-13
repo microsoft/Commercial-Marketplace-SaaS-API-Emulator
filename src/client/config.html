@@ -149,18 +149,20 @@
             <div class="text-sm p-3">
               <div class="py-1">
                 <span class="inline-block w-56">Webhook URL</span>
-                <input id="webhookUrl" type="text" class="text-sm" />
+                <input id="webhookUrl" type="text" class="text-sm" aria-label="Webhook URL"/>
                 <button
                   onclick="updateConfig_click(event)"
+                  aria-label="Update Webhook URL"
                   class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
                   set
                 </button>
               </div>
               <div class="py-1">
                 <span class="inline-block w-56">Landing Page URL</span>
-                <input id="landingPageUrl" type="text" />
+                <input id="landingPageUrl" type="text" aria-label="Landing Page URL"/>
                 <button
                   onclick="updateConfig_click(event)"
+                  aria-label="Update Landing Page URL"
                   class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
                   set
                 </button>
@@ -173,9 +175,11 @@
                 <input
                   id="operationTimeoutMS"
                   type="text"
+                  aria-label="Operation Timeout"
                   class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
                 <button
                   onclick="updateConfig_click(event)"
+                  aria-label="Update Operation Timeout"
                   class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
                   set
                 </button>
@@ -184,10 +188,12 @@
                 <span class="inline-block text-slate-50 w-56">Subscription Update Delay (ms)</span>
                 <input
                   id="subscriptionUpdateDelayMS"
+                  aria-label="Subscription Update Delay"
                   type="text"
                   class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
                 <button
                   onclick="updateConfig_click(event)"
+                  aria-label="Update Subscription Update Delay"
                   class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
                   set
                 </button>
@@ -196,16 +202,17 @@
                 <span class="inline-block text-slate-50 w-56">Webhook Call Delay (ms)</span>
                 <input
                   id="webhookCallDelayMS"
+                  aria-label="Webhook Call Delay"
                   type="text"
                   class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
                 <button
                   onclick="updateConfig_click(event)"
+                  aria-label="Update Webhook Call Delay"
                   class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
                   set
                 </button>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

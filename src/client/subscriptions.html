@@ -99,14 +99,23 @@
         const subscription = $(e.target).data('subscriptionId');
         const quantity = parseInt(prompt('How many licenses?', subscription.quantity));
         await callWebhook($(e.target).data('subscriptionId'), '', { quantity });
-        window.location.reload(true);
       }
 
       async function changePlan_click(e) {
         const subscription = $(e.target).data('subscriptionId');
-        const planId = prompt('Change to which plan?', subscription.planId);
+        const planCheck = $(e.target).data('planID');
+        console.log('Plan ID: ' + planCheck)
+        const message = planCheck === 'flat-rate-1' || planCheck === 'flat-rate-2' || planCheck === 'flat-rate-3' ? 
+         'The subscription appears to be on a Sample Flat Rate offer, available plans for this offer are: \n   flat-rate-1\n   flat-rate-2\n   flat-rate-3\n\nChange to which plan?' :
+         planCheck === 'per-seat-1' || planCheck === 'per-seat-2' || planCheck === 'per-seat-3' ? 
+         'The subscription appears to be on a Sample Per Seat offer, available plans for this offer are: \n   per-seat-1\n   per-seat-2\n   per-seat-3\n\nChange to which plan?' : 
+         'Change to which plan?';
+        console.log(message);
+        const planId = prompt(message, subscription.planId);
+        if (planId === null) {
+        return; //break out of the function early
+        }
         await callWebhook($(e.target).data('subscriptionId'), '', { planId });
-        window.location.reload(true);
       }
 
       async function suspend_click(e) {
@@ -117,7 +126,6 @@
       async function reinstate_click(e) {
         console.log($(e.target).data());
         await callWebhook($(e.target).data('subscriptionId'), 'reinstate');
-        window.location.reload(true);
       }
 
       async function unsubscribe_click(e) {
@@ -281,42 +289,49 @@
                 <button
                   data-requiredStatus="PendingFulfillmentStart"
                   onclick="activate_click(event)"
+                  aria-label="Activate"
                   class="bg-green-200 hover:bg-green-100 border border-green-500 mx-1 rounded my-1 w-28">
                   Activate
                 </button>
                 <button
                   data-requiredStatus="Subscribed"
                   onclick="changeQuantity_click(event)"
+                  aria-label="Change Quantity"
                   class="bg-blue-200 hover:bg-blue-100 border border-blue-500 mx-1 rounded my-1 w-28">
                   Change Quantity
                 </button>
                 <button
                   data-requiredStatus="Subscribed"
                   onclick="changePlan_click(event)"
+                  aria-label="Change Plan"
                   class="bg-blue-200 hover:bg-blue-100 border border-blue-500 mx-1 rounded my-1 w-28">
                   Change Plan
                 </button>
                 <button
                   data-requiredStatus="Subscribed"
                   onclick="suspend_click(event)"
+                  aria-label="Suspend"
                   class="bg-green-200 hover:bg-green-100 border border-green-500 mx-1 rounded my-1 w-28">
                   Suspend
                 </button>
                 <button
                   data-requiredStatus="Suspended"
                   onclick="reinstate_click(event)"
+                  aria-label="Reinstate"
                   class="bg-green-200 hover:bg-green-100 border border-green-500 mx-1 rounded my-1 w-28">
                   Reinstate
                 </button>
                 <button
                   data-requiredStatus="!PendingFulfillmentStart"
                   onclick="unsubscribe_click(event)"
+                  aria-label="Unsubscribe"
                   class="bg-green-200 hover:bg-green-100 border border-green-500 mx-1 rounded my-1 w-28">
                   Unsubscribe
                 </button>
                 <button
                   data-requiredStatus="Subscribed"
                   onclick="renew_click(event)"
+                  aria-label="Renew"
                   class="bg-green-200 hover:bg-green-100 border border-green-500 mx-1 rounded my-1 w-28">
                   Renew
                 </button>
