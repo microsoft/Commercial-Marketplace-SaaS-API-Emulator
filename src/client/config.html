@@ -41,6 +41,14 @@
         if (!value) {
           alert('Enter a value.');
         } else {
+          if (key === 'landingPageUrl') {
+            if (checkLandingPageUrl(value)) {
+              alert(
+                'The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct.'
+              );
+            }
+          }
+
           if (confirm('Are you really sure?')) {
             const $this = $(e.target);
             const value = $this.parent().children('input').val();
@@ -67,6 +75,11 @@
             window.location.reload(true);
           }
         }
+      }
+
+      // Check if we're running on a remote host but the landing page has been left as default (localhost)
+      function checkLandingPageUrl(landingPageUrl) {
+        return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
       }
     </script>
   </head>
@@ -118,6 +131,11 @@
               This form allows you to update environment variables for the emulator.
               <span class="font-bold">Understand the scope </span>of the variables before updating to avoid unexpexted
               behaviours from the emulator that may distort testing retults.
+            </p>
+            <p class="py-2">
+              Note: The default value for "Landing Page URL" assumes you are running the emulator locally. If you are
+              running the emulator on a remote host (eg in Azure Container Images) update the Landing Page URL with the
+              IP address or FQDN of your remote host.
             </p>
           </div>
         </div>

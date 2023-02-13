@@ -149,6 +149,11 @@
         $temp.remove();
       }
 
+      // Check if we're running on a remote host but the landing page has been left as default (localhost)
+      function checkLandingPageUrl(landingPageUrl) {
+        return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
+      }
+
       // post the token to the given landing page URL
       async function posttoLanding(element) {
         const response = await fetch('/api/util/config', { method: 'GET' });
@@ -162,6 +167,12 @@
 
         if (!landingPage) {
           alert('No landing page URL set in config.');
+        }
+
+        if (checkLandingPageUrl(landingPage)) {
+          alert(
+            'The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct. Visit the Config page to check.'
+          );
         }
 
         const mtoken = $(element).html();
