@@ -149,7 +149,7 @@
             <div class="text-sm p-3">
               <div class="py-1">
                 <span class="inline-block w-56">Webhook URL</span>
-                <input id="webhookUrl" type="text" class="text-sm" aria-label="Webhook URL"/>
+                <input id="webhookUrl" type="text" class="text-sm" aria-label="Webhook URL" />
                 <button
                   onclick="updateConfig_click(event)"
                   aria-label="Update Webhook URL"
@@ -159,7 +159,7 @@
               </div>
               <div class="py-1">
                 <span class="inline-block w-56">Landing Page URL</span>
-                <input id="landingPageUrl" type="text" aria-label="Landing Page URL"/>
+                <input id="landingPageUrl" type="text" aria-label="Landing Page URL" />
                 <button
                   onclick="updateConfig_click(event)"
                   aria-label="Update Landing Page URL"
@@ -213,29 +213,30 @@
                 </button>
               </div>
             </div>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- Popup div  -->
-    <div id="popup" class="flex items-center justify-center absolute top-1/4 w-full" style="visibility: hidden">
-      <div class="text-sm bg-white w-72 h-44 border-slate-400 rounded-lg border-2 shadow-xl">
-        <div class="flex items-center justify-center h-1/4 w-full text-lg font-semibold text-blue-900">Warning!</div>
-        <div class="w-full h-2/4 px-4 border-t-2">
-          <p id="popup-response" class="text-sm text-red-800">Are you sure you want to proceed?</p>
-        </div>
-        <div class="flex items-center justify-center h-1/4">
-          <button
-            id="popup-yes"
-            class="bg-red-700 text-white font-semibold align-middle border rounded-md px-6 py-1 mx-1"
-            onclick="closePopup(id)">
-            Yes
-          </button>
-          <button
-            id="popup-cancel"
-            class="bg-purple-700 text-white font-semibold align-middle border rounded-md px-6 py-1 mx-1"
-            onclick="closePopup(id)">
-            Cancel
-          </button>
+      <!-- Popup div  -->
+      <div id="popup" class="flex items-center justify-center absolute top-1/4 w-full" style="visibility: hidden">
+        <div class="text-sm bg-white w-72 h-44 border-slate-400 rounded-lg border-2 shadow-xl">
+          <div class="flex items-center justify-center h-1/4 w-full text-lg font-semibold text-blue-900">Warning!</div>
+          <div class="w-full h-2/4 px-4 border-t-2">
+            <p id="popup-response" class="text-sm text-red-800">Are you sure you want to proceed?</p>
+          </div>
+          <div class="flex items-center justify-center h-1/4">
+            <button
+              id="popup-yes"
+              class="bg-red-700 text-white font-semibold align-middle border rounded-md px-6 py-1 mx-1"
+              onclick="closePopup(id)">
+              Yes
+            </button>
+            <button
+              id="popup-cancel"
+              class="bg-purple-700 text-white font-semibold align-middle border rounded-md px-6 py-1 mx-1"
+              onclick="closePopup(id)">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
