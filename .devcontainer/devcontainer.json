@@ -3,6 +3,15 @@
 {
 	"name": "Node.js & TypeScript",
 	"image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+
+	"initializeCommand": "docker network inspect shared_devcontainer_network > /dev/null || docker network create shared_devcontainer_network --attachable",
+
+    "runArgs": [
+        "--network=shared_devcontainer_network",
+		"--hostname=emulator"
+    ],
+
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
@@ -27,6 +36,14 @@
 					"typescript"
 				]
 			}
+		}
+	},
+
+	"portsAttributes": {
+		"3978": {
+			"label": "Application",
+			"onAutoForward": "notify",
+			"requireLocalPort": true
 		}
 	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
