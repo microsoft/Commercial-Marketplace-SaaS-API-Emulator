@@ -51,6 +51,24 @@ export default class DefaultStateStore implements StateStore {
       return;
     }
 
+    const offerFilePath = path.resolve(this.config.fileLocation, 'offers.json');
+
+    if (!(await this.fileExists(offerFilePath))) {
+      this.logger.log("Offers file doesn't exist - skipping offers load", 'StateStore');
+      return;
+    }
+
+    const offerBuffer = await fs.readFile(offerFilePath, 'utf8');
+    const offerData: Offers = JSON.parse(offerBuffer);
+
+    try {
+      const combinedOffers = { ...this.offers, ...offerData };
+      this.offers = combinedOffers;
+      this.logger.log('Custom offers loaded.', 'StateStore');
+    } catch (error) {
+      this.logger.log('Problem loading custom offers - check the JSON - skipping custom offers load', 'StateStore');
+    }
+
     const filePath = path.resolve(this.config.fileLocation, 'data.json');
 
     if (!(await this.fileExists(filePath))) {
