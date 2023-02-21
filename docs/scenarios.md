@@ -3,7 +3,7 @@
 ## Scenario 1 - Out-Of-Box experience (default configuration)
 ![Pre-configured](images/scenario-pre-configured.png)
 
-**Note:** If the emulator is hosted in an environment outside of "localhost" (For example, in an Azure App Service), note that the landing page url will need to be configured with the url of the host. Either IP address or fully qualified domain name will work as long as you can navigate to "{host-address}/landing.html" in a browser.
+**Note:** If the emulator is hosted in an environment outside of "localhost" (For example, in an Azure App Service), the landing page url will need to be configured with the url of the host. Either IP address or fully qualified domain name will work as long as you can navigate to "{host-address}/landing.html" in a browser.
 
 In this situation, the landing page configuration value is configured in the same way as Scenario 2!
 
