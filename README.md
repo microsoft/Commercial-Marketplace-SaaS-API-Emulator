@@ -32,18 +32,20 @@ The emulator is a Node.js application designed to be run as a Docker container f
 
 There are many different ways to access the emulator.
 
-1. Run the emulator locally as a Docker container (build image yourself - requires Docker)
-1. Host the emulator in Azure (no Docker required, there is a hosting cost)
-1. Run & debug the emulator (eg in VSCode)
-1. Build and run the emulator locally (Node.js required)
+1. Run the emulator locally as a Docker container
+1. Host the emulator in Azure
+1. Run & debug the emulator locally
+1. Build and run the emulator locally
 
-See [Running the emulator](#running-the-emulator) (below)
+See [Getting up and running with the emulator](./docs/launching.md)
 
 ### Using the emulator
 
-With the emulator running, you can connect to it using a browser and standard tools such as the [REST Client extension for VSCode](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc. The URL and port will depend chosen deployment method ([see below](#running-the-emulator)). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
+With the emulator running, you can connect to it using a browser and standard tools such as the [REST Client extension for VS Code](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc.
 
-1. Run the emulator using your [chosen method](#running-the-emulator)
+The URL and port will depend on [your chosen deployment method](./docs/launching.md). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
+
+1. Run the emulator using your [chosen method](./docs/launching.md)
 1. With a browser, connect to `http://<domain>:<port>` (domain, port depend on your run method)
    - You should be presented with a page for configuring a synthetic marketplace purchase token
 1. Configure a purchase token
@@ -134,129 +136,11 @@ The format of the marketplace [purchase identification token](https://learn.micr
 
 - The activate call does not validate the publisher (as the 'faux' purchase token isn't associated with a specific publisher. This may be implemented in future.
 
-## Building the image
-
-You can easily build the Docker image yourself:
-
-- Clone this repo
-- cd into the repo folder
-- To build the Docker image run:
-  ```
-  docker build -t marketplaceapiemulator -f docker/Dockerfile .
-  ```
-- You will now have a Docker image tagged `marketplaceapiemulator`
-
-## Configuration
-
-There are a number of configuration options that can be set on the emulator.
-
-- Common Options
-
-  - PORT (number)
-    - The local port on which the emulator listens
-    - `Default: 3978 (debugger) / 80 (Docker)`
-  - WEBHOOK_URL (URL)
-    - The URL of your webhook service (by default, set to the emulator built-in implementation)
-    - `Default: http://localhost:[PORT]/webhook`
-  - LANDING_PAGE_URL (URL)
-    - The URL of your landing page (by default, set to the emulator built-in implementation)
-    - `Default: http://localhost:[PORT]/landing.html`
-  - SKIP_DATA_LOAD (boolean)
-    - Tell the emulator not to load any existing data file on startup. This value is only used during startup. Useful for debugging.
-    - `Default: false`
-
-- Advanced Options
-
-  - OPERATION_TIMEOUT
-    - Operations do not happen immediately. This value defines the time between an operation being submitted and it being completed.
-    - Value is either a [number of seconds] or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    - `Default: 0`
-  - SUBSCRIPTION_UPDATE_DELAY
-    - Subscription updates do not happen immediately. This value defines the time between an operation completing and the subscription being updated.
-    - Value is either a [number of seconds] or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    - `Default: 0`
-  - WEBHOOK_CALL_DELAY
-    - Delay before webhook is called.
-    - Value is either a number of seconds or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    - `Default: 0`
-
-- Currently Unused Options
-  - PUBLISHER_ID (Required to validate publisher on activate)
-  - PUBLISHER_TENANT_ID (Required to validate publisher on activate)
-  - PUBLISHER_APP_ID (Required to validate publisher on activate)
-
-Many options can be configured in UI on the `Config` page of the emulator.
-
-All options can be passed as environment variables in the `docker run` command. For options related to using environment variables with docker run, see the [relevant Docker documentation](https://docs.docker.com/engine/reference/commandline/run/#-set-environment-variables--e---env---env-file).
-
-## Running the emulator
-
-### Run the emulator locally as a Docker container
-
-- First, [build the image locally](#building-the-image). You can then run the image as follows:
-  ```bash
-  docker run -d -p 8080:80 marketplace-api-emulator
-  ```
-- The emulator will be listening on `http://localhost:8080`
-
-### Host the emulator in Azure
-
-- Note, there is a cost for running a container instance service
-- First, [build the image locally](#building-the-image)
-- Tag and push the image to a suitable container registry (eg [Azure Container Registry](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-acr), [Docker Hub](https://docs.docker.com/engine/reference/commandline/push/))
-- [Create a new Container Instance](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-deploy-app)
-  - Ensure port 80 is exposed
-- The emulator will be listening on port 80 on the public IP address of the contianer instance
-- You will need to update the `LANDING_PAGE_URL` with this IP or FQDN as the default value (`localhost`) only works when running locally
-  - eg `LANDING_PAGE_URL=http://1.2.3.4/landing.html`
-  - You can set this as an [env variable](#examples) or through the config UI
-- Consider additional network security measures as this port is open on the internet
-
-### Run & debug the emulator in VSCode
-
-- There is a [.devcontainer](https://code.visualstudio.com/docs/devcontainers/tutorial) environment included as part of this repo
-- The dev container contains all the dependencies required
-- In VS Code, open the repo
-- When prompted, opt to "Re-open in container" or select "Dev Containers: Reopen in Container" from the command palette
-- You should now be able to "Run & Debug"
-- The emulator will be listening on `http://localhost:3978`
-- You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
-
-### Build and run the emulator locally
-
-- Make sure you have Node.js installed (tested with Version 18)
-- Use `npm run build` to install dependencies and build 
-- Use `npm run start` to run the emulator
-  - Port details will be displayed the in the console 
-- You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder 
-
-### Examples
-
-1. Run the emulator setting the `LANDING_PAGE_URL`
-   ```bash 
-   docker run -d \
-    -p '8080:80' \
-    -e LANDING_PAGE_URL='https://www.fourthcoffee.com/landing.html' \
-    'marketplace-api-emulator'
-   ```
-1. Run the emulator setting the `WEBHOOK_URL` and `OPERATION_TIMEOUT`
-
-   ```bash  
-   export WEBHOOK_URL='https://www.fourthcoffee.com/webhook'
-   export OPERATION_TIMEOUT='PT1M'
-
-   docker run -d \
-    -p '8080:80' \
-    -e 'WEBHOOK_URL' \
-    -e 'OPERATION_TIMEOUT' \
-    'marketplace-api-emulator'
-   ```
-
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+the rights to use your contribution. For details, visit [https://cla.opensource.microsoft.com](https://cla.opensource.microsoft.com).
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
