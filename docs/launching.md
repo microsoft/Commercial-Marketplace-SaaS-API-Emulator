@@ -12,7 +12,7 @@ If you prefer to run locally, make sure you have Node.js installed.
 
 ### Run the emulator as a Docker container locally
 
-- First, [build the image](#building-the-image)
+- First, [build the image](#building-as-a-docker-image)
 - Then run the image as follows:
 
   ```bash
@@ -24,9 +24,9 @@ If you prefer to run locally, make sure you have Node.js installed.
 
 ### Host the emulator in Azure
 
-- Note, there is a cost for running an Azure container instance
+- Note, there is a cost for running an Azure Container Instance
 - Either
-  - [build the image locally](#building-the-image), then tag and push the image to a suitable container registry (eg [Azure Container Registry](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-acr), [Docker Hub](https://docs.docker.com/engine/reference/commandline/push/))
+  - [build the image locally](#building-as-a-docker-image), then tag and push the image to a suitable container registry (eg [Azure Container Registry](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-prepare-acr), [Docker Hub](https://docs.docker.com/engine/reference/commandline/push/))
   - If you are using Azure Container Registry, you can [build and push the image using the Azure CLI](https://learn.microsoft.com/azure/container-registry/container-registry-quickstart-task-cli#build-and-push-image-from-a-dockerfile)
 - [Create a new Container Instance](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-deploy-app)
   - Ensure port 80 is exposed
@@ -63,9 +63,9 @@ If you prefer to run locally, make sure you have Node.js installed.
   - Port details will be displayed the in the console
 - You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
 
-## Building the image
+## Building as a Docker image
 
-Building the image is as simple as:
+Building as a Docker image is as simple as:
 
 1. Clone this repo
 1. `cd` into the repo folder
