@@ -39,19 +39,8 @@ export default class DefaultStateStore implements StateStore {
     return (await fs.stat(filePath).catch((_) => false)) as boolean;
   }
 
-  async load(): Promise<void> {
-    // Always initialize some sample offers - they should not be persisted
-    const sampleOffer1: Offer = generateSampleOffer('flat-rate', false, false);
-    const sampleOffer2: Offer = generateSampleOffer('per-seat', true, false);
-    this.offers[sampleOffer1.offerId] = sampleOffer1;
-    this.offers[sampleOffer2.offerId] = sampleOffer2;
-
-    if (this.config.fileLocation === undefined) {
-      this.logger.log('Missing file location from config - skipping data load', 'StateStore');
-      return;
-    }
-
-    const offerFilePath = path.resolve(this.config.fileLocation, 'offers.json');
+  private async loadOffers(fileLocation: string): Promise<void> {
+    const offerFilePath = path.resolve(fileLocation, 'offers.json');
 
     if (!(await this.fileExists(offerFilePath))) {
       this.logger.log("Offers file doesn't exist - skipping offers load", 'StateStore');
@@ -68,8 +57,10 @@ export default class DefaultStateStore implements StateStore {
     } catch (error) {
       this.logger.log('Problem loading custom offers - check the JSON - skipping custom offers load', 'StateStore');
     }
+  }
 
-    const filePath = path.resolve(this.config.fileLocation, 'data.json');
+  async loadSubscriptions(fileLocation: string): Promise<void> {
+    const filePath = path.resolve(fileLocation, 'data.json');
 
     if (!(await this.fileExists(filePath))) {
       this.logger.log("Data file doesn't exist - skipping data load", 'StateStore');
@@ -110,6 +101,22 @@ export default class DefaultStateStore implements StateStore {
     } else {
       this.logger.log("Data file doesn't contain offers - skipping data load for offers", 'StateStore');
     }
+  }
+
+  async load(): Promise<void> {
+    // Always initialize some sample offers - they should not be persisted
+    const sampleOffer1: Offer = generateSampleOffer('flat-rate', false, false);
+    const sampleOffer2: Offer = generateSampleOffer('per-seat', true, false);
+    this.offers[sampleOffer1.offerId] = sampleOffer1;
+    this.offers[sampleOffer2.offerId] = sampleOffer2;
+
+    if (this.config.fileLocation === undefined) {
+      this.logger.log('Missing file location from config - skipping data load', 'StateStore');
+      return;
+    }
+
+    await this.loadOffers(this.config.fileLocation);
+    await this.loadSubscriptions(this.config.fileLocation);
   }
 
   async save(): Promise<void> {
