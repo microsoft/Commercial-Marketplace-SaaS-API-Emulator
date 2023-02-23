@@ -15,7 +15,7 @@ If you prefer to run locally, make sure you have Node.js installed.
 - First, [build the image](#building-as-a-docker-image)
 - Then run the image as follows:
 
-  ```bash
+  ```text
   docker run -d -p <port>:80 marketplace-api-emulator
   ```
 
@@ -100,7 +100,7 @@ Having set the relevant secrets, launch the workflow and select the target regis
 
 This can make the launch process as simple as
 
-```bash
+```text
 docker run <registry-name>/<repo-name>:latest
 ```
 
