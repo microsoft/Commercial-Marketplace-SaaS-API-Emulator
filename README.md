@@ -26,20 +26,13 @@ Integrating with the commercial marketplace has a few scaffolding requirements; 
 
 ## Getting started
 
-The emulator is a Node.js application designed to be run as a Docker container for portability. Other hosting options are available.
+The emulator is a Node.js application designed to be run as a Docker container for portability. Other hosting options are also possible. For more details see the relevant section:
 
-### Hosting the emulator
+- [Hosting the emulator](./docs/launching.md)
+- [Configuring the emulator](./docs/config.md)
+- [Usage scenarios](./docs/scenarios.md)
 
-There are many different ways to access the emulator.
-
-1. Run the emulator locally as a Docker container
-1. Host the emulator in Azure
-1. Run & debug the emulator locally
-1. Build and run the emulator locally
-
-See [Getting up and running with the emulator](./docs/launching.md)
-
-### Using the emulator
+## Using the emulator
 
 With the emulator running, you can connect to it using a browser and standard tools such as the [REST Client extension for VS Code](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc.
 
@@ -56,7 +49,7 @@ The URL and port will depend on [your chosen deployment method](./docs/launching
    1. Use the emulator's simple, built-in landing page implementation to resolve & activate a subscription
    1. Exercise the APIs manually (eg using the VS Code REST client or Postman)
 
-#### Use the Emulator's built-in landing page
+### Use the Emulator's built-in landing page
 
 1. Click on the `Post to landing page` button in the Token area
 1. You will be taken to the emulator's built-in landing page
@@ -67,10 +60,27 @@ The URL and port will depend on [your chosen deployment method](./docs/launching
 1. You should see a message indicating a `200 OK` status response
 1. Navigate to the `Subscriptions` page to see your new subscription has been activated
 
-#### Exercise the APIs manually
+### A word about the Publisher ID
+
+Subscriptions need to be associated with a publisher. In the marketplace, the publisher is extracted using claims from the AAD bearer token used to authenticate.
+
+For the emulator, to keep things simple, we removed the AAD requirement. Instead, you can define the Publisher ID in one of two ways:
+
+1. A `publisherId` query string parameter. This is set to "FourthCoffee" as a default in the emulator
+   1. To see an example of this in action, take a look at the sample REST calls: [subscriptions-apis.http](./rest_calls/subscription-apis.http)
+   1. To modify this Publisher ID for the built-in emulator functions, set the `PUBLISHER_ID` environment variable
+1. A Publisher ID constructed from the publisher tenant and app IDs.
+   1. This is useful to mirror the behaviour of the marketplace. The tenant and app ID from the app registration you use to authenticate with the marketplace APIs will also work with the emulator.
+   1. To modify this Publisher ID for the built-in emulator functions, set the `PUBLISHER_TENANT_ID` and `PUBLISHER_APP_ID` environment variables
+
+You can use either approach (but not both at the same time!). The former is useful for early testing as you don't need to register with AAD, the latter is useful in the latter stages of emulator testing as it is directly compatible with the marketplace.
+
+For more information on configuration see [Configuring the emulator](./docs/config.md)
+
+### Exercise the APIs manually
 
 1. Click the `Copy to clipboard` button in the Token area (**not** the JSON result)
-1. This copies the base64 encoded purchase token to the clipboard
+1. This copies the Base64 encoded purchase token to the clipboard
 1. Call the `resolve API` to resolve (decode) the purchase token
    1. This repo includes helpers to call the emulated APIs using the REST Client extension for VS Code
    1. Open this repo in VS Code
@@ -79,7 +89,7 @@ The URL and port will depend on [your chosen deployment method](./docs/launching
    1. In `subscription-apis.http` set
       - `publisherId [string]` simulates the Publisher ID (can be anything you like eg Contoso Corp)
       - `baseUrl [sting]` format as above eg `http://localhost:8080`
-      - `purchaseToken [string]` the base64 encoded purchase token (paste from the clipboard)
+      - `purchaseToken [string]` the Base64 encoded purchase token (paste from the clipboard)
    1. Click `Send Request` (under ### Resolve)
       - You should see a Response appear with a `200 OK` status
       - The payload will include the decoded purchase token
@@ -130,7 +140,7 @@ Capabilities include the following:
   - Suspend and reinstate flow
   - Webhook flows
 
-The format of the marketplace [purchase identification token](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription) is not documented. In the emulator, this has been simulated with a base64 encoded JSON payload.
+The format of the marketplace [purchase identification token](https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription) is not documented. In the emulator, this has been simulated with a Base64 encoded JSON payload.
 
 ## Limitations
 

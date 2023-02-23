@@ -3,6 +3,7 @@
 Depending where you are in your SaaS transaction journey, you may or may not have all the components required to run the transact flow end-to-end in your own solution. The emulator has built-in landing page and webhook implementations for you to use as an interim. The various scenarios a detailed below:
 
 ## Scenario 1 - Out-Of-Box experience (default configuration)
+
 ![Pre-configured](images/scenario-pre-configured.png)
 
 **Note:** If the emulator is hosted in an environment outside of "localhost" (For example, in an Azure App Service), the landing page url will need to be configured with the url of the host. Either IP address or fully qualified domain name will work as long as you can navigate to "{host-address}/landing.html" in a browser.
@@ -24,6 +25,7 @@ This configuration value can be set through the UI: Navigate to the emulator use
 To make this value persistent across restarts, set the environment variable `LANDING_PAGE_URL` instead.
 
 ## Scenario 3 - ISV hosted landing page and webhook
+
 ![Custom webhook](images/scenario-custom-webhook.png)
 
 This configuration value can be set through the UI: Navigate to the emulator user interface, select _config_, set the _Webhook URL_ and click _set_.
