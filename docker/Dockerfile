@@ -12,10 +12,13 @@ COPY ./tailwind.config.js ./
 ENV PORT=80
 
 RUN apk update && apk upgrade
+RUN npm install -g npm
 
-RUN npm install && \
-    find ./node_modules/ ! -user root | xargs chown root:root && \
-    ./node_modules/typescript/bin/tsc
+# Docker User Namespace remapping issues in npm 9.x
+# Refer to https://azureossd.github.io/2022/06/30/Docker-User-Namespace-remapping-issues/#npm-specific-issues-causing-userns-remap-exceptions
+# Find any affected files and do a chown to root
+RUN npm install && find ./node_modules/ ! -user root -exec chown root:root {} \;
+RUN ./node_modules/typescript/bin/tsc
     
 RUN npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --minify
 
