@@ -17,9 +17,7 @@ There are a number of configuration options that can be set on the emulator.
     - Tell the emulator not to load any existing data file on startup. This value is only used during startup. Useful for debugging.
     - `Default: false`
 
-{% note %}
 **Note:** Publisher ID Options are used to set the Publisher ID for built-in emulator features (such as the landing page). Either PUBLISHER_ID or PUBLISHER_TENANT_ID + PUBLISHER_APP_ID should be used.
-{% endnote %}
 
 - Publisher ID Options
   - PUBLISHER_ID
@@ -31,6 +29,8 @@ There are a number of configuration options that can be set on the emulator.
   - PUBLISHER_APP_ID
     - Used in conjunction with the PUBLISHER_TENANT_ID to create a Publisher ID
     - `Default: undefined`
+
+**Note:** Advanced Options are there to better simulate the behaviour of the marketplace (the time it takes for operations to complete)
 
 - Advanced Options
 
