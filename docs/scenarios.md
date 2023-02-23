@@ -1,5 +1,7 @@
 # Emulator Scenarios
 
+Depending where you are in your SaaS transaction journey, you may or may not have all the components required to run the transact flow end-to-end in your own solution. The emulator has built-in landing page and webhook implementations for you to use as an interim. The various scenarios a detailed below:
+
 ## Scenario 1 - Out-Of-Box experience (default configuration)
 ![Pre-configured](images/scenario-pre-configured.png)
 
