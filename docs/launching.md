@@ -65,6 +65,8 @@ If you prefer to run locally, make sure you have Node.js installed.
 
 ## Building as a Docker image
 
+### Building locally
+
 Building as a Docker image is as simple as:
 
 1. Clone this repo
@@ -76,6 +78,31 @@ Building as a Docker image is as simple as:
     ```
 
 1. This will create a Docker image tagged `marketplace-api-emulator`
+
+### GitHub workflow to build & push to a container registry
+
+The repo includes a workflow [publish-docker-image.yml](../.github/workflows/publish-docker-image.yml) to automatically build and push the Docker image to your choice of container registry (Azure Container Registry, GitHub or Docker Hub).
+
+The workflow can be manually triggered from the GitHub Actions UI. Depending on your target registry, you may need to set some GitHub Action secrets (Settings > Secrets and variables) before running the workflow.
+
+- Required secrets
+  - GitHub container registry
+    - No secrets necessary
+  - Azure container registry
+    - `REGISTRY_ACR` secret value - set to the ACR login server eg `marketplaceapiemulator.azurecr.io`
+    - `ACR_USERNAME` secret value - set to the ACR username (can be found in Settings > Access keys)
+    - `ACR_PASSWORD` secret value - set to the ACR password (can be found in Settings > Access keys)
+  - Docker Hub
+    - `DOCKER_USERNAME` secret value - set to your Docker Hub username
+    - `DOCKER_PASSWORD` secret value - set to your Docker Hub password
+
+Having set the relevant secrets, launch the workflow and select the target registry in the dropdown. The container image will be built and pushed to the selected registry.
+
+This can make the launch process as simple as
+
+```bash
+docker run <registry-name>/<repo-name>:latest
+```
 
 ## Configuring the emulator
 
