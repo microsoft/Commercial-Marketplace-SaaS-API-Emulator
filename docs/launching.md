@@ -72,10 +72,10 @@ Building as a Docker image is as simple as:
 1. Build the Docker image with:
 
     ```bash
-    docker build -t marketplaceapiemulator -f docker/Dockerfile .
+    docker build -t marketplace-api-emulator -f docker/Dockerfile .
     ```
 
-1. This will create a Docker image tagged `marketplaceapiemulator`
+1. This will create a Docker image tagged `marketplace-api-emulator`
 
 ## Configuring the emulator
 
