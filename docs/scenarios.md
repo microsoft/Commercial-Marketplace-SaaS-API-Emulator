@@ -13,7 +13,7 @@ If you have built a landing page, or are in the process of building and would li
 
 ![Custom landing page](images/scenario-custom-landing-page.png)
 
-This configuration value can be set through the UI: Navigate to the emulator interview, select _config_, set the _Landing Page URL_ and click _set_.
+This configuration value can be set through the UI: Navigate to the emulator user interface, select _config_, set the _Landing Page URL_ and click _set_.
 
 ![Custom landing page ui config](images/scenario-custom-landing-page-ui-config.png)
 
@@ -24,7 +24,7 @@ To make this value persistent across restarts, set the environment variable `LAN
 ## Scenario 3 - ISV hosted landing page and webhook
 ![Custom webhook](images/scenario-custom-webhook.png)
 
-This configuration value can be set through the UI: Navigate to the emulator interview, select _config_, set the _Webhook URL_ and click _set_.
+This configuration value can be set through the UI: Navigate to the emulator user interface, select _config_, set the _Webhook URL_ and click _set_.
 
 ![Custom webhook ui config](images/scenario-custom-webhook-ui-config.png)
 
