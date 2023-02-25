@@ -4,9 +4,9 @@
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
 
-  "initializeCommand": "docker network inspect shared_devcontainer_network > /dev/null || docker network create shared_devcontainer_network --attachable",
+  "initializeCommand": "docker network inspect emulator-net > /dev/null || docker network create emulator-net --attachable",
 
-  "runArgs": ["--network=shared_devcontainer_network", "--hostname=emulator"],
+  "runArgs": ["--network=emulator-net", "--hostname=emulator"],
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},

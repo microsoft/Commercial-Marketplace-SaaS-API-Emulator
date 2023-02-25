@@ -19,8 +19,21 @@ If you prefer to run locally, make sure you have Node.js installed.
   docker run -d -p <port>:80 marketplace-api-emulator
   ```
 
-- The emulator will be listening on `http://localhost:<port>`
-- For more configuration options see [configuration examples](./config.md)
+- The emulator will be listening on `http://localhost:<port>` on the host
+
+If you plan to connect from another container (eg connecting to the emulator container from a Dev Container), you need to create a shared Docker network
+
+- Do the following to create a shared Docker bridge network and set the hostname for the emulator
+
+  ```text
+  docker network create -d bridge my-net
+  docker run -d -p <port>:80 --network=emulator-net --hostname emulator marketplace-api-emulator
+  ```
+
+- The emulator will be listening on `http://emulator:80` on `emulator-net`
+- Make sure to connect your container / Dev Container to the same bridge network
+
+For additional configuration options see [configuration examples](./config.md)
 
 ### Host the emulator in Azure
 
@@ -52,7 +65,10 @@ If you prefer to run locally, make sure you have Node.js installed.
 - In VS Code, open the repo
 - When prompted, opt to "Re-open in container" or select "Dev Containers: Reopen in Container" from the command palette
 - You should now be able to "Run & Debug"
-- The emulator will be listening on `http://localhost:3978`
+- The emulator will be listening on:
+  - `http://localhost:3978` on the host
+  - `http://emulator:80` on a shared Docker bridge network (if connecting from another container)
+  - Use `docker run --network=emulator-net` when launching another container to connect to the shared Docker bridge network of the emulator
 - You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
 
 ### Build and run the emulator locally
@@ -73,7 +89,7 @@ Building as a Docker image is as simple as:
 1. `cd` into the repo folder
 1. Build the Docker image with:
 
-    ```bash
+    ```text
     docker build -t marketplace-api-emulator -f docker/Dockerfile .
     ```
 
