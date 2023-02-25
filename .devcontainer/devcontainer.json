@@ -14,6 +14,8 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
+  "appPort": [ "3978:80" ],
+
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install -g npm@9.4.1  && npm install",
 
@@ -25,15 +27,8 @@
         "eslint.validate": ["javascript", "javascriptreact", "typescript"]
       }
     }
-  },
-
-  "portsAttributes": {
-    "3978": {
-      "label": "Application",
-      "onAutoForward": "notify",
-      "requireLocalPort": true
-    }
   }
+
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
 }

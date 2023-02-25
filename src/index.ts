@@ -38,7 +38,7 @@ const publisherId = process.env.PUBLISHER_ID;
 const publisherTenantId = process.env.PUBLISHER_TENANT_ID;
 const publisherAppId = process.env.PUBLISHER_APP_ID;
 const webhookResponse = parseInt(process.env.INTERNAL_WEBHOOK_RESPONSE as string);
-const port = process.env.port ?? process.env.PORT ?? 3978;
+const port = process.env.REMOTE_CONTAINERS === 'true' ? 80 : process.env.port ?? process.env.PORT ?? 3978;
 
 //
 // NB, the publisherId is not currently used. It was implemented to allow the validation of publisherID on activate
