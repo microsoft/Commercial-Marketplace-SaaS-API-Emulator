@@ -21,17 +21,7 @@ If you prefer to run locally, make sure you have Node.js installed.
 
 - The emulator will be listening on `http://localhost:<port>` on the host
 
-If you plan to connect from another container (eg connecting to the emulator container from a Dev Container), you need to create a shared Docker network
-
-- Do the following to create a shared Docker bridge network and set the hostname for the emulator
-
-  ```text
-  docker network create -d bridge my-net
-  docker run -d -p <port>:80 --network=emulator-net --hostname emulator marketplace-api-emulator
-  ```
-
-- The emulator will be listening on `http://emulator:80` on `emulator-net`
-- Make sure to connect your container / Dev Container to the same bridge network
+If you plan to connect from another container (eg connecting to the emulator container from a Dev Container), you need to create a shared Docker network. For more details see [Docker Networking](#docker-networking)
 
 For additional configuration options see [configuration examples](./config.md)
 
@@ -68,8 +58,9 @@ For additional configuration options see [configuration examples](./config.md)
 - The emulator will be listening on:
   - `http://localhost:3978` on the host
   - `http://emulator:80` on a shared Docker bridge network (if connecting from another container)
-  - Use `docker run --network=emulator-net` when launching another container to connect to the shared Docker bridge network of the emulator
 - You can set environment variables by [creating a .env file](https://nodejs.dev/en/learn/how-to-read-environment-variables-from-nodejs/) in the root folder
+
+If you plan to connect from another container (eg connecting to the emulator container from a Dev Container), you need to create a shared Docker network. For more details see [Docker Networking](#docker-networking)
 
 ### Build and run the emulator locally
 
@@ -119,6 +110,35 @@ This can make the launch process as simple as
 ```text
 docker run <registry-name>/<repo-name>:latest
 ```
+
+## Docker Networking
+
+When running in a container, we have two network stacks to deal with; a host network and a container network. Docker (and therefore Dev Containers) does some clever things to make sure that an application on the host (eg your browser) can talk to applications configured in the container by allowing you to map specific ports in your container to ports in the host. When we do:
+
+```text
+docker run -d -p 3978:80 marketplace-api-emulator
+```
+
+We are telling Docker to map port 3978 on the host machine to port 80 in the container. The allows us to access the emulator index page on the URL `http://localhost:3978` from the host machine.
+
+However, if we are trying to access the emulator **from inside the container itself**, the URL would be `http://localhost:80`. And if we're trying to access the emulator from a different container, `http://localhost` wont work as it points to the local container. We need a shared network for container <-> container; this doesn't happen by default.
+
+It's important to be aware of this for two specific scenarios which only apply if you are running in a container (either `docker run...` or a Dev Container)
+
+1. If you are **developing your application in a container (eg using Dev Containers)** then you need to make sure it's on the same Docker bridge network as the emulator. If you're running the emulator in a Dev Container, a Docker bridge network called `emulator-net` will be created and a hostname will be set for the emulator. This is defined in the first few lines of [devcontainer.json](/.devcontainer/devcontainer.json). If you're using `docker run...`, you will need to set the hostname and create the network and bind it to the emulator container yourself. eg
+
+    ```bash
+    docker network create emulator-net
+    docker run -d -p <port>:80 --network=emulator-net --hostname=emulator marketplace-api-emulator
+    ```
+
+    You can then connect to the emulator from your container on `http://emulator`
+1. Wherever you're developing your application, if the emulator is running in a container, you may find you need to set different `host` / `port` for landing page / webhook in the emulator config if you're using the built-in landing page / webhook. The landing page is accessed from a remote host while the webhook is being called from the emulator. Thus you may find yourself configuring along these lines:
+
+    ```text
+    LANDING_PAGE_URL='http://localhost:3978'
+    WEBHOOK_URL='http://emulator:80'
+    ```
 
 ## Configuring the emulator
 
