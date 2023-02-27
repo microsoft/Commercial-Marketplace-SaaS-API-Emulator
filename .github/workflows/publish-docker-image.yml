@@ -19,7 +19,6 @@ on:
 env:
   TARGET: DH
   NAMESPACE: ''
-  REGISTRY_ACR: marketplaceapiemulator.azurecr.io
   REGISTRY_GH: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -41,12 +40,12 @@ jobs:
       - name: Set namespace for target registry
         run: |
           case ${{ env.TARGET }} in \
-            ACR) echo "NAMESPACE=${{ env.REGISTRY_ACR }}" >> $GITHUB_ENV; echo 'ACR' ;; \
+            ACR) echo "NAMESPACE=${{ secrets.REGISTRY_ACR }}" >> $GITHUB_ENV; echo 'ACR' ;; \
             GH) echo "NAMESPACE=${{ env.REGISTRY_GH }}" >> $GITHUB_ENV; echo 'GH' ;; \
             DH) echo 'DH' ;; \
             esac
       
-      - name: Set job ouputs
+      - name: Set job outputs
         id: output
         run: |
           echo "target=${{ env.TARGET }}" >> $GITHUB_OUTPUT
@@ -67,7 +66,7 @@ jobs:
       - name: Log in to ACR
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
-          registry: ${{ env.REGISTRY_ACR }}
+          registry: ${{ secrets.REGISTRY_ACR }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
