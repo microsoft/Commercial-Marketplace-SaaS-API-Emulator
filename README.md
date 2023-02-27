@@ -62,7 +62,7 @@ The URL and port will depend on [your chosen deployment method](./docs/launching
 
 ### A word about the Publisher ID
 
-Subscriptions need to be associated with a publisher. In the marketplace, the publisher is extracted using claims from the AAD bearer token used to authenticate.
+Subscriptions need to be associated with a publisher. In the marketplace, the publisher is derived using claims from the AAD bearer token used to authenticate.
 
 For the emulator, to keep things simple, we removed the AAD requirement. Instead, you can define the Publisher ID in one of two ways:
 
@@ -70,8 +70,10 @@ For the emulator, to keep things simple, we removed the AAD requirement. Instead
    1. To see an example of this in action, take a look at the sample REST calls: [subscriptions-apis.http](./rest_calls/subscription-apis.http)
    1. To modify this Publisher ID for the built-in emulator functions, set the `PUBLISHER_ID` environment variable
 1. A Publisher ID constructed from the publisher tenant and app IDs.
-   1. This is useful to mirror the behaviour of the marketplace. The tenant and app ID from the app registration you use to authenticate with the marketplace APIs will also work with the emulator.
-   1. To modify this Publisher ID for the built-in emulator functions, set the `PUBLISHER_TENANT_ID` and `PUBLISHER_APP_ID` environment variables
+   1. This is useful to mirror the behaviour of the marketplace. The tenant and app ID from the app registration you use to authenticate with the marketplace APIs will also work with the emulator
+   1. To modify this Publisher ID for the built-in emulator functions, set the `PUBLISHER_TENANT_ID` and `PUBLISHER_APP_ID` environment variables. Set these to the tenant and app ID from the app registration used to authenticate with the marketplace APIs. eg from the Azure Portal (see below) or Partner Center offer page.
+
+   ![Screenshot of tenant id and app id](./docs/images/readme-publisherid-1.png)
 
 You can use either approach (but not both at the same time!). The former is useful for early testing as you don't need to register with AAD, the latter is useful in the latter stages of emulator testing as it is directly compatible with the marketplace.
 

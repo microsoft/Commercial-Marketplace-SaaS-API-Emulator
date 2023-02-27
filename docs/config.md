@@ -17,7 +17,9 @@ There are a number of configuration options that can be set on the emulator.
     - Tell the emulator not to load any existing data file on startup. This value is only used during startup. Useful for debugging.
     - `Default: false`
 
-**Note:** Publisher ID Options are used to set the Publisher ID for built-in emulator features (such as the landing page). Either PUBLISHER_ID or PUBLISHER_TENANT_ID + PUBLISHER_APP_ID should be used.
+**Note:** Publisher ID options only apply to the built-in landing page. They are used to set the Publisher ID for requests to `resolve` and `activate` APIs from the built-in landing page. If you are using your own landing page, you do not need to set these Publisher ID options.
+
+Either PUBLISHER_ID or PUBLISHER_TENANT_ID & PUBLISHER_APP_ID should be used.
 
 - Publisher ID Options
   - PUBLISHER_ID
