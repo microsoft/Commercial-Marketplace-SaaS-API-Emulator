@@ -32,14 +32,17 @@ export interface Config {
     skipDataLoad: boolean | undefined;
   };
 
+  webhook: {
+    clientId: string | undefined;
+    clientSecret: string | undefined;
+    tenantId: string | undefined;
+  }
+
   internal: {
     webhook: {
       response: number | undefined;
       processDelayMS: number | undefined;
       operationPatchResult: string | undefined;
-      clientId: string | undefined;
-      clientSecret: string | undefined;
-      tenantId: string | undefined;
       callMarketplace: boolean | undefined;
     };
   };
