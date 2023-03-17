@@ -284,7 +284,8 @@ const callWebhook: (
   const accessToken = await services.tokens.getAccessToken(
     services.config.webhook.clientId, 
     services.config.webhook.clientSecret, 
-    services.config.webhook.tenantId);
+    services.config.webhook.tenantId,
+    services.config.webhook.clientId ?? "");
 
   const webhookPayload: WebhookPayload = {
     ...operation,
@@ -295,7 +296,7 @@ const callWebhook: (
   const authHeader: Record<string, string> = {};
 
   if (accessToken !== null) {
-    authHeader.Authorization = accessToken;
+    authHeader.Authorization = `Bearer ${accessToken}`;
   }
 
   try {

@@ -7,29 +7,47 @@ const Configure = (app: Express, services: ServicesContainer): void => {
   const clientConfig = services.config.webhook;
   const logger = services.logger;
 
-  const processWebhookAsync: (req: Request) => Promise<void> = async (req) => {
+  const processWebhookAsync: (req: Request) => Promise<number> = async (req) => {
     logger.log('Running webhook', 'Webhook');
+
+    if (services.config.webhook.tenantId !== undefined && services.config.webhook.clientId !== undefined) {
+
+      const authHeader = req.headers.authorization;
+
+      if (authHeader !== undefined) {
+        if (authHeader.toLocaleLowerCase().startsWith("bearer")) {
+          const token = authHeader?.split(' ')[1];
+          const result = await services.tokens.validate(token, services.config.webhook.clientId, services.config.webhook.tenantId);
+
+          if (!result.isValid) {
+            logger.log(`Unable to validate token signature - ${result.reason ?? ''}`)
+            return 401;
+          }
+
+        }
+      }
+    }
 
     if (req.body?.subscription === undefined || req.body?.id === undefined) {
       logger.log('No subscription or operation id in body', 'Webhook');
-      return;
+      return 200;
     }
 
     if (_config.operationPatchResult === undefined) {
       logger.log('No patch result configured, skipping patch!', 'Webhook');
-      return;
+      return 200;
     }
 
     if (!(clientConfig.clientId !== undefined && clientConfig.clientSecret !== undefined && clientConfig.tenantId !== undefined)) {
       logger.log('No app parameters configured, skipping patch!', 'Webhook');
-      return;
+      return 200;
     }
 
-    const token = await services.tokens.getAccessToken(clientConfig.clientId, clientConfig.clientSecret, clientConfig.tenantId, false, "20e940b3-4c77-4b0b-9a53-9e16a1b010a7");
+    const token = await services.tokens.getAccessToken(clientConfig.clientId, clientConfig.clientSecret, clientConfig.tenantId, "20e940b3-4c77-4b0b-9a53-9e16a1b010a7", false);
 
     if (token === null) {
       services.logger.log("Cannot get an access token");
-      return;
+      return 200;
     }
 
     const baseUri =
@@ -56,6 +74,8 @@ const Configure = (app: Express, services: ServicesContainer): void => {
     );
 
     logger.log(`Patch response: ${response.status}`, 'Webhook');
+
+    return 200;
   };
 
   app.post('/webhook', (async (req, res) => {

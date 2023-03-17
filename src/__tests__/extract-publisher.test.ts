@@ -34,10 +34,12 @@ describe('Extract publisher tests', () => {
       };
 
       const decodeToken = jest.fn().mockReturnValue(decodedToken);
+      const verifyToken = jest.fn().mockReturnValue(Promise.resolve({isValid: true, reason: null}));
 
       const services: Partial<ServicesContainer> = {
         jwt: {
-          decodeToken
+          decodeToken,
+          verifyToken
         }
       };
 
@@ -89,10 +91,12 @@ describe('Extract publisher tests', () => {
       };
 
       const decodeToken = jest.fn().mockReturnValue(decodedToken);
+      const verifyToken = jest.fn().mockReturnValue(Promise.resolve({isValid: true, reason: null}));
 
       const services: Partial<ServicesContainer> = {
         jwt: {
-          decodeToken
+          decodeToken,
+          verifyToken
         }
       };
 
