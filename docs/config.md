@@ -17,6 +17,23 @@ There are a number of configuration options that can be set on the emulator.
     - Tell the emulator not to load any existing data file on startup. This value is only used during startup. Useful for debugging.
     - `Default: false`
 
+**Note:** Publisher ID options only apply to the built-in landing page. They are used to set the Publisher ID for requests to `resolve` and `activate` APIs from the built-in landing page. If you are using your own landing page, you do not need to set these Publisher ID options.
+
+Either PUBLISHER_ID or PUBLISHER_TENANT_ID & PUBLISHER_APP_ID should be used.
+
+- Publisher ID Options
+  - PUBLISHER_ID
+    - The value to be used as the publisherId query string parameter for the Publisher ID
+    - `Default: FourthCoffee`
+  - PUBLISHER_TENANT_ID
+    - Used in conjunction with the PUBLISHER_APP_ID to create a Publisher ID
+    - `Default: undefined`
+  - PUBLISHER_APP_ID
+    - Used in conjunction with the PUBLISHER_TENANT_ID to create a Publisher ID
+    - `Default: undefined`
+
+**Note:** Advanced Options are there to better simulate the behaviour of the marketplace (the time it takes for operations to complete)
+
 - Advanced Options
 
   - OPERATION_TIMEOUT
@@ -31,11 +48,6 @@ There are a number of configuration options that can be set on the emulator.
     - Delay before webhook is called.
     - Value is either a number of seconds or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
     - `Default: 0`
-
-- Currently Unused Options
-  - PUBLISHER_ID (Required to validate publisher on activate)
-  - PUBLISHER_TENANT_ID (Required to validate publisher on activate)
-  - PUBLISHER_APP_ID (Required to validate publisher on activate)
 
 All options can be passed as environment variables. Some can be configured in UI on the `Config` page of the emulator.
 
