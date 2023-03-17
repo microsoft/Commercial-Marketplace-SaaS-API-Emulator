@@ -20,6 +20,8 @@ require('isomorphic-fetch');
 const envFile = path.join(__dirname, '..', '.env');
 dotenv.config({ path: envFile });
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // Setup express
 const app = express();
 
@@ -67,14 +69,17 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
       skipDataLoad: (process.env.SKIP_DATA_LOAD ?? '').toLocaleLowerCase() === 'true'
     },
 
+    webhook: {
+      clientId: process.env.INTERNAL_CLIENT_ID,
+      clientSecret: process.env.INTERNAL_CLIENT_SECRET,
+      tenantId: process.env.INTERNAL_TENANT_ID
+    },
+
     internal: {
       webhook: {
         response: Number.isNaN(webhookResponse) ? 200 : webhookResponse,
-        clientId: process.env.INTERNAL_CLIENT_ID,
-        clientSecret: process.env.INTERNAL_CLIENT_SECRET,
         operationPatchResult: process.env.INTERNAL_PATCH_RESULT,
         processDelayMS: durationToMS(process.env.INTERNAL_WEBHOOK_PROCESS_DELAY as string),
-        tenantId: process.env.INTERNAL_TENANT_ID,
         callMarketplace: (process.env.INTERNAL_CALL_MARKETPLACE ?? '').toLocaleLowerCase() === 'true'
       }
     }

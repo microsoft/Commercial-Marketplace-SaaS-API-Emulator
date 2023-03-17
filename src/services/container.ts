@@ -4,6 +4,7 @@ import { ContextService, createContextService } from './context';
 import * as jwt from './jwt';
 import { createLogger, Logger } from './logger';
 import * as purchaseToken from './purchase-token-decoder';
+import { createTokenService, TokenService } from './token-service';
 
 export interface ServicesContainer {
   jwt: typeof jwt;
@@ -11,6 +12,7 @@ export interface ServicesContainer {
   stateStore: StateStore;
   config: Config;
   context: ContextService;
+  tokens: TokenService;
   logger: Logger;
 }
 
@@ -30,6 +32,7 @@ export const createServicesContainer = (config: Config): ServicesContainer => {
     stateStore,
     config,
     context: contextService,
+    tokens: createTokenService(),
     logger
   };
 };

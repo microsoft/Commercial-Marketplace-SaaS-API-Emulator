@@ -280,18 +280,31 @@ const callWebhook: (
     return undefined;
   }
 
+  // Try to get an access token using the passed config
+  const accessToken = await services.tokens.getAccessToken(
+    services.config.webhook.clientId, 
+    services.config.webhook.clientSecret, 
+    services.config.webhook.tenantId);
+
   const webhookPayload: WebhookPayload = {
     ...operation,
     subscription,
     purchaseToken: null
   };
 
+  const authHeader: Record<string, string> = {};
+
+  if (accessToken !== null) {
+    authHeader.Authorization = accessToken;
+  }
+
   try {
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(webhookPayload),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...authHeader
       }
     });
 
@@ -304,7 +317,10 @@ const callWebhook: (
     if (response.status >= 400 && response.status < 500) {
       return false;
     }
-  } catch (error: any) {}
+  } catch (error: any) {
+    console.log("Unable to call webhook");
+    console.log(error);
+  }
 
   return undefined;
 };
