@@ -70,9 +70,9 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
     },
 
     webhook: {
-      clientId: process.env.INTERNAL_CLIENT_ID,
-      clientSecret: process.env.INTERNAL_CLIENT_SECRET,
-      tenantId: process.env.INTERNAL_TENANT_ID
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      tenantId: process.env.TENANT_ID
     },
 
     internal: {
