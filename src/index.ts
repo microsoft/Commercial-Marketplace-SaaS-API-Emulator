@@ -110,8 +110,13 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
   // Setup our static web content
   app.use('/', express.static(path.resolve('src', 'client')));
 
+  
   // Start the server
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`\nListening to ${port}`);
   });
+
+  server.on('upgrade', (req, socket, head) => {
+    servicesContainer.notifications.upgradeConnection(socket, req, head);
+  })
 }

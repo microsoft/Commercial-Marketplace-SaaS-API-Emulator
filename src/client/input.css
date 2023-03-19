@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+.notifications {
+    @apply absolute top-0 right-0 w-72 m-2 z-40
+}
+
+.notifications > div {
+    @apply rounded border-2 border-gray-300 bg-white mb-2 shadow-sm
+}
+
+.notifications .close {
+    @apply absolute top-0 right-0 m-2 z-40 p-0 m-0 mr-2
+}
+
+.notifications .request {
+    @apply p-2
+}
+
+.notifications .response.success {
+    @apply text-green-500
+}
+
+.notifications .response.error {
+    @apply text-red-500
+}
+
+.notifications .service .info {
+    @apply text-blue-500 ml-2
+}
+
+.notifications .service .error {
+    @apply text-red-500 ml-2
+}
+
+.notifications .service .update {
+    @apply text-green-500 ml-2
+}
+
 @layer base {
     [type="text"],
     [type="email"],

@@ -5,6 +5,7 @@ import * as jwt from './jwt';
 import { createLogger, Logger } from './logger';
 import * as purchaseToken from './purchase-token-decoder';
 import { createTokenService, TokenService } from './token-service';
+import { createNotificationService, NotificationService } from './notification-service';
 
 export interface ServicesContainer {
   jwt: typeof jwt;
@@ -13,11 +14,13 @@ export interface ServicesContainer {
   config: Config;
   context: ContextService;
   tokens: TokenService;
+  notifications: NotificationService;
   logger: Logger;
 }
 
 export const createServicesContainer = (config: Config): ServicesContainer => {
   const contextService = createContextService();
+  const notifications = createNotificationService(contextService);
 
   const logger = createLogger(contextService);
 
@@ -33,6 +36,7 @@ export const createServicesContainer = (config: Config): ServicesContainer => {
     config,
     context: contextService,
     tokens: createTokenService(),
+    notifications,
     logger
   };
 };

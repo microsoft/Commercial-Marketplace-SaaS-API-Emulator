@@ -39,6 +39,8 @@ export const resolveApi: ApiCall = async (req, res, services) => {
       target: 'x-ms-marketplace-token'
     };
 
+    services.notifications.sendMessage("Marketplace token missing");
+
     return res.status(400).send(err);
   }
 
@@ -60,6 +62,8 @@ export const resolveApi: ApiCall = async (req, res, services) => {
       target: 'token'
     };
 
+    services.notifications.sendError("Malformed marketplace token");
+
     return res.status(400).send(err);
   }
 
@@ -70,6 +74,8 @@ export const resolveApi: ApiCall = async (req, res, services) => {
       message: 'Marketplace token requires an id',
       target: 'token'
     };
+
+    services.notifications.sendError("Marketplace token contains no subscription id");
 
     return res.status(400).send(err);
   }
@@ -96,6 +102,8 @@ export const resolveApi: ApiCall = async (req, res, services) => {
     response.quantity = subscription.quantity;
   }
 
+  services.notifications.sendUpdate(subscription);
+
   res.status(200).send(response);
 };
 
@@ -116,6 +124,8 @@ export const activateApi: ApiCall = async (req, res, services) => {
       }
     };
 
+    services.notifications.sendError("Plan id doesn't exist in body of request");
+
     return res.status(400).send(err);
   }
 
@@ -125,6 +135,7 @@ export const activateApi: ApiCall = async (req, res, services) => {
   const subscription = await services.stateStore.getSubscriptionAsync(req.publisherId, subscriptionId);
 
   if (subscription === undefined || subscription.saasSubscriptionStatus === 'Unsubscribed') {
+    services.notifications.sendError("No subscription found, or unsubscribed");
     return res.sendStatus(404);
   }
 
@@ -144,6 +155,8 @@ export const activateApi: ApiCall = async (req, res, services) => {
       }
     };
 
+    services.notifications.sendError("Plan id doesn't match the purchased plan id");
+
     return res.status(400).send(err);
   }
 
@@ -159,6 +172,8 @@ export const activateApi: ApiCall = async (req, res, services) => {
 
   // Update the subscription in the state store
   await services.stateStore.updateSubscriptionAsync(req.publisherId, subscription);
+
+  services.notifications.sendUpdate(subscription);
 
   // No content in the response, but the api returns 200 rather than 204
   return res.sendStatus(200);

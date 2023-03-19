@@ -1,7 +1,7 @@
 import { resolveApi } from '../subscription-api-impl';
 import { generateSubscription } from '../helpers/subscription-helper';
 import { ServicesContainer } from '../services/container';
-import { expectResult, expectStatus, mockResponse } from '../testHelpers/helpers';
+import { expectResult, expectStatus, mockNotificationService, mockResponse } from '../testHelpers/helpers';
 import { RequestWithPublisher } from '../types';
 
 describe('Resolve Api Tests', () => {
@@ -35,7 +35,8 @@ describe('Resolve Api Tests', () => {
     const services = {
       purchaseToken: {
         decodeToken
-      }
+      },
+      notifications: mockNotificationService()
     } as any as ServicesContainer;
 
     // Act
@@ -82,7 +83,8 @@ describe('Resolve Api Tests', () => {
       stateStore: {
         getSubscriptionAsync,
         addSubscriptionAsync
-      }
+      },
+      notifications: mockNotificationService()
     } as any as ServicesContainer;
 
     // Act
@@ -142,7 +144,8 @@ describe('Resolve Api Tests', () => {
       stateStore: {
         getSubscriptionAsync,
         addSubscriptionAsync
-      }
+      },
+      notifications: mockNotificationService()
     } as any as ServicesContainer;
 
     // Act
