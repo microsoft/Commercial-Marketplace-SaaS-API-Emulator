@@ -75,7 +75,7 @@
 
       function addRow(subscription) {
         const subscriptionRowTemplate = $('#subscription-row');
-        const row = subscriptionRowTemplate.clone().show().attr('id', '').attr('data-sid', subscription.id);
+        const row = subscriptionRowTemplate.clone().show().attr({'id': '', 'data-sid': subscription.id});
 
         const replace = subscriptionRowTemplate.parent().children(`tr[data-sid='${subscription.id}']`);
 

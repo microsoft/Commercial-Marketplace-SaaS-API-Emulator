@@ -11,7 +11,7 @@ $(() => {
     }
 
     // eslint-disable-next-line no-undef
-    const socket = new WebSocket(`${protocol}://${window.location.host}`)
+    const socket = new WebSocket(`${protocol}://${window.location.host}`);
 
     socket.addEventListener('message', e => {
 

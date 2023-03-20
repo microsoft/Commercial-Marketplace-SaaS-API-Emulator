@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .notifications {
-    @apply absolute top-0 right-0 w-72 m-2 z-40
+    @apply fixed top-0 right-0 w-72 m-2 z-40
 }
 
 .notifications > div {
-    @apply rounded border-2 border-gray-300 bg-white mb-2 shadow-sm
+    @apply rounded border-2 border-gray-300 bg-white mb-2 shadow-sm relative
 }
 
 .notifications .close {
@@ -26,16 +26,20 @@
     @apply text-red-500
 }
 
+.notifications .service div {
+    @apply ml-2
+}
+
 .notifications .service .info {
-    @apply text-blue-500 ml-2
+    @apply text-blue-500
 }
 
 .notifications .service .error {
-    @apply text-red-500 ml-2
+    @apply text-red-500
 }
 
 .notifications .service .update {
-    @apply text-green-500 ml-2
+    @apply text-green-500
 }
 
 @layer base {
