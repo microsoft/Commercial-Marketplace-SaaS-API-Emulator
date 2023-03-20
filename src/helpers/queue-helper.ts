@@ -38,6 +38,8 @@ export const queueSubscriptionUpdate = async (services: ServicesContainer, opera
 
   services.logger.log(`Updating subscription in ${subscriptionUpdateDelay}ms`, 'State Store');
 
+  services.notifications.sendMessage(`Updating subscription... [${subscriptionUpdateDelay}ms]`, subscription);
+
   setTimeout(
     (async () => {
       services.logger.log(`Updating subscription: ${subscription.id}`, 'State Store');
@@ -76,6 +78,7 @@ export const queueSubscriptionUpdate = async (services: ServicesContainer, opera
         // ERROR!
       }
       await services.stateStore.save();
+      services.notifications.sendUpdate(subscription);
     }) as SetTimeoutHandler,
     subscriptionUpdateDelay
   );

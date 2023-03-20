@@ -15,6 +15,8 @@
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
       crossorigin="anonymous"></script>
 
+    <script src="notifications.js"></script>
+
     <script type="text/javascript">
       $(async () => {
         let response = await fetch('/api/util/config', { method: 'GET' });
@@ -45,60 +47,99 @@
             .attr('colspan', subscriptionRowTemplate.children('td').length);
 
           for (const sid in publisherSubscriptions) {
-            const row = subscriptionRowTemplate
-              .clone()
-              .appendTo(subscriptionRowTemplate.parent())
-              .show()
-              .attr('id', '');
-            const cells = row.children('td');
-            const status = publisherSubscriptions[sid].subscription.saasSubscriptionStatus;
-            $(cells[0]).text(sid);
-            $(cells[1]).text(publisherSubscriptions[sid].subscription.planId);
-            $(cells[2]).text(publisherSubscriptions[sid].subscription.quantity || 0);
-            if (status === 'PendingFulfillmentStart') {
-              $(cells[3]).text('Pending');
-            } else {
-              $(cells[3]).text(status);
-            }
-
-            $(cells[4])
-              .children('button')
-              .each((i, e) => {
-                const button = $(e);
-                const requiredStatus = button.attr('data-requiredStatus');
-                let enabled = false;
-
-                if (requiredStatus.startsWith('!') && status != 'Unsubscribed') {
-                  enabled = requiredStatus.substring(1) != status;
-                } else {
-                  enabled = requiredStatus == status;
-                }
-
-                button.attr('disabled', !enabled).data({
-                  subscriptionId: sid,
-                  planID: publisherSubscriptions[sid].subscription.planId,
-                  publisherId: pid
-                });
-                if (enabled === false) {
-                  button.hide();
-                }
-              });
+            addRow(publisherSubscriptions[sid].subscription, pid);
           }
         }
       });
+
+      $(document).on('subscription-update', async (e, sid, pid) => {
+        
+        response = await fetch(`/api/util/publishers/${pid}/subscriptions/${sid}`, { method: 'GET' });
+
+        if (!response.ok) {
+          console.log("Couldn't get subscription");
+          return;
+        }
+
+        const subscription = await response.json();
+
+        const row = addRow(subscription);
+
+        row.addClass('bg-yellow-300').css({'transition': 'background-color 0.5s ease'});
+
+        setTimeout(function() {
+          row.css('background-color', '#ffffff00')
+        }, 1000);
+
+      });
+
+      function addRow(subscription) {
+        const subscriptionRowTemplate = $('#subscription-row');
+        const row = subscriptionRowTemplate.clone().show().attr({'id': '', 'data-sid': subscription.id});
+
+        const replace = subscriptionRowTemplate.parent().children(`tr[data-sid='${subscription.id}']`);
+
+        if (replace.length !== 0) {
+          row.insertAfter(replace);
+          replace.remove();
+        }
+        else {
+          row.appendTo(subscriptionRowTemplate.parent());
+        }
+
+        const cells = row.children('td');
+        const status = subscription.saasSubscriptionStatus;
+        
+        $(cells[0]).text(subscription.id);
+        $(cells[1]).text(subscription.planId);
+        $(cells[2]).text(subscription.quantity || 0);
+        if (status === 'PendingFulfillmentStart') {
+          $(cells[3]).text('Pending');
+        } else {
+          $(cells[3]).text(status);
+        }
+
+        $(cells[4])
+          .children('button')
+          .each((i, e) => {
+            const button = $(e);
+            const requiredStatus = button.attr('data-requiredStatus');
+            let enabled = false;
+
+            if (requiredStatus.startsWith('!') && status != 'Unsubscribed') {
+              enabled = requiredStatus.substring(1) != status;
+            } else {
+              enabled = requiredStatus == status;
+            }
+
+            button.attr('disabled', !enabled).data({
+              subscriptionId: subscription.id,
+              planID: subscription.planId,
+              publisherId: subscription.publisherId
+            });
+            if (enabled === false) {
+              button.hide();
+            }
+          });
+
+          return row;
+      }
 
       async function activate_click(e) {
         const subscription = $(e.target).data('subscriptionId');
         const planId = { planId: $(e.target).data('planID') };
         const publisherId = $(e.target).data('publisherId');
-        await callAPI($(e.target).data('subscriptionId'), publisherId, planId);
-        window.location.reload(true);
+        await doFetch(
+          "/activate",
+          `api/saas/subscriptions/${subscription}/activate?publisherId=${publisherId}&api-version=2018-08-31`,
+          JSON.stringify(planId));
+          $(e.target).attr('enabled', false);
       }
 
       async function changeQuantity_click(e) {
         const subscription = $(e.target).data('subscriptionId');
         const quantity = parseInt(prompt('How many licenses?', subscription.quantity));
-        await callWebhook($(e.target).data('subscriptionId'), '', { quantity });
+        await callWebhook("Change quantity", $(e.target).data('subscriptionId'), '', { quantity });
       }
 
       async function changePlan_click(e) {
@@ -116,69 +157,32 @@
         if (planId === null) {
           return; //break out of the function early
         }
-        await callWebhook($(e.target).data('subscriptionId'), '', { planId });
+        await callWebhook("Change plan", $(e.target).data('subscriptionId'), '', { planId });
       }
 
       async function suspend_click(e) {
-        await callWebhook($(e.target).data('subscriptionId'), 'suspend');
-        window.location.reload(true);
+        await callWebhook("Suspend", $(e.target).data('subscriptionId'), 'suspend');
       }
 
       async function reinstate_click(e) {
         console.log($(e.target).data());
-        await callWebhook($(e.target).data('subscriptionId'), 'reinstate');
+        await callWebhook("Reinstate", $(e.target).data('subscriptionId'), 'reinstate');
       }
 
       async function unsubscribe_click(e) {
-        await callWebhook($(e.target).data('subscriptionId'), 'unsubscribe');
-        window.location.reload(true);
+        await callWebhook("Unsubscribe", $(e.target).data('subscriptionId'), 'unsubscribe');
       }
 
       async function renew_click(e) {
-        await callWebhook($(e.target).data('subscriptionId'), 'renew');
+        await callWebhook("Renew", $(e.target).data('subscriptionId'), 'renew');
       }
 
-      async function callAPI(sid, pubid, plan) {
-        const request = {
-          method: 'POST',
-          body: JSON.stringify(plan),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        };
-
-        const response = await fetch(
-          `api/saas/subscriptions/${sid}/activate?publisherId=${pubid}&api-version=2018-08-31`,
-          request
-        );
-        const text = await response.text();
-
-        if (!response.ok) {
-          console.log(response.status + '-' + text);
-        }
-
-        alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
-      }
-
-      async function callWebhook(sid, endpoint, body) {
-        const request = {
-          method: body ? 'PATCH' : 'POST',
-          body: body ? JSON.stringify(body) : undefined,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        };
-
-        const response = await fetch(`/api/webhook/subscription/${sid}/${endpoint}`, request);
-
-        const text = await response.text();
-
-        if (!response.ok) {
-          console.log(response.status + '-' + text);
-        }
-
-        // Added status response to webhook
-        alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
+      async function callWebhook(name, sid, endpoint, body) {
+        const response = await doFetch(
+          "<b>[Webhook]</b> " + name,
+          `/api/webhook/subscription/${sid}/${endpoint}`,
+          body ? JSON.stringify(body) : undefined,
+          body ? 'PATCH' : 'POST');
       }
     </script>
   </head>

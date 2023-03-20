@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { ServicesContainer } from '../services/container';
 import { Logger } from '../services/logger';
+import { NotificationService } from '../services/notification-service';
 
 export const mockResponse: () => {
   res: Response;
@@ -50,6 +51,15 @@ export const expectStatus = (res: Response, statusCode: number): void => {
 export const expectResult = (res: Response, result: any): void => {
   expect((res.send as any).mock.calls[0][0]).toMatchObject(result);
 };
+
+export const mockNotificationService: () => NotificationService = () => {
+  return {
+    sendError: jest.fn(),
+    sendMessage: jest.fn(),
+    sendUpdate: jest.fn(),
+    upgradeConnection: jest.fn()
+  }
+}
 
 export const mockServicesContainerWithStateStore: (mocks?: {
   addSubscriptionAsync?: any;

@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 export interface ContextService {
   setRequestId: (requestId: string) => void;
-  getRequestId: () => string | undefined;
+  getRequestId: () => string;
 }
 
 export interface Context {
@@ -21,7 +21,7 @@ export const createContextService: () => ContextService = () => {
 
     getRequestId: () => {
       const store = asyncLocal.getStore();
-      return store?.requestId;
+      return store?.requestId ?? "";
     }
   };
 };

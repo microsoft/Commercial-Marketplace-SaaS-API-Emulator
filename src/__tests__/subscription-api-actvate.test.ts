@@ -1,5 +1,5 @@
 import { activateApi } from '../subscription-api-impl';
-import { expectStatus, mockResponse, mockServicesContainerWithStateStore } from '../testHelpers/helpers';
+import { expectStatus, mockNotificationService, mockResponse, mockServicesContainerWithStateStore } from '../testHelpers/helpers';
 import { RequestWithPublisher } from '../types';
 
 describe('Activate Api Tests', () => {
@@ -20,7 +20,12 @@ describe('Activate Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore();
+    let { services } = mockServicesContainerWithStateStore();
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -45,9 +50,14 @@ describe('Activate Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: undefined
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -72,11 +82,16 @@ describe('Activate Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: {
         saasSubscriptionStatus: 'Unsubscribed'
       }
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -101,11 +116,16 @@ describe('Activate Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: {
         planId: 'plan1'
       }
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -139,10 +159,15 @@ describe('Activate Api Tests', () => {
       saasSubscriptionStatus: 'Not subscribed'
     };
 
-    const { services, updateSubscriptionAsync } = mockServicesContainerWithStateStore({
+    let { services, updateSubscriptionAsync } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: subscription,
       updateSubscriptionAsync: true
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //

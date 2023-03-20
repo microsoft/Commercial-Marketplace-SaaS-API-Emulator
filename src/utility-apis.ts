@@ -15,6 +15,15 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   }) as RequestHandler);
 
   //
+  // Get all publishers
+  //
+  app.get('/api/util/publishers/:pid/subscriptions/:sid', (async (req, res) => {
+    const publishers = await services.stateStore.getSubscriptionAsync(req.params.pid, req.params.sid);
+
+    res.send(publishers);
+  }) as RequestHandler);
+
+  //
   // Get sample offer
   //
   app.get('/api/util/offer', (async (req, res) => {

@@ -8,6 +8,8 @@
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
       crossorigin="anonymous"></script>
 
+    <script src="notifications.js"></script>
+
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
@@ -151,7 +153,7 @@
       const apiVersion = '2018-08-31';
       let subscriptionId = '';
 
-      $(document).ready(async () => {
+      $(async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
 
@@ -167,25 +169,22 @@
         const configResult = await configResponse.json();
         const publisherId = configResult['publisherId'];
 
-        const resolveResponse = await fetch(
-          `/api/saas/subscriptions/resolve?publisherId=${publisherId}&api-version=${apiVersion}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            headers: { 'x-ms-marketplace-token': token }
-          }
-        );
+        const response = await doFetch(
+            "/resolve", 
+            `/api/saas/subscriptions/resolve?publisherId=${publisherId}&api-version=${apiVersion}`,
+            null,
+            "POST",
+            {
+              'x-ms-marketplace-token': token
+            });
 
-        if (!resolveResponse.ok) {
-          const text = await resolveResponse.text();
-          console.log(resolveResponse.status + '-' + text);
-          alert('Response: ' + text + '\nStatus: ' + resolveResponse.status, 'Status');
+        if (!response.ok) {
+          // const text = await resolveResponse.text();
+          // console.log(resolveResponse.status + '-' + text);
           return;
         }
 
-        const resolveResult = await resolveResponse.json();
+        const resolveResult = await response.json();
 
         subscriptionId = resolveResult['subscription']['id'];
 
@@ -202,28 +201,14 @@
         $('#activate-button').prop('disabled', true);
         const publisherId = $('#publisherId').val();
 
-        const activateResponse = await fetch(
+        const response = await doFetch("/activate",
           `/api/saas/subscriptions/${subscriptionId}/activate?publisherId=${publisherId}&api-version=${apiVersion}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ planId: $('#planId').val() })
-          }
+          JSON.stringify({ planId: $('#planId').val() })
         );
 
-        if (activateResponse.ok) {
+        if (response.ok) {
           $('#activate-button').text('Subscription Activated');
         }
-
-        const text = await activateResponse.text();
-
-        if (!activateResponse.ok) {
-          console.log(activateResponse.status + '-' + text);
-        }
-
-        alert('Response: ' + text + '\nStatus: ' + activateResponse.status, 'Status');
       }
     </script>
   </body>

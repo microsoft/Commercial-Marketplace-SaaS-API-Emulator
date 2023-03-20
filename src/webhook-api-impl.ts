@@ -183,6 +183,7 @@ const doWebhookCallAsync: (
   if (isAckable(operation) && operation.status !== 'InProgress') {
     services.logger.log('Sending emulator warning: Patch before return', 'Webhook API');
     message = 'Emulator warning - Detected attempt to patch the status of the operation before the request returned.';
+    services.notifications.sendMessage("Detected attempt to patch the status of the operation before the request returned");
   }
 
   if (isAckable(operation)) {
@@ -191,13 +192,19 @@ const doWebhookCallAsync: (
       // try to update the status of the operation
       services.logger.log('Waiting 10 seconds for the webhook to patch', 'Webhook API');
 
+      services.notifications.sendMessage("Waiting... [10s]");
+
       setTimeout(
         (async () => {
           if (operation.status !== 'InProgress') {
-            services.logger.log('Status was already changed by webhook', 'Webhook API');
+            services.logger.log('Operation patched by webhook', 'Webhook API');
+            services.notifications.sendMessage("Operation was patched by webhook");
           } else {
             operation.status = 'Succeeded';
           }
+
+          services.notifications.sendMessage("Operation " + operation.status);
+
           if (operation.status === 'Succeeded') {
             await queueSubscriptionUpdate(services, operation);
           }
@@ -231,17 +238,20 @@ const doWebhookOperationAsync: (
   const subscription = await services.stateStore.findSubscriptionAsync(req.params.subscriptionId);
 
   if (subscription === undefined) {
+    services.notifications.sendError("Cannot find subscription (Webhook not called)");
     res.status(404).send(`Unable to find subscription with id '${req.params.subscriptionId}'`);
     return;
   }
 
   // Validate the subscription based on the operation type
   if (callbacks.validateSubscription?.call(this, subscription) === false) {
+    services.notifications.sendError("Subscription validation failed (Webhook not called)");
     return;
   }
 
   // Validate the payload
   if ((await callbacks.validatePayload?.call(this, subscription)) === false) {
+    services.notifications.sendError("Payload validation failed (Webhook not called)");
     return;
   }
 
@@ -312,13 +322,16 @@ const callWebhook: (
     services.logger.log(`Webhook response ${response.status}`, 'Webhook API');
 
     if (response.ok) {
+      services.notifications.sendMessage(`Webhook returned ${response.status}`);
       return true;
     }
 
     if (response.status >= 400 && response.status < 500) {
+      services.notifications.sendError(`Webhook returned ${response.status}`);
       return false;
     }
   } catch (error: any) {
+    services.notifications.sendError(`Error calling webhook ${JSON.stringify(error)}`);
     console.log("Unable to call webhook");
     console.log(error);
   }

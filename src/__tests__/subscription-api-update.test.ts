@@ -1,6 +1,6 @@
 import { updateSubscriptionApi } from '../subscription-api-impl';
 import { RequestWithPublisher, Operation } from '../types';
-import { expectStatus, mockResponse, mockServicesContainerWithStateStore } from '../testHelpers/helpers';
+import { expectStatus, mockNotificationService, mockResponse, mockServicesContainerWithStateStore } from '../testHelpers/helpers';
 
 describe('Update Api Tests', () => {
   beforeAll(() => {
@@ -23,9 +23,14 @@ describe('Update Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: undefined
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -48,11 +53,16 @@ describe('Update Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: {
         saasSubscriptionStatus: 'Not subscribed'
       }
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -75,7 +85,7 @@ describe('Update Api Tests', () => {
 
     const { res } = mockResponse();
 
-    const { services } = mockServicesContainerWithStateStore({
+    let { services } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: {
         saasSubscriptionStatus: 'Not subscribed'
       },
@@ -85,6 +95,11 @@ describe('Update Api Tests', () => {
         }
       ]
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
@@ -122,7 +137,7 @@ describe('Update Api Tests', () => {
 
       const { res } = mockResponse();
 
-      const { services } = mockServicesContainerWithStateStore({
+      let { services } = mockServicesContainerWithStateStore({
         getSubscriptionAsync: {
           saasSubscriptionStatus: 'Subscribed',
           planId: 'existing plan',
@@ -131,6 +146,11 @@ describe('Update Api Tests', () => {
         getOperationsAsync: [],
         getPlansForOfferAsync: [{ planId }]
       });
+
+      services = {
+        ...services,
+        notifications: mockNotificationService()
+      };
 
       // Act
       //
@@ -165,7 +185,7 @@ describe('Update Api Tests', () => {
 
     const { res, setHeader } = mockResponse();
 
-    const { services, updateSubscriptionAsync, addOperationAsync } = mockServicesContainerWithStateStore({
+    let { services, updateSubscriptionAsync, addOperationAsync } = mockServicesContainerWithStateStore({
       getSubscriptionAsync: {
         saasSubscriptionStatus: 'Subscribed',
         planId: 'existing plan'
@@ -176,6 +196,11 @@ describe('Update Api Tests', () => {
       save: true,
       getPlansForOfferAsync: [{ planId }]
     });
+
+    services = {
+      ...services,
+      notifications: mockNotificationService()
+    };
 
     // Act
     //
