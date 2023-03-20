@@ -65,11 +65,7 @@
 
         const row = addRow(subscription);
 
-        row.addClass('bg-yellow-300').css({'transition': 'background-color 0.5s ease'});
-
-        setTimeout(function() {
-          row.css('background-color', '#ffffff00')
-        }, 1000);
+        row.addClass("animate-fade");
 
       });
 

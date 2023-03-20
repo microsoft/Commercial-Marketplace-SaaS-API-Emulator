@@ -56,6 +56,7 @@ export const mockNotificationService: () => NotificationService = () => {
   return {
     sendError: jest.fn(),
     sendMessage: jest.fn(),
+    sendWarning: jest.fn(),
     sendUpdate: jest.fn(),
     upgradeConnection: jest.fn()
   }
