@@ -183,7 +183,7 @@ const doWebhookCallAsync: (
   if (isAckable(operation) && operation.status !== 'InProgress') {
     services.logger.log('Sending emulator warning: Patch before return', 'Webhook API');
     message = 'Emulator warning - Detected attempt to patch the status of the operation before the request returned.';
-    services.notifications.sendMessage("Detected attempt to patch the status of the operation before the request returned");
+    services.notifications.sendWarning("Detected attempt to patch the status of the operation before the request returned", subscription);
   }
 
   if (isAckable(operation)) {
@@ -203,7 +203,12 @@ const doWebhookCallAsync: (
             operation.status = 'Succeeded';
           }
 
-          services.notifications.sendMessage("Operation " + operation.status);
+          if (operation.status === 'Failed') {
+            services.notifications.sendError("Operation " + operation.status);
+          }
+          else {
+            services.notifications.sendMessage("Operation " + operation.status);
+          }
 
           if (operation.status === 'Succeeded') {
             await queueSubscriptionUpdate(services, operation);

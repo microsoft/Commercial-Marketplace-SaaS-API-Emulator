@@ -27,7 +27,7 @@
 }
 
 .notifications .service div {
-    @apply ml-2
+    @apply ml-2 text-sm my-2 pl-2
 }
 
 .notifications .service .info {
@@ -36,6 +36,10 @@
 
 .notifications .service .error {
     @apply text-red-500
+}
+
+.notifications .service .warning {
+    @apply text-orange-500
 }
 
 .notifications .service .update {

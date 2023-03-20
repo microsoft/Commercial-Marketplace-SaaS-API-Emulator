@@ -15,6 +15,7 @@ interface Notification {
 export interface NotificationService {
     sendError: (message: string, subscription?: Subscription) => void;
     sendMessage: (message: string, subscription?: Subscription) => void;
+    sendWarning: (message: string, subscription?: Subscription) => void;
     sendUpdate: (subscription: Subscription) => void;
     upgradeConnection: (socket: internal.Duplex, req: IncomingMessage, head: Buffer) => void;
 }
@@ -45,6 +46,16 @@ export const createNotificationService: (contextService: ContextService) => Noti
         sendMessage: (message, subscription?) => {
             sendNotification({
                 type: 'info',
+                message,
+                id: contextService.getRequestId(),
+                subscriptionId: subscription?.id ?? "none",
+                publisherId: subscription?.publisherId ?? "none"
+            });
+        },
+
+        sendWarning: (message, subscription?) => {
+            sendNotification({
+                type: 'warning',
                 message,
                 id: contextService.getRequestId(),
                 subscriptionId: subscription?.id ?? "none",
