@@ -390,7 +390,7 @@ export const listAvailablePlansApi: ApiCall = async (req, res, services) => {
     return res.send([]);
   }
 
-  const plans = await services.stateStore.getPlansForOfferAsync(subscription.offerId);
+  const plans = await services.stateStore.getPlansForOfferAsync(subscription.offerId, req.query.planId as string | undefined);
 
   return res.send({ plans: plans ?? [] });
 };

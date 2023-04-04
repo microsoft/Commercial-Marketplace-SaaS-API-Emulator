@@ -233,7 +233,14 @@ export default class DefaultStateStore implements StateStore {
     return operations !== undefined ? Object.values(operations) : undefined;
   }
 
-  async getPlansForOfferAsync(offerId: string): Promise<Plan[] | undefined> {
-    return this.offers[offerId]?.plans !== undefined ? Object.values(this.offers[offerId].plans) : undefined;
+  async getPlansForOfferAsync(offerId: string, planId?: string): Promise<Plan[] | undefined> {
+
+    const plans = this.offers[offerId]?.plans !== undefined ? Object.values(this.offers[offerId].plans) : undefined;
+
+    if (planId === undefined || plans === undefined) {
+      return plans;
+    }
+
+    return plans.filter(x => x.planId === planId);
   }
 }
