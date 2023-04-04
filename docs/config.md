@@ -62,6 +62,8 @@ There are some differences between the token sent by Azure Marketplace and the e
   - Delay before webhook is called.
   - Value is either a number of seconds or a [duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
   - `Default: 0`
+- REQUIRE_AUTH
+  - Requires a [v1 AAD bearer token](https://learn.microsoft.com/en-us/partner-center/marketplace/partner-center-portal/pc-saas-registration#how-to-get-the-publishers-authorization-token) to be passed in the Authorization header with the resource/audience of the marketplace service (`20e940b3-4c77-4b0b-9a53-9e16a1b010a7`) and issuer as `https://sts.windows.net/{publisher tenant id}/`
 
 All options can be passed as environment variables. Some can be configured in UI on the `Config` page of the emulator.
 
