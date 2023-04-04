@@ -60,6 +60,7 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
     subscriptionUpdateDelayMS: durationToMS(process.env.SUBSCRIPTION_UPDATE_DELAY as string),
     webhookCallDelayMS: durationToMS(process.env.WEBHOOK_CALL_DELAY as string),
     fileLocation: process.env.FILE_LOC ?? './config',
+    requireAuth: (process.env.REQUIRE_AUTH ?? '').toLocaleLowerCase() === 'true',
     publisherId:
       publisherId ??
       (publisherTenantId !== undefined ? `${publisherTenantId}${publisherAppId as unknown as string}` : undefined) ??

@@ -27,7 +27,7 @@
 
         for (const key in result) {
           if ($(`#${key}`) !== null) {
-            $(`#${key}`).val(result[key]);
+            $(`#${key}`).val(result[key].toString());
           } else {
           }
         }
@@ -35,10 +35,10 @@
 
       async function updateConfig_click(e) {
         const $this = $(e.target);
-        const value = $this.parent().children('input').val();
-        const key = $this.parent().children('input').attr('id');
+        const value = $this.parent().children(':input').val();
+        const key = $this.parent().children(':input').attr('id');
 
-        if (!value) {
+        if (value !== false && !value) {
           alert('Enter a value.');
         } else {
           if (key === 'landingPageUrl') {
@@ -51,8 +51,8 @@
 
           if (confirm('Are you really sure?')) {
             const $this = $(e.target);
-            const value = $this.parent().children('input').val();
-            const key = $this.parent().children('input').attr('id');
+            const value = $this.parent().children(':input').val();
+            const key = $this.parent().children(':input').attr('id');
 
             const config = {};
             config[key] = value;
@@ -208,6 +208,21 @@
                 <button
                   onclick="updateConfig_click(event)"
                   aria-label="Update Webhook Call Delay"
+                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+              <div class="py-1">
+                <span class="inline-block text-slate-50 w-56">Require Marketplace Auth Token</span>
+                <select
+                  id="requireAuth"
+                  aria-label="Require Auth" class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800">
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Require Auth"
                   class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
                   set
                 </button>

@@ -1,6 +1,6 @@
 import { Express, Request, RequestHandler } from 'express';
 import { ServicesContainer } from './services/container';
-import { SetTimeoutHandler } from './types';
+import { MarketplaceResource, SetTimeoutHandler } from './types';
 
 const Configure = (app: Express, services: ServicesContainer): void => {
   const _config = services.config.internal.webhook;
@@ -43,7 +43,7 @@ const Configure = (app: Express, services: ServicesContainer): void => {
       return 200;
     }
 
-    const token = await services.tokens.getAccessToken(clientConfig.clientId, clientConfig.clientSecret, clientConfig.tenantId, "20e940b3-4c77-4b0b-9a53-9e16a1b010a7", false);
+    const token = await services.tokens.getAccessToken(clientConfig.clientId, clientConfig.clientSecret, clientConfig.tenantId, MarketplaceResource, false);
 
     if (token === null) {
       services.logger.log("Cannot get an access token");

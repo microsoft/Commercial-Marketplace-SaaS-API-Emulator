@@ -1,5 +1,5 @@
 @publisherId=FourthCoffee
-@baseUrl=http://localhost:8080
+@baseUrl=http://localhost:3978
 @apiVersion=2018-08-31
 @purchaseToken=
 @subscription={{resolve.response.body.$.subscription.id}}

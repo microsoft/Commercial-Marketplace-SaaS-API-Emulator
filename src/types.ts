@@ -1,5 +1,7 @@
 import { Request } from 'express';
 
+export const MarketplaceResource = "20e940b3-4c77-4b0b-9a53-9e16a1b010a7";
+
 export interface StateStore {
   load: () => Promise<void>;
   save: () => Promise<void>;
@@ -27,6 +29,7 @@ export interface Config {
   webhookCallDelayMS: number | undefined;
   fileLocation: string | undefined;
   publisherId: string | undefined;
+  requireAuth: boolean | undefined;
 
   run: {
     skipDataLoad: boolean | undefined;

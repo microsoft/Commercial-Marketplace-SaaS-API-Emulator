@@ -2,6 +2,7 @@ import { Express, RequestHandler } from 'express';
 import { generateSampleSubscription } from './helpers/subscription-helper';
 import { generateSampleOffer } from './helpers/offer-helper';
 import { ServicesContainer } from './services/container';
+import { Config } from './types';
 
 // High-order function to inject ServiceContainer into api handlers
 const configure: (app: Express, services: ServicesContainer) => void = (app, services) => {
@@ -45,7 +46,9 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   // Get config
   //
   app.get('/api/util/config', (async (req, res) => {
-    res.status(200).send(services.config);
+    const config = JSON.parse(JSON.stringify(services.config)) as Config;
+    delete config.webhook.clientSecret;
+    res.status(200).send(config);
   }) as RequestHandler);
 
   //
@@ -62,7 +65,13 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
             return;
           }
         }
-        (services.config as any)[i] = req.body[i];
+
+        if (i === "requireAuth") {
+          (services.config as any)[i] = req.body[i] === "true";
+        }
+        else {
+          (services.config as any)[i] = req.body[i];
+        }
       }
     }
     res.sendStatus(200);
