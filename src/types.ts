@@ -18,7 +18,7 @@ export interface StateStore {
     subscriptionId: string,
     operationId: string
   ) => Promise<Operation | undefined>;
-  getPlansForOfferAsync: (offerId: string) => Promise<Plan[] | undefined>;
+  getPlansForOfferAsync: (offerId: string, planId?: string) => Promise<Plan[] | undefined>;
 }
 
 export interface Config {
