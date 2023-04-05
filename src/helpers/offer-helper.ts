@@ -40,16 +40,17 @@ function generatePlan(from: Partial<Plan>): Plan {
   };
 }
 
-export function generateSampleOffer(offerId: string, isPricePerSeat: boolean, persist: boolean): Offer {
+export function generateSampleOffer(offerId: string, displayName: string, isPricePerSeat: boolean, persist: boolean): Offer {
   const plans: PlanWrapper = {
-    [`${offerId}-1`]: generatePlan(generateSamplePlan(`${offerId}-1`, 'Gold', 'Gold Plan', isPricePerSeat)),
+    [`${offerId}-1`]: generatePlan(generateSamplePlan(`${offerId}-1`, 'Bronze', 'Bronze Plan', isPricePerSeat)),
     [`${offerId}-2`]: generatePlan(generateSamplePlan(`${offerId}-2`, 'Silver', 'Silver Plan', isPricePerSeat)),
-    [`${offerId}-3`]: generatePlan(generateSamplePlan(`${offerId}-3`, 'Bronze', 'Bronze Plan', isPricePerSeat))
+    [`${offerId}-3`]: generatePlan(generateSamplePlan(`${offerId}-3`, 'Gold', 'Gold Plan', isPricePerSeat))
   };
 
   return {
     offerId,
     plans,
-    persist
+    persist,
+    displayName
   };
 }

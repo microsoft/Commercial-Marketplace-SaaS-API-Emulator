@@ -19,6 +19,10 @@ export interface StateStore {
     operationId: string
   ) => Promise<Operation | undefined>;
   getPlansForOfferAsync: (offerId: string, planId?: string) => Promise<Plan[] | undefined>;
+  upsertOfferAsync: (offer: Partial<Offer>) => Promise<boolean>;
+  deleteOfferAsync: (offerId: string) => Promise<boolean>;
+  getAllOffers: () => Record<string, Offer>;
+  getOffer: (offerId: string) => Offer | undefined;
 }
 
 export interface Config {
@@ -89,6 +93,7 @@ export type SubscriptionOperations = Record<string, Operation>;
 export type Offers = Record<string, Offer>;
 export interface Offer {
   offerId: string;
+  displayName: string;
   plans: PlanWrapper;
   persist: boolean;
 }
