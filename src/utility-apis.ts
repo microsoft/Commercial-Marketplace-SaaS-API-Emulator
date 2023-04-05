@@ -2,7 +2,7 @@ import { Express, RequestHandler } from 'express';
 import { generateSampleSubscription } from './helpers/subscription-helper';
 import { generateSampleOffer } from './helpers/offer-helper';
 import { ServicesContainer } from './services/container';
-import { Config } from './types';
+import { Config, Offer } from './types';
 
 // High-order function to inject ServiceContainer into api handlers
 const configure: (app: Express, services: ServicesContainer) => void = (app, services) => {
@@ -28,9 +28,40 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   // Get sample offer
   //
   app.get('/api/util/offer', (async (req, res) => {
-    const offer = generateSampleOffer('SampleOffer', false, true);
+    const offer = generateSampleOffer('SampleOffer', 'Sample Offer', false, true);
 
     res.send(offer);
+  }) as RequestHandler);
+
+  //
+  // Get all offers
+  //
+  app.get('/api/util/offers', (async (req, res) => {
+    res.send(services.stateStore.getAllOffers());
+  }) as RequestHandler);
+  
+  //
+  // Get single offer
+  //
+  app.get('/api/util/offers/:offerId', (async (req, res) => {
+    res.send(services.stateStore.getOffer(req.params.offerId));
+  }) as RequestHandler);
+
+  //
+  // Upsert offer
+  //
+  app.post('/api/util/offers', (async (req, res) => {
+    const offer = req.body as Partial<Offer>;
+    const success = await services.stateStore.upsertOfferAsync(offer);
+    res.sendStatus(success ? 204 : 400);
+  }) as RequestHandler);
+
+  //
+  // Delete offer
+  //
+  app.delete('/api/util/offers/:offerId', (async (req, res) => {
+    const success = await services.stateStore.deleteOfferAsync(req.params.offerId);
+    res.sendStatus(success ? 204 : 400);
   }) as RequestHandler);
 
   //

@@ -105,8 +105,8 @@ export default class DefaultStateStore implements StateStore {
 
   async load(): Promise<void> {
     // Always initialize some sample offers - they should not be persisted
-    const sampleOffer1: Offer = generateSampleOffer('flat-rate', false, false);
-    const sampleOffer2: Offer = generateSampleOffer('per-seat', true, false);
+    const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
+    const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
     this.offers[sampleOffer1.offerId] = sampleOffer1;
     this.offers[sampleOffer2.offerId] = sampleOffer2;
 
@@ -242,5 +242,69 @@ export default class DefaultStateStore implements StateStore {
     }
 
     return plans.filter(x => x.planId === planId);
+  }
+
+  async upsertOfferAsync(offer: Partial<Offer>) : Promise<boolean> {
+
+    const newOffer : Offer = {
+      displayName: "Sample Offer",
+      offerId: "sampleOfferId",
+      persist: false,
+      plans: {},
+
+      // Overwrite offer properties from request
+      ...offer
+    }
+
+    // Check to see if any subscriptions associated with this offer still have their plans in tact
+    for (const pub in this.publishers) {
+      for (const sub in this.publishers[pub]) {
+        const subscription = this.publishers[pub][sub];
+        if (subscription.subscription.offerId === offer.offerId) {
+          
+          if (!Object.prototype.hasOwnProperty.call(offer.plans, subscription.subscription.planId)) {
+            return false;
+          }
+
+        }
+      }
+    }
+
+    this.offers[newOffer.offerId] = newOffer;
+    await this.save();
+    return true;
+  }
+
+  async deleteOfferAsync(offerId: string) : Promise<boolean> {
+    if (!Object.prototype.hasOwnProperty.call(this.offers, offerId)) {
+      return false;
+    }
+
+    // Check to see if the offer is associated with any subscriptions
+    for (const pub in this.publishers) {
+      for (const sub in this.publishers[pub]) {
+        const subscription = this.publishers[pub][sub];
+        if (subscription.subscription.offerId === offerId) {
+          return false;
+        }
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete this.offers[offerId];
+    await this.save();
+    return true;
+  }
+
+  getAllOffers() : Record<string, Offer> {
+    return this.offers;
+  }
+
+  getOffer(offerId: string) : Offer | undefined {
+    if (!Object.prototype.hasOwnProperty.call(this.offers, offerId)) {
+      return undefined;
+    }
+
+    return this.offers[offerId];
   }
 }
