@@ -96,25 +96,25 @@
           </div>
           <div class="w-[600px]">
             <div class="text-sm p-3">
-              <div class="py-1">
+              <div class="py-2">
                 <span class="inline-block w-56">Offer ID</span>
-                <input id="offerId" readonly type="text" class="text-sm" aria-label="Offer ID" />
+                <span id="offerId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-1">
+              <div class="py-2">
                 <span class="inline-block w-56">Plan ID</span>
-                <input id="planId" readonly type="text" class="text-sm" aria-label="Plan ID" />
+                <span id="planId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-1">
+              <div class="py-2">
                 <span class="inline-block w-56">Subscription Name</span>
-                <input id="subscriptionName" readonly type="text" class="text-sm" aria-label="Subscription Name" />
+                <span id="subscriptionName" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-1">
+              <div class="py-2">
                 <span class="inline-block w-56">Purchaser Email</span>
-                <input id="purchaserEmail" readonly type="text" class="text-sm" aria-label="Purchaser Email" />
+                <span id="purchaserEmail" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-1">
+              <div class="py-2">
                 <span class="inline-block w-56">Publisher ID</span>
-                <input id="publisherId" readonly type="text" class="text-sm" aria-label="Publisher ID" />
+                <span id="publisherId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
               <div class="py-4">
                 <hr />
@@ -188,11 +188,11 @@
 
         subscriptionId = resolveResult['subscription']['id'];
 
-        $('#offerId').val(resolveResult['offerId']);
-        $('#planId').val(resolveResult['planId']);
-        $('#subscriptionName').val(resolveResult['subscription']['name']);
-        $('#publisherId').val(resolveResult['subscription']['publisherId']);
-        $('#purchaserEmail').val(resolveResult['subscription']['purchaser']['emailId']);
+        $('#offerId').text(resolveResult['offerId']);
+        $('#planId').text(resolveResult['planId']);
+        $('#subscriptionName').text(resolveResult['subscription']['name']);
+        $('#publisherId').text(resolveResult['subscription']['publisherId']);
+        $('#purchaserEmail').text(resolveResult['subscription']['purchaser']['emailId']);
 
         $('#activate-button').prop('disabled', false);
       });

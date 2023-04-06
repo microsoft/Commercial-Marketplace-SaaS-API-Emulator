@@ -28,7 +28,7 @@ function generatePlan(from: Partial<Plan>): Plan {
       recurrentBillingTerms: [
         {
           currency: 'GBP',
-          price: 0.0,
+          price: 50.0,
           termUnit: 'P1M',
           termDescription: '1 Month Subscription'
         }
