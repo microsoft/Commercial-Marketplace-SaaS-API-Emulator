@@ -56,7 +56,6 @@ function _showModal(content, title, buttons, contentClass) {
                     .addClass("button secondary")
                     .text(buttonText)
                     .on("click", () => {
-                        
                         if (typeof button === 'function') {
                             button($button);
                         }
