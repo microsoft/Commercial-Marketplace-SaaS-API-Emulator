@@ -1,5 +1,5 @@
 :root {
-    --main-bg-color: rgb(229 231 235);
+    --bg-color: rgb(229 231 235);
     --page-title-color: rgb(31 41 55);
     --base-text-color: rgb(77, 77, 77);
     --base-link-color: rgb(8 145 178);
@@ -18,7 +18,7 @@
     --info-bg-color: rgb(236, 241, 248);
     --info-header-color: rgb(75 85 99);
 
-    --marketplace-bg-color: white;
+    --main-bg-color: white;
 }
 
 html {
@@ -28,13 +28,23 @@ html {
 body {
     margin: 20px;
     padding: 0;
-    background-color: var(--main-bg-color);
+    background-color: var(--bg-color);
     color: var(--base-text-color);
 }
 
 a {
     text-decoration: none;
     color: var(--base-link-color);
+}
+
+[type="text"], 
+[type="email"], 
+[type="number"], 
+[type="url"],
+textarea, select {
+    padding: 0 .5rem;    
+    color: rgb(75 85 99);
+    font-size: .875rem;
 }
 
 /* Page title */
@@ -167,173 +177,6 @@ section.info article strong {
     font-weight: 600;
 }
 
-/* Marketplace content */
-
-section.marketplace {
-    background-color: var(--marketplace-bg-color);
-    flex: 1 0;
-}
-
-section.marketplace > div {
-    display: flex;
-    margin-top: 20px;
-    align-items: flex-start;
-}
-
-section.offers {
-    flex: 1 0;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-section.offers > div {
-    flex: 0 0;
-    flex-basis: 198px;
-    display: flex;
-    flex-direction: column;
-    height: 324px;
-    box-shadow: 
-        0 1.6px 3.6px 0 rgba(0,0,0,.132),
-        0 0.3px 0.9px 0 rgba(0,0,0,.108);
-
-    border-radius: 0.1rem;
-}
-
-section.offers > div.template {
-    display: none;
-}
-
-section.offers > div div {
-    padding: 0 .5rem;
-}
-
-section.offers div.icon {
-    flex: 0 0 50px;
-    background-color: rebeccapurple;
-    background: rgb(219 234 254);
-    background: linear-gradient(90deg, 
-        rgba(219 234 254 0.6) 0%,
-        rgba(219 234 254 .8) 50%,
-        rgba(219 234 254 1) 100%);
-    background-image: url(images/fc_logo.png);
-    background-size: 35px 35px;
-    background-repeat: no-repeat;
-    background-position: 5px;
-}
-
-section.offers div.name {
-    flex: 0 0;
-    font-weight: 500;
-    margin-top: .5rem;
-}
-
-section.offers div.publisher {
-    flex: 1 0;
-    font-size: .7rem;
-}
-
-section.offers div.starts-from {
-    flex: 0 0;
-    font-style: italic;
-    font-size: .7rem;
-}
-
-section.offers div.price {
-    flex: 0 0;
-    font-size: .9rem;
-}
-
-section.offers div.get-it-now {
-    flex: 0 0;
-    padding: 0;
-}
-
-section.offers div.get-it-now a {
-    line-height: 2.5rem;
-    text-align: center;
-    display: block;
-    font-size: .8rem;
-    text-decoration: none;
-    border-top: 1px solid rgb(17 24 39 / 0.05);
-}
-
-section.offers div.get-it-now a:hover {
-    background-color: var(--button-primary-bg-color);
-    color: var(--button-primary-text-color);
-}
-
-section.purchase {
-    flex: 0 0;
-    flex-basis: 400px;
-    background-color: var(--info-bg-color);
-}
-
-section.purchase > div {
-    margin: 10px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-}
-
-section.purchase > div.hidden {
-    display: none;
-}
-
-section.purchase div.header {
-    font-size: 1.3rem;
-    line-height: 2rem;
-    color: var(--info-header-color);
-}
-
-section.purchase div.offer {
-    background-image: url(images/fc_logo.png);
-    background-size: 35px 35px;
-    background-repeat: no-repeat;
-    background-position: 5px;
-    padding-left: 50px;
-    font-weight: 500;
-}
-
-section.purchase div.offer > span:last-child {
-    font-size: .7rem;
-    display: block;
-    font-weight: normal;
-}
-
-section.purchase div.content {
-    font-size: .75rem;
-    line-height: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-section.purchase div.content > div > div {
-    display: flex;
-    margin-top: 5px;
-}
-
-section.purchase div.content > div > div.hidden {
-    display: none;
-}
-
-section.purchase label {
-    flex: 0 0 130px;
-}
-
-section.purchase input,
-section.purchase select {
-    flex: 1 0;
-}
-
-section.purchase input[type=checkbox] {
-    flex: 0 0;
-}
-
 /* Utility classes */
 
 button {
@@ -430,5 +273,70 @@ div.modal > div > div.alert {
 div.modal pre {
     word-break: break-all;
     overflow-wrap: break-word;
-    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: pre-wrap;
+}
+
+/* Notification classes */
+
+.notifications {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 18rem;
+    margin: .5rem;
+    z-index: 40;
+}
+
+.notifications > div {
+    border-radius: 0.25rem;
+    border-width: 2px;
+    border-color: #d1d5db;
+    background-color: white;
+    margin-bottom: .5rem;
+    position: relative;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.notifications .close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 40;
+    margin-right: .5rem;
+}
+
+.notifications .request {
+    padding: .5rem;
+}
+
+.notifications .response.success {
+    color: #22c55e;
+}
+
+.notifications .response.error {
+    color: #ef4444;
+}
+
+.notifications .service div {
+    margin: .5rem;
+    margin-right: 0;
+    padding-left: .5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.notifications .service .info {
+    color: #3b82f6;
+}
+
+.notifications .service .error {
+    color: #ef4444;
+}
+
+.notifications .service .warning {
+    color: #f97316;
+}
+
+.notifications .service .update {
+    color: #22c55e;
 }

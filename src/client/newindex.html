@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <title>Marketplace API Emulator</title>
-    <link rel="stylesheet" href="new.css" />
+    <link rel="stylesheet" href="core.css" />
+    <link rel="stylesheet" href="index.css" />
     <script
       src="https://code.jquery.com/jquery-3.6.3.min.js"
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
@@ -80,10 +81,10 @@
                     <section class="offers">
                         <div class="template">
                             <div class="icon"></div>
-                            <div class="name">Sample Flat Rate</div>
-                            <div class="publisher">by ForthCoffee</div>
+                            <div class="name"></div>
+                            <div class="publisher"></div>
                             <div class="starts-from">Plans start from</div>
-                            <div class="price">£50/month</div>
+                            <div class="price"></div>
                             <div class="get-it-now">
                                 <a href="#">Get it now</a>
                             </div>
@@ -95,24 +96,24 @@
                         </div>
                         <div class="hidden">
                             <div class="header">Configure Purchase</div>
-                            <div class="offer"><span>Sample Flat Rate</span><span>by FourthCoffee</span></div>
+                            <div class="offer"><span>#Offer Name#</span><span>#Publisher#</span></div>
                             <div class="content">
                                 <div>
                                     <div>
                                         <label>Plan</label>
-                                        <select><option>asdf</option></select>
+                                        <select></select>
                                     </div>
                                 </div>
                                 <p>This app requires some basic profile information. We have pulled your Microsoft Account data to help you get started. Azure Marketplace will save your information for next time.</p>
                                 <div>
                                     <div>
                                         <label>Subscription Name</label>
-                                        <input id="subscriptionName" type="text" placeholder="Enter a name for the subscription" />
+                                        <input id="subscriptionName" type="text" />
                                         <input id="subscriptionId" type="hidden" />
                                     </div>
                                     <div class="seat-count hidden">
                                         <label>Quantity</label>
-                                        <input id="quantity" type="number" placeholder="Enter the number of seats" />
+                                        <input id="quantity" type="number" />
                                     </div>
                                     <div class="right toggle-optional">
                                         <a href="#">Show optional fields</a>

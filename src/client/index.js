@@ -120,7 +120,7 @@ function generateToken() {
             "objectId": beneficiaryAsPurchaser ? $('#beneficiaryOid').val() : $("#purchaserOid").val(),
             "tenantId": beneficiaryAsPurchaser ? $('#beneficiaryTid').val() : $("#purchaserTid").val()
         },
-        "quantity": $('#quantity').val(),
+        "quantity": parseInt($('#quantity').val()),
         "autoRenew": false,
         "isTest": false,
         "isFreeTrial": false
