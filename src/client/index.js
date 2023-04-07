@@ -5,7 +5,7 @@ $(async () => {
     // Configure purchase form
 
     const defaultPurchaser = {
-        email: "user@fourthcoffee.com",
+        email: "user@forthcoffee.com",
         oid: guid(),
         tid: guid()
     }
@@ -56,12 +56,15 @@ $(async () => {
         }
 
         const offer = offers[offerId];
+        const isPerUser = Object.values(offer.plans || {}).find((_, i) => i === 0)?.isPricePerSeat === true;
 
         const $offer = offerTemplate.clone()
             .removeClass("template")
             .appendTo(offerTemplate.parent());
 
         $offer.children(".name").html(offer.displayName);
+        $offer.children(".publisher").html(offer.publisher);
+        $offer.children(".price").html(`free (emulated)`);
 
         $offer.find(".get-it-now a").on('click', () => {
             $("section.purchase > div").removeClass("hidden");
@@ -78,6 +81,7 @@ function selectOffer(offer) {
     $("#subscriptionId").val(guid());
 
     $("section.purchase .offer > span:first-child").text(offer.displayName);
+    $("section.purchase .offer > span:last-child").text(offer.publisher);
 
     const $plans = $("section.purchase select").empty();
 
@@ -154,16 +158,14 @@ async function showToken() {
 async function postToLanding() {
     const {base64} = generateToken();
 
-    const response = await fetch('/api/util/config', { method: 'GET' });
+    const config = await callAPI("/api/util/config");
 
-    if (response != 200) {
-      // ?
+    if (config === undefined) {
+      await showAlert("Something went wrong trying to get config from the emulator", "Error");
+      return;
     }
 
-    const result = await response.json();
-    const landingPage = result.landingPageUrl;
-
-    
+    const landingPage = config.landingPageUrl;
 
     if (!landingPage) {
         await showAlert("No landing page URL set in config", "Landing Page");
@@ -184,6 +186,5 @@ async function postToLanding() {
 
   // Check if we're running on a remote host but the landing page has been left as default (localhost)
   function checkLandingPageUrl(landingPageUrl) {
-    return true;
     return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
   }

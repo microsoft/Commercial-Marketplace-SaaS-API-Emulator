@@ -177,6 +177,7 @@ section.marketplace {
 section.marketplace > div {
     display: flex;
     margin-top: 20px;
+    align-items: flex-start;
 }
 
 section.offers {
@@ -225,6 +226,7 @@ section.offers div.icon {
 section.offers div.name {
     flex: 0 0;
     font-weight: 500;
+    margin-top: .5rem;
 }
 
 section.offers div.publisher {
@@ -255,6 +257,11 @@ section.offers div.get-it-now a {
     font-size: .8rem;
     text-decoration: none;
     border-top: 1px solid rgb(17 24 39 / 0.05);
+}
+
+section.offers div.get-it-now a:hover {
+    background-color: var(--button-primary-bg-color);
+    color: var(--button-primary-text-color);
 }
 
 section.purchase {

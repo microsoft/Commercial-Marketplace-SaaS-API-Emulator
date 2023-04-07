@@ -96,6 +96,7 @@ export interface Offer {
   displayName: string;
   plans: PlanWrapper;
   persist: boolean;
+  publisher: string;
 }
 export type PlanWrapper = Record<string, Plan>;
 

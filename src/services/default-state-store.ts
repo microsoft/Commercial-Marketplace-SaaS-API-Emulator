@@ -249,6 +249,7 @@ export default class DefaultStateStore implements StateStore {
     const newOffer : Offer = {
       displayName: "Sample Offer",
       offerId: "sampleOfferId",
+      publisher: "ForthCoffee",
       persist: false,
       plans: {},
 
