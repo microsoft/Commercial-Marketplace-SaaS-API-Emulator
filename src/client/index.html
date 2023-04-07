@@ -39,6 +39,7 @@
           "id": $('#id').text(),
           "name": $('#name').val(),
           "offerId": $('#offerId').val(),
+          "quantity": $('#quantity').val(),
           "planId": $('#planId').val(),
             "beneficiary": {
               "emailId": $('#emailId').val(),
@@ -75,10 +76,12 @@
         $('#offerId').val(e.target.id);
         $('#id').text(sid);
         $('#emailId').val('test@fourthcoffee.com');
+        $('#name').val('FourthCoffee ' + offers[e.target.id].displayName);
         $('#tenantId').text(tid);
         $('#objectId').val(oid);
         $('#offerId').text();
         $('#offerDetail').hide();
+        $('#showDetail').text('Show Detail');
         $('#order').show();
       }
 
@@ -86,19 +89,18 @@
 
         for (const i in obj) {
           const formRow = $(document.createElement('div')).addClass('text-sm text-gray-800 inline-block dark:text-gray-50');
-          let currentDiv = $(document.createElement('div')).addClass('w-48  my-2 mx-3 inline-block bg w-24 border border-slate-300 rounded-sm shadow-md');
-          currentDiv.append($(document.createElement('div')).prepend('<img id="theImg" src="images/fc_logo.png" width="35" height="35"/>').addClass('w-[100%] h-12 px-3 py-2 bg-blue-100 inline-block bg w-24 '));
-          currentDiv.append($(document.createElement('div')).text(obj[i].displayName).addClass('w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block bg w-24 '));         
-          currentDiv.append($(document.createElement('div')).text('by FourthCoffee').addClass('w-40 h-24 px-2 text-left font-semibold text-[10px] bg-white inline-block bg w-24 '));
-          currentDiv.append($(document.createElement('div')).text('Plans start from').addClass('w-40 px-2 text-[10px] text-left italic bg-white inline-block bg w-24 '));
-          currentDiv.append($(document.createElement('div')).attr('id', ('details'+i)).addClass('w-40 px-2 text-left pb-2 text-xs bg-white inline-block bg w-24 '));
+          let currentDiv = $(document.createElement('div')).addClass('w-44  my-2 mx-3 inline-block bg border border-slate-300 rounded-sm shadow-md');
+          currentDiv.append($(document.createElement('div')).prepend('<img id="theImg" src="images/fc_logo.png" width="35" height="35"/>').addClass('w-[100%] h-12 px-3 py-2 bg-blue-100 inline-block'));
+          currentDiv.append($(document.createElement('div')).text(obj[i].displayName).addClass('w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block'));         
+          currentDiv.append($(document.createElement('div')).text('by FourthCoffee').addClass('w-40 h-24 px-2 text-left font-semibold text-[10px] bg-white inline-block'));
+          currentDiv.append($(document.createElement('div')).text('Plans start from').addClass('w-40 px-2 text-[10px] text-left italic bg-white inline-block'));
+          currentDiv.append($(document.createElement('div')).attr('id', ('details'+i)).addClass('w-40 px-2 text-left pb-2 text-xs bg-white inline-block'));
           filterList(i, true);
-          currentDiv.append($(document.createElement('div')).attr('id', i).text('Get it now').addClass('w-[100%] h-10 p-3 bg-white text-xs text-center text-cyan-500 hover:bg-sky-500 hover:cursor-pointer hover:text-white border-t border-slate-100 inline-block bg w-24 ').attr('onclick', 'select_click(event)'));
+          currentDiv.append($(document.createElement('div')).attr('id', i).text('Get it now').addClass('w-[100%] h-10 p-3 bg-white text-xs text-center text-cyan-500 hover:bg-sky-500 hover:cursor-pointer hover:text-white border-t border-slate-100 inline-block').attr('onclick', 'select_click(event)'));
           formRow.append(currentDiv);
           parent.append(formRow);
         }
       }
- 
 
       function guid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -109,15 +111,15 @@
       }
 
       // On change to the Offer dropdown list 
-      $(document).ready(async function(){
+      $(document).ready(function(){
         $('#offerId').change(function(e){
           filterList([$('#offerId').val()], false);
         });
       });
 
       // Update the plans dropdown based on the 
-      async function filterList(offer, once) {
-        let allplans = await offers;
+      function filterList(offer, once) {
+        let allplans = offers;
         let filter = allplans[offer].plans;
         let getPrice = 0;
         $(planId).empty()
@@ -194,7 +196,14 @@
       }
 
       function showDetail() {
-        $('#offerDetail').show();
+        let divText = $('#showDetail').text();
+        if (divText === 'Show Detail') {
+          $('#offerDetail').show();
+          $('#showDetail').text('Hide Detail');
+        } else {
+          $('#offerDetail').hide();
+          $('#showDetail').text('Show Detail');
+        };        
       }
 
       // Check if we're running on a remote host but the landing page has been left as default (localhost)
@@ -326,6 +335,9 @@
               <li>Enter the addition details</li>
               <li>Click 'Continue'</li>
             </ul>
+            <p class="pt-1">            
+              Name: a friendly name to identity the subscription after purchase.
+            </p>
             <p class="pt-2">            
               This is the intent to purchase a subscription, it will post to the Landing Page 
               to complete and collect additional information about the customer.
@@ -406,7 +418,7 @@
                   </div>
                   <div class="inline-block w-[100%] text-center">
                     <div class="w-1/3 inline-block"><hr class="border border-slate-300 align-middle"></div>
-                    <div class="inline-block text-center p-2 text-slate-600 text-xs hover:bg-slate-100 hover:cursor-pointer rounded-md" onclick="showDetail()">Show Detail</div>
+                    <div class="inline-block text-center p-2 text-slate-600 text-xs hover:bg-slate-100 hover:cursor-pointer rounded-md" onclick="showDetail()" id="showDetail">Show Detail</div>
                     <div class="w-1/3 inline-block"><hr class="border border-slate-300 align-middle"></div>
                   </div>
                   <!-- <div id="offerDetail" style="display: none" class="py-1"> -->
