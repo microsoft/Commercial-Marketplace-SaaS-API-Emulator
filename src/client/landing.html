@@ -90,29 +90,36 @@
         </div>
         <!-- Marketplace token box -->
         <div
-          class="relative max-w-[970px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
-          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
+          class="relative w-[670px] h-[550px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
+          <div class="w-[590px] text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
             Configure Subscription
           </div>
-          <div class="w-[600px]">
+          <div id="subscriptionNone" class="w-[590px] text-center" style="display:none">
+            <p class="font-semibold mt-24">No Purchase Token present.</p>
+          </div>
+          <div id="subscriptionDetail" class="w-[590px]">
             <div class="text-sm p-3">
-              <div class="py-2">
+              <div class="py-1">
                 <span class="inline-block w-56">Offer ID</span>
                 <span id="offerId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-2">
+              <div class="py-1">
                 <span class="inline-block w-56">Plan ID</span>
                 <span id="planId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-2">
+              <div id="quantityRow" class="py-1" style="display: none">
+                <span class="inline-block w-56">Quantity</span>
+                <span id="quantity" class="text-sm pl-3" aria-label="Quantity"></span>
+              </div>
+              <div class="py-1">
                 <span class="inline-block w-56">Subscription Name</span>
                 <span id="subscriptionName" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-2">
+              <div class="py-1">
                 <span class="inline-block w-56">Purchaser Email</span>
                 <span id="purchaserEmail" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
-              <div class="py-2">
+              <div class="py-1">
                 <span class="inline-block w-56">Publisher ID</span>
                 <span id="publisherId" class="text-sm pl-3" aria-label="Offer ID"></span>
               </div>
@@ -160,6 +167,8 @@
         if (!token) {
           $('#no-token').show();
           $('#with-token').hide();
+          $('#subscriptionDetail').hide();
+          $('#subscriptionNone').show();
           return;
         }
 
@@ -179,8 +188,6 @@
             });
 
         if (!response.ok) {
-          // const text = await resolveResponse.text();
-          // console.log(resolveResponse.status + '-' + text);
           return;
         }
 
@@ -188,22 +195,26 @@
 
         subscriptionId = resolveResult['subscription']['id'];
 
+        if(resolveResult['quantity']) {
+          $('#quantityRow').show();
+        };
+
         $('#offerId').text(resolveResult['offerId']);
         $('#planId').text(resolveResult['planId']);
         $('#subscriptionName').text(resolveResult['subscription']['name']);
         $('#publisherId').text(resolveResult['subscription']['publisherId']);
         $('#purchaserEmail').text(resolveResult['subscription']['purchaser']['emailId']);
-
+        $('#quantity').text(resolveResult['quantity']);
         $('#activate-button').prop('disabled', false);
       });
 
       async function activateSubscription() {
         $('#activate-button').prop('disabled', true);
-        const publisherId = $('#publisherId').val();
+        const publisherId = $('#publisherId').text();
 
         const response = await doFetch("/activate",
           `/api/saas/subscriptions/${subscriptionId}/activate?publisherId=${publisherId}&api-version=${apiVersion}`,
-          JSON.stringify({ planId: $('#planId').val() })
+          JSON.stringify({ planId: $('#planId').text() })
         );
 
         if (response.ok) {
