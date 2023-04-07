@@ -118,8 +118,8 @@
       });
 
       // Update the plans dropdown based on the 
-      function filterList(offer, once) {
-        let allplans = offers;
+      async function filterList(offer, once) {
+        let allplans = await offers;
         let filter = allplans[offer].plans;
         let getPrice = 0;
         $(planId).empty()
