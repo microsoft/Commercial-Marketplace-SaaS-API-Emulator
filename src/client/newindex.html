@@ -9,6 +9,8 @@
       crossorigin="anonymous"></script>
       <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script src="notifications.js"></script>
+        <script src="core.js"></script>
+        <script src="index.js"></script>
         <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
@@ -76,17 +78,7 @@
                 <header>Sample Marketplace Behaviour</header>
                 <div>
                     <section class="offers">
-                        <div>
-                            <div class="icon"></div>
-                            <div class="name">Sample Flat Rate</div>
-                            <div class="publisher">by ForthCoffee</div>
-                            <div class="starts-from">Plans start from</div>
-                            <div class="price">£50/month</div>
-                            <div class="get-it-now">
-                                <a href="#">Get it now</a>
-                            </div>
-                        </div>
-                        <div>
+                        <div class="template">
                             <div class="icon"></div>
                             <div class="name">Sample Flat Rate</div>
                             <div class="publisher">by ForthCoffee</div>
@@ -98,9 +90,12 @@
                         </div>
                     </section>
                     <section class="purchase">
-                        <div>
-                            <div class="header">One more thing...</div>
-                            <div class="offer">Sample Flat Rate<span>by FourthCoffee</span></div>
+                        <div class="placeholder">
+                            Select an offer to the left to configure the purchase by clicking "Get it now"
+                        </div>
+                        <div class="hidden">
+                            <div class="header">Configure Purchase</div>
+                            <div class="offer"><span>Sample Flat Rate</span><span>by FourthCoffee</span></div>
                             <div class="content">
                                 <div>
                                     <div>
@@ -111,36 +106,69 @@
                                 <p>This app requires some basic profile information. We have pulled your Microsoft Account data to help you get started. Azure Marketplace will save your information for next time.</p>
                                 <div>
                                     <div>
-                                        <label>Name</label>
-                                        <input type="text" />
+                                        <label>Subscription Name</label>
+                                        <input id="subscriptionName" type="text" placeholder="Enter a name for the subscription" />
+                                        <input id="subscriptionId" type="hidden" />
+                                    </div>
+                                    <div class="seat-count hidden">
+                                        <label>Seat count</label>
+                                        <input id="seatCount" type="number" />
                                     </div>
                                     <div>
-                                        <label>Email</label>
-                                        <input type="text" />
+                                        <label>Beneficiary Email</label>
+                                        <input id="beneficiaryEmail" type="text" />
                                     </div>
-                                    <div class="right">
+                                    <div class="right toggle-optional">
                                         <a href="#">Show optional fields</a>
                                     </div>
-                                    <div>
-                                        <label>Object ID</label>
-                                        <input type="text" />
+                                    <div class="optional hidden">
+                                        <p>To simulate a purchase with a real user, enter their AAD Object ID and Tenant ID below.</p>
                                     </div>
-                                    <div>
-                                        <label>Tenant ID</label>
-                                        <input type="text" />
+                                    <div class="optional hidden">
+                                        <label>Beneficiary Object ID</label>
+                                        <input id="beneficiaryOid" type="text" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Beneficiary Tenant ID</label>
+                                        <input id="beneficiaryTid" type="text" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <p>To simulate a purchase with a real user on behalf of another real user, check "Specify purchaser" enter their AAD Object ID and Tenant ID below.</p>
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Specify purchaser</label>
+                                        <input id="purchaserIsBeneficiary" type="checkbox" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Email</label>
+                                        <input id="purchaserEmail" type="text" disabled="disabled" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Object ID</label>
+                                        <input id="purchaserOid" type="text" disabled="disabled" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Tenant ID</label>
+                                        <input id="purchaserTid" type="text" disabled="disabled" />
                                     </div>
                                 </div>
                                 <p>Collect additional information above, as desired.<br />
                                     The user must also accept the Terms and Conditions and Privacy policy here to proceed.</p>
                                 <p class="justify">
-                                    <button class="secondary">View token</button>
-                                    <button class="primary">Continue</button>
+                                    <button id="viewJsonButton" class="secondary">View JSON</button>
+                                    <button id="viewTokenButton" class="secondary">View token</button>
+                                    <button id="purchaseButton" class="primary">Continue</button>
                                 </p>
                             </div>
                         </div>
                     </section>
                 </div>
             </section>
+
+            <div id="dialog">
+                <pre></pre>
+            </div>
+
         </main>
     </body>
 </html>

@@ -143,8 +143,7 @@ main > section header {
 
 section.info {
     background-color: var(--info-bg-color);
-    flex: 0 0;
-    flex-basis: 400px;
+    flex: 0 0 400px;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -199,6 +198,10 @@ section.offers > div {
         0 0.3px 0.9px 0 rgba(0,0,0,.108);
 
     border-radius: 0.1rem;
+}
+
+section.offers > div.template {
+    display: none;
 }
 
 section.offers > div div {
@@ -269,6 +272,10 @@ section.purchase > div {
     padding: 10px;
 }
 
+section.purchase > div.hidden {
+    display: none;
+}
+
 section.purchase div.header {
     font-size: 1.3rem;
     line-height: 2rem;
@@ -284,7 +291,7 @@ section.purchase div.offer {
     font-weight: 500;
 }
 
-section.purchase div.offer > span {
+section.purchase div.offer > span:last-child {
     font-size: .7rem;
     display: block;
     font-weight: normal;
@@ -303,13 +310,21 @@ section.purchase div.content > div > div {
     margin-top: 5px;
 }
 
+section.purchase div.content > div > div.hidden {
+    display: none;
+}
+
 section.purchase label {
-    flex: 0 0 100px;
+    flex: 0 0 130px;
 }
 
 section.purchase input,
 section.purchase select {
     flex: 1 0;
+}
+
+section.purchase input[type=checkbox] {
+    flex: 0 0;
 }
 
 /* Utility classes */
@@ -341,4 +356,68 @@ button.secondary {
 .justify {
     display: flex;
     justify-content: space-between;
+}
+
+/* Dialog classes */
+
+div.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+div.modal > div {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    background-color: white;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 
+        0 0 0 0 white, 
+        0 0 0 1px rgb(17 24 39 / 0.05), 
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 
+        0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    border-radius: 0.25rem;
+    padding: 5px;
+}
+
+div.modal > div > header {
+    flex: 0 0;
+    background-color: var(--nav-bg-color);
+    color: var(--nav-text-color);
+    border-radius: 0.25rem;
+    padding: 10px;
+    text-align: center;
+}
+
+div.modal > div > footer {
+    flex: 0 0;
+    text-align: right;
+}
+
+div.modal > div > footer > button {
+    margin-left: 10px;
+}
+
+div.modal > div > div {
+    flex: 1 0 400px;
+    padding: 2px;
+    overflow-y: auto;
+}
+
+div.modal pre {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
 }
