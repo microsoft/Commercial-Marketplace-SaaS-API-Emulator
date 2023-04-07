@@ -416,6 +416,10 @@ div.modal > div > div {
     overflow-y: auto;
 }
 
+div.modal > div > div.alert {
+    flex-basis: content;
+}
+
 div.modal pre {
     word-break: break-all;
     overflow-wrap: break-word;

@@ -19,37 +19,56 @@ function guid() {
     });
 }
 
+function showAlert(content, title) {
+    return _showModal(content, title, {"Ok": true}, "alert");
+}
+
+function showYesNo(content, title) {
+    return _showModal(content, title, {"Yes": true, "No": false}, "alert");
+}
+
 function showDialog(content, title, buttons) {
-    let $modal = $("#modal");
-    if ($modal.length === 0) {
-        $modal = $("<div id='modal'><div><header></header><div></div><footer></footer></div></div>")
-            .addClass("modal")
-            .appendTo("body");
-    }
-    $body = $modal.children("div");
+    return _showModal(content, title, { ...buttons, "Close": true });
+}
 
-    $body.children("header").html(title);
-    $content = $body.children("div").html(content);
-    $footer = $body.children("footer").empty();
-
-    if (buttons !== undefined) {
-        for (const buttonText in buttons) {
-            const button = buttons[buttonText];
-            const $button = $("<button></button>")
-                .text(buttonText)
-                .on("click", () => {
-                    button($button)
-                })
-                .appendTo($footer);
+function _showModal(content, title, buttons, contentClass) {
+    
+    return new Promise((resolve, reject) => {
+        let $modal = $("#modal");
+        if ($modal.length === 0) {
+            $modal = $("<div id='modal'><div><header></header><div></div><footer></footer></div></div>")
+                .addClass("modal")
+                .appendTo("body");
         }
-    }
+        $body = $modal.children("div");
 
-    $("<button></button>")
-            .text("Close")
-            .appendTo($footer)
-            .on("click", () => {
-                $modal.hide();
-            });
+        $body.children("header").html(title);
+        $content = $body.children("div").html(content);
+        if (contentClass !== undefined) {
+            $content.addClass(contentClass);
+        }
+        $footer = $body.children("footer").empty();
 
-    $modal.show();
+        if (buttons !== undefined) {
+            for (const buttonText in buttons) {
+                const button = buttons[buttonText];
+                const $button = $("<button></button>")
+                    .addClass("button secondary")
+                    .text(buttonText)
+                    .on("click", () => {
+                        
+                        if (typeof button === 'function') {
+                            button($button);
+                        }
+                        else {
+                            $modal.hide();
+                            resolve(button);
+                        }
+                    })
+                    .appendTo($footer);
+            }
+        }
+
+        $modal.show();
+    });
 }

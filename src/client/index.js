@@ -41,6 +41,7 @@ $(async () => {
 
     $("#viewJsonButton").on("click", showJson);
     $("#viewTokenButton").on("click", showToken);
+    $("#purchaseButton").on("click", postToLanding);
 
     // Retrieve offers
 
@@ -126,9 +127,9 @@ function generateToken() {
     return {json, base64};
 }
 
-function showJson() {
+async function showJson() {
     const {json} = generateToken();
-    showDialog(`<pre>${json}</pre>`, "Subscription JSON", {
+    await showDialog(`<pre>${json}</pre>`, "Subscription JSON", {
         "Copy": ($btn) => {
             $btn.text("Copied");
             navigator.clipboard.writeText(json);
@@ -137,9 +138,9 @@ function showJson() {
     });
 }
 
-function showToken() {
+async function showToken() {
     const {base64} = generateToken();
-    showDialog(`<pre>${base64}</pre>`, "Marketplace Token", {
+    await showDialog(`<pre>${base64}</pre>`, "Marketplace Token", {
         "Copy": ($btn) => {
             $btn.text("Copied");
             navigator.clipboard.writeText(base64);
@@ -147,3 +148,41 @@ function showToken() {
         }
     });
 }
+
+// post the token to the given landing page URL
+async function postToLanding() {
+    const {base64} = generateToken();
+
+    const response = await fetch('/api/util/config', { method: 'GET' });
+
+    if (response != 200) {
+      // ?
+    }
+
+    const result = await response.json();
+    const landingPage = result.landingPageUrl;
+
+    
+
+    if (!landingPage) {
+        await showAlert("No landing page URL set in config", "Landing Page");
+        return;
+    }
+
+    if (checkLandingPageUrl(landingPage)) {
+        const ok = await showYesNo('The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct. Visit the Config page to check.<br /><br />Would you like to continue?', "Landing Page");
+        if (!ok) {
+            return;
+        }
+    }
+
+    const target = landingPage + '?token=' + base64;
+
+    window.open(target, '_blank');
+  }
+
+  // Check if we're running on a remote host but the landing page has been left as default (localhost)
+  function checkLandingPageUrl(landingPageUrl) {
+    return true;
+    return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
+  }
