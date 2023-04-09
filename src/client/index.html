@@ -3,6 +3,7 @@
   <head>
     <title>Marketplace API Emulator</title>
     <link rel="stylesheet" href="output.css" />
+    <link rel="stylesheet" href="jquery-modal.css" />
     <script
       src="https://code.jquery.com/jquery-3.6.3.min.js"
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
@@ -34,6 +35,7 @@
           .addClass('bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1 text-sm');
       });
 
+      // Generate the Purchase Token 
       function generateToken() {
         const sub = { 
           "id": $('#id').text(),
@@ -56,20 +58,18 @@
             "isFreeTrial": false
         };
 
-
         const json = JSON.stringify(sub, null, 2);
         const base64 = btoa(json);
 
         $('#json-result').text(json);
         $('#base64-result').text(base64);
-
       }
 
       const sid = guid();
       const oid = guid();
       const tid = guid();
 
-
+      // Update the plan select pane 
       function select_click(e) {
         filterList(e.target.id, false); 
         $('#offername').text(offers[e.target.id].displayName);
@@ -85,8 +85,8 @@
         $('#order').show();
       }
 
+      // Create fields for the form 
       function createFormFields(parent, obj, path) {
-
         for (const i in obj) {
           const formRow = $(document.createElement('div')).addClass('text-sm text-gray-800 inline-block dark:text-gray-50');
           let currentDiv = $(document.createElement('div')).addClass('w-44  my-2 mx-3 inline-block bg border border-slate-300 rounded-sm shadow-md');
@@ -102,6 +102,7 @@
         }
       }
 
+      // Create a GUID 
       function guid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
           var r = (Math.random() * 16) | 0,
@@ -150,7 +151,7 @@
       }
       };
 
-      
+      // Set the price from string 
       function setDetails(offer, currency, termunit, peruser, min) {
         let detailsCat = ('#details' + offer);
         let currSymbol = '';
@@ -195,6 +196,7 @@
         ($(detailsCat).text(currSymbol + min + term)); 
       }
 
+      // Show and hide the advanced details 
       function showDetail() {
         let divText = $('#showDetail').text();
         if (divText === 'Show Detail') {
@@ -247,7 +249,7 @@
         window.setTimeout(()=>button.innerHTML='Copy',2000);
       }
 
-
+      // Load the token modal 
       function getToken() {
         generateToken();
         $( "#dialog-confirm" ).dialog({
@@ -288,6 +290,7 @@
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="config.html">Config</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="offers.html">Offers</a></li>
                 <li class="display: inline px-3 hover:text-cyan-400">
                   <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
                     <img src="images/github-mark-white.png" title="Report an issue" height="25" width="25"
@@ -389,11 +392,11 @@
                   </div>
                   <div class="py-1">
                     <label class="form-label text-sm inline-block w-24">Name</label>
-                    <input type="text" id="name" for="selected" aria-label="emailId" class="rounded-none py-0" data-jsonPath="name">
+                    <input type="text" id="name" for="selected" aria-label="emailId" class="rounded-none py-0">
                   </div>
                   <div id="qtyRow" style="display: none" class="py-1">
                     <label class="form-label inline-block w-24 constols">Quantity</label>
-                    <input type="number" id="quantity" for="selected" aria-label="quantity" min="1" class="rounded-none py-0" data-jsonPath="quantity">  
+                    <input type="number" id="quantity" for="selected" aria-label="quantity" min="1" class="rounded-none py-0">  
                   </div>
                   <div class="py-1">
                     <label class="form-label inline-block w-24">email</label>
