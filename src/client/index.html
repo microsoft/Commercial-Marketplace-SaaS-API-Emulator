@@ -215,6 +215,15 @@
 
       // post the token to the given landing page URL
       async function posttoLanding(element) {
+
+        if($('#qtyRow').is(':visible')) { 
+          if($('#quantity').val().length === 0) { 
+            alert('Quantity is required for a per-seat plan.');
+            return;
+          };
+        };
+      
+
         generateToken();
         const response = await fetch('/api/util/config', { method: 'GET' });
 
@@ -302,9 +311,9 @@
         </div>
       </div>
       <!-- horizontal wrapper -->
-      <div class="flex flex-wrap">
+      <div class="w-full min-w-400 flex-row inline-flex flex-wrap">
         <div
-          class="relative max-w-[400px] bg-slate-100 dark:bg-slate-700 px-6 pt-6 pb-4 shadow-xl rounded-xl ring-1 ring-gray-900/5 mr-4">
+          class="relative w-[400px] bg-slate-100 dark:bg-slate-700 px-6 pt-6 pb-4 shadow-xl rounded-xl ring-1 ring-gray-900/5 mr-4">
           <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
             Introduction
           </div>
@@ -361,13 +370,13 @@
         </div>
         <!-- Marketplace token box -->
         <div
-          class="relative max-w-[970px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
+          class="relative min-w-[820px] w-[100%] flex-1 bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
           <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
             Sample Marketplace Behaviour
           </div>
           <div class="flex flex-wrap">
             <!--Form side to build out offer cards-->
-            <div class="w-[460px] px-4">
+            <div class="relative min-w-[460px] w-[100%] flex-1 px-4 overflow-x-auto">
               <div id="offer-container"></div>
             </div>
             <!--Result side-->

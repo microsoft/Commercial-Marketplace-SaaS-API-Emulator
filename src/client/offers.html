@@ -202,12 +202,10 @@
           // create offer 
           let newOffer = 
             {
-            [$('#offerId').val()]: {
                 "offerId": $('#offerId').val(),
                 "plans": {},
-                "persist": false,
+                "persist": true,
                 "displayName": $('#offerName').val()
-              }
             };
 
           let plan = { };
@@ -244,7 +242,7 @@
                   }
                 }
             };
-            newOffer[$('#offerId').val()].plans[newplan] = plan;
+            newOffer.plans[newplan] = plan;
             }
           );
           sendOffer(JSON.stringify(newOffer));  
@@ -283,7 +281,8 @@
             if (!response.ok) {
               const text = await response.text();
               console.log(response.status + '-' + text);
-              alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
+              alert('Response: ' + text + '\nStatus: ' + response.status + 
+                '\nOffer cannot be deleted when attached to a subscription.', 'Status');
             } else {
               location.reload();
             }};
@@ -456,13 +455,13 @@
           <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
             Offer Central
           </div>
-          <div class="w-[800px]">
+          <div class="w-[100%]">
             <div id="offer-container" class="flex overflow-y-auto h-72">
               <div class="text-sm text-gray-800 inline-block dark:text-gray-50">
                 <div class="w-44 my-2 mx-3 inline-block bg border border-slate-300 rounded-sm shadow-md">
                   <div class="w-[100%] h-12 px-3 py-2 bg-green-200 inline-block"><img id="theImg" src="images/fc_logo_new.png" width="35" height="35"></div>
                   <div class="h-28">
-                    <div class="w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block">Make your own stinking crazy Offer</div>
+                    <div class="w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block">Make your own Offers and Plans</div>
                     <div class="w-40 px-2 text-left font-semibold text-[10px] bg-white inline-block">by Design</div>
                   </div>
                   <div class="w-40 px-2 h-5 text-[10px] text-left italic bg-white inline-block">See Usage notes</div>
@@ -480,11 +479,11 @@
                 <table> 
                   <tr>
                     <th class="text-sm font-semibold text-slate-600 w-24 h-9" >Offer Name</th>
-                    <td><input type="text" id="offerName" class="w-48 border-slate-400" /></td>
+                    <td><input type="text" id="offerName" class="w-48" /></td>
                   </tr>
                   <tr>
                     <th class="text-sm font-semibold text-slate-600 h-9">Offer id</th>
-                    <td><input type="text" id="offerId" class="w-48 border-slate-400" /></td>
+                    <td><input type="text" id="offerId" class="w-48" /></td>
                     <td id="uniqueWarning" style="display: none" class="text-red-700 pl-2">Offer Id must be unique!</td>
                   </tr>
                 </table>
@@ -501,22 +500,22 @@
                   </thead>
                   <tbody id="planRows">
                     <tr id="planRow" class="planRow text-sm text-slate-600 my-5 h-11 bg-white border-b-2 border-b-sky-50">
-                      <td class="planName"><input type="text" id="planName" class="w-48 rounded-r-sm border-slate-400" /></td>
-                      <td class="planId"><input type="text" id="planId" class="w-48 rounded-none border-slate-400"/></td>
+                      <td class="planName"><input type="text" id="planName" class="w-48 rounded-r-sm" /></td>
+                      <td class="planId"><input type="text" id="planId" class="w-48 rounded-none"/></td>
                       <td class="perSeat text-center">
-                        <select name="perSeat" id="perSeat" class="w-24 rounded-none border-slate-400">
+                        <select name="perSeat" id="perSeat" class="w-24 rounded-none">
                           <option value=false>Flat rate</option>
                           <option value=true>Per user</option>
                         </select>      
                       </td>
                       <td class="term">
-                        <select name="term" id="term" class="w-24 rounded-none border-slate-400">
+                        <select name="term" id="term" class="w-24 rounded-none">
                           <option value="P1M">1-month</option>
                           <option value="P1Y">1-year</option>
                         </select>
                       </td>
                       <td class="currency rounded-none pl-2 pr-1">USD</td>
-                      <td class="price"><input type="text" id="price" class="w-24 rounded-l-sm border-slate-400" /></td>
+                      <td class="price"><input type="text" id="price" class="w-24 rounded-l-sm" /></td>
                       <td class="w-12 text-right"><button class="border border-gray-600 text-center w-6 h-6 px-1 rounded-lg bg-slate-50 hover:bg-red-100 ml-2"
                         id="removeRow"
                         title="Remove Row"
