@@ -138,18 +138,50 @@
         await callWebhook("Change quantity", $(e.target).data('subscriptionId'), '', { quantity });
       }
 
+
+      async function getPlans(sub, pub) {
+        const response = await fetch(
+          `/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
+
+        if (response != 200) {
+          // ?
+        }
+
+        let result = await response.json();
+
+        return result;
+      }
+
+
       async function changePlan_click(e) {
         const subscription = $(e.target).data('subscriptionId');
+        const publisherId = $(e.target).data('publisherId');        
         const planCheck = $(e.target).data('planID');
-        console.log('Plan ID: ' + planCheck);
-        const message =
-          planCheck === 'flat-rate-1' || planCheck === 'flat-rate-2' || planCheck === 'flat-rate-3'
-            ? 'The subscription appears to be on a Sample Flat Rate offer, available plans for this offer are: \n   flat-rate-1\n   flat-rate-2\n   flat-rate-3\n\nChange to which plan?'
-            : planCheck === 'per-seat-1' || planCheck === 'per-seat-2' || planCheck === 'per-seat-3'
-            ? 'The subscription appears to be on a Sample Per Seat offer, available plans for this offer are: \n   per-seat-1\n   per-seat-2\n   per-seat-3\n\nChange to which plan?'
-            : 'Change to which plan?';
-        console.log(message);
-        const planId = prompt(message, subscription.planId);
+
+        let plansData = await getPlans(subscription, publisherId);
+        let plansList = plansData.plans;
+
+        let i = 0;
+        let messagePlans = '';
+        let message = 'Your current plan is ' + planCheck + '.\n\n';
+
+        for (const planId in plansList) {
+          if(planCheck != plansList[planId].planId) {
+          messagePlans = messagePlans + '   ' + plansList[planId].planId + '\n';  
+          i++;
+          };
+        };
+
+        if(i === 0 ) {
+          message = message + 'No other plans are available for this offer.';
+          alert(message);
+          // return;
+        } else {
+          message = message + 'You can change to one of the following plans, enter the id below:\n';
+          message = message + messagePlans;
+          planId = prompt(message, subscription.planId);
+        };
+        
         if (planId === null) {
           return; //break out of the function early
         }
@@ -161,7 +193,6 @@
       }
 
       async function reinstate_click(e) {
-        console.log($(e.target).data());
         await callWebhook("Reinstate", $(e.target).data('subscriptionId'), 'reinstate');
       }
 
@@ -199,6 +230,7 @@
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="index.html">Marketplace Token</a></li>
                 <li class="display: inline px-3 text-orange-400">Subscriptions</li>
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="offers.html">Offers</a></li>
                 <li class="display: inline px-3 hover:text-cyan-400"><a href="config.html">Config</a></li>
                 <li class="display: inline px-3 hover:text-cyan-400">
                   <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
