@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Marketplace API Emulator</title>
+    <link rel="stylesheet" href="output.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+    <link rel="manifest" href="images/site.webmanifest" />
+
+    <script type="text/javascript">
+      $(async () => {
+        let response = await fetch('/api/util/config', { method: 'GET' });
+
+        if (response != 200) {
+          // ?
+        }
+
+        let result = await response.json();
+
+        const configRowTemplate = $('#config-row');
+
+        for (const key in result) {
+          if ($(`#${key}`) !== null) {
+            $(`#${key}`).val(result[key].toString());
+          } else {
+          }
+        }
+      });
+
+      async function updateConfig_click(e) {
+        const $this = $(e.target);
+        const value = $this.parent().children(':input').val();
+        const key = $this.parent().children(':input').attr('id');
+
+        if (value !== false && !value) {
+          alert('Enter a value.');
+        } else {
+          if (key === 'landingPageUrl') {
+            if (checkLandingPageUrl(value)) {
+              alert(
+                'The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct.'
+              );
+            }
+          }
+
+          if (confirm('Are you really sure?')) {
+            const $this = $(e.target);
+            const value = $this.parent().children(':input').val();
+            const key = $this.parent().children(':input').attr('id');
+
+            const config = {};
+            config[key] = value;
+
+            const response = await fetch('/api/util/config', {
+              method: 'PATCH',
+              body: JSON.stringify(config),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log(response.status + '-' + text);
+              alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
+              window.location.reload(true);
+            }
+          } else {
+            window.location.reload(true);
+          }
+        }
+      }
+
+      // Check if we're running on a remote host but the landing page has been left as default (localhost)
+      function checkLandingPageUrl(landingPageUrl) {
+        return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Form styles in template override - input.css -->
+    <!-- Page div -->
+    <div class="min-h-screen bg-gray-200 dark:bg-slate-800 px-6 lg:px-8">
+      <!-- Header div -->
+      <!-- <div class="static h-28"> -->
+      <div class="static h-36">
+        <div>
+          <p class="py-5 pl-6 text-4xl font-bold text-gray-800 dark:text-gray-50">
+            Azure Marketplace API Emulator <code class="text-xl font-bold text-gray-800 dark:text-gray-50">BETA</code>
+          </p>
+        </div>
+        <div class="pt-2">
+          <nav
+            class="relative w-full flex flex-wrap items-center justify-between rounded-md text-white bg-slate-700 shadow-lg navbar navbar-expand-lg navbar-light py-2">
+            <div class="px-4">
+              <ul class="flex">
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="index.html">Marketplace Token</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="offers.html">Offers</a></li>
+                <li class="display: inline px-3 text-orange-400">Config</li>
+                <li class="display: inline px-3 hover:text-cyan-400">
+                  <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
+                    <img
+                      src="images/github-mark-white.png"
+                      title="Report an issue"
+                      alt="GitHub icon"
+                      height="25"
+                      width="25"
+                  /></a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- horizontal wrapper -->
+      <!-- Information box -->
+      <div class="flex flex-wrap">
+        <div
+          class="relative max-w-[400px] bg-slate-100 dark:bg-slate-700 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4 mr-4">
+          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">Warning</div>
+          <div class="text-sm text-gray-900 dark:text-gray-50">
+            <p>
+              This form allows you to update environment variables for the emulator.
+              <span class="font-bold">Understand the scope </span>of the variables before updating to avoid unexpexted
+              behaviours from the emulator that may distort testing retults.
+            </p>
+            <p class="py-2">
+              Note: The default value for "Landing Page URL" assumes you are running the emulator locally. If you are
+              running the emulator on a remote host (eg in Azure Container Images) update the Landing Page URL with the
+              IP address or FQDN of your remote host.
+            </p>
+          </div>
+        </div>
+        <!-- Marketplace token box -->
+        <div
+          class="relative max-w-[970px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
+          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
+            Emulator Configuration
+          </div>
+          <div class="w-[600px]">
+            <div class="text-sm p-3">
+              <div class="py-1">
+                <span class="inline-block w-56">Webhook URL</span>
+                <input id="webhookUrl" type="text" class="text-sm" aria-label="Webhook URL" />
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Webhook URL"
+                  class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+              <div class="py-1">
+                <span class="inline-block w-56">Landing Page URL</span>
+                <input id="landingPageUrl" type="text" aria-label="Landing Page URL" />
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Landing Page URL"
+                  class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+            </div>
+            <div class="text-sm bg-slate-900 rounded-lg border-2 border-red-800 p-3 mt-14 mb-3">
+              <p class="text-center font-semibold text-red-400 pb-1">Proceed with caution!</p>
+              <div class="py-1">
+                <span class="inline-block text-slate-50 w-56">Operation Timeout (ms)</span>
+                <input
+                  id="operationTimeoutMS"
+                  type="text"
+                  aria-label="Operation Timeout"
+                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Operation Timeout"
+                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+              <div class="py-1">
+                <span class="inline-block text-slate-50 w-56">Subscription Update Delay (ms)</span>
+                <input
+                  id="subscriptionUpdateDelayMS"
+                  aria-label="Subscription Update Delay"
+                  type="text"
+                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Subscription Update Delay"
+                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+              <div class="py-1">
+                <span class="inline-block text-slate-50 w-56">Webhook Call Delay (ms)</span>
+                <input
+                  id="webhookCallDelayMS"
+                  aria-label="Webhook Call Delay"
+                  type="text"
+                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Webhook Call Delay"
+                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+              <div class="py-1">
+                <span class="inline-block text-slate-50 w-56">Require Marketplace Auth Token</span>
+                <select
+                  id="requireAuth"
+                  aria-label="Require Auth" class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800">
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+                <button
+                  onclick="updateConfig_click(event)"
+                  aria-label="Update Require Auth"
+                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
+                  set
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+table {
+    margin-top: 20px;
+    min-width: 1000px;
+    font-size: .875rem;
+    width: 100%;
+    border-bottom: 1px solid rgb(209 213 219);
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+}
+
+tr.animate-fade {
+    animation: fadeInOut 1.5s ease;
+}
+
+tr.unsubscribed td {
+    font-style: italic;
+    opacity: .75;
+}
+
+tr.unsubscribed td:last-child {
+    opacity: 1;
+}
+
+@keyframes fadeInOut {
+    0% { background-color: transparent; }
+    50% { background-color: orange; }
+    100% { background-color: transparent; }
+}
+
+td {
+    line-height: 1.25rem;
+    font-size: .875rem;
+    border-right: 1px solid rgb(209 213 219);
+    padding: .1rem .25rem;
+    height: 1.25rem;
+}
+
+td:last-child {
+    border: 0;
+}
+
+td.publisher {
+    background-color: var(--row-highlight-bg-color);
+    color: var(--row-highlight-text-color);
+    font-weight: 600;
+    line-height: 1.25rem;
+    font-size: .9rem;
+    padding: .5rem 0;
+    border: 0;
+    border-top: 2px solid rgb(229 231 235);
+    border-bottom: 1px solid rgb(229 231 235);
+    text-align: center;
+}
+
+section.main button {
+    font-size: .75rem;
+    width: 7rem;
+    margin: .25rem;
+    line-height: 1rem;
+    padding: .1rem 0;
+    opacity: 1 !important;
+}
+
+section.main button.state {
+    border-color: rgb(34 197 94);
+    background-color: rgb(187 247 208);
+}
+
+section.main button.detail {
+    border-color: rgb(59 130 246);
+    background-color: rgb(191 219 254);
+}
+
+section.main button:disabled {
+    color: initial;
+    cursor: default;
+}
+
+div.key {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+div.key p {
+    text-align: center;
+    font-weight: 500;
+    font-size: .875rem;
+    margin: 0;
+    padding: 0;
+}

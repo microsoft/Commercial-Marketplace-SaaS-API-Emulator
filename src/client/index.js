@@ -1,7 +1,6 @@
 /// <reference path="core.js" />
 
 $(async () => {
-
     // Configure purchase form
 
     const defaultPurchaser = {
@@ -45,34 +44,12 @@ $(async () => {
 
     // Retrieve offers
 
-    const offers = await callAPI('/api/util/offers');
-
-    const offerTemplate = $("section.marketplace .template");
-
-    for (const offerId in offers) {
-
-        if (!Object.prototype.hasOwnProperty.call(offers, offerId)) {
-            continue;
-        }
-
-        const offer = offers[offerId];
-        const isPerUser = Object.values(offer.plans || {}).find((_, i) => i === 0)?.isPricePerSeat === true;
-
-        const $offer = offerTemplate.clone()
-            .removeClass("template")
-            .appendTo(offerTemplate.parent());
-
-        $offer.children(".name").html(offer.displayName);
-        $offer.children(".publisher").html(offer.publisher);
-        $offer.children(".price").html(`free (emulated)`);
-
-        $offer.find(".get-it-now a").on('click', () => {
-            $("section.purchase > div").removeClass("hidden");
-            $("section.purchase > div.placeholder").addClass("hidden");
-            selectOffer(offer);
-            return false;
-        });
-    }
+    await renderOffers($('section.offers'), 'Get it now', (e, offer) => {
+        $("section.purchase > div").removeClass("hidden");
+        $("section.purchase > div.placeholder").addClass("hidden");
+        selectOffer(offer);
+        return false;
+    });
 
 });
 

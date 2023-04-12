@@ -1,0 +1,25 @@
+section.main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+section.offers {
+    flex: 0 0;
+}
+
+div.new div.icon {
+    background-color: rgb(187 247 208);
+}
+
+div.new div.action a:hover {
+    background-color: rgb(16 185 129);
+    color: #f2f2f2;
+}
+
+section.detail {
+    border: 1px solid rgb(186 230 253);
+    background-color: rgb(248 250 252);
+    border-radius: .5rem;
+    flex: 0 0 300px;
+}

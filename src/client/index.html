@@ -2,468 +2,161 @@
 <html lang="en">
   <head>
     <title>Marketplace API Emulator</title>
-    <link rel="stylesheet" href="output.css" />
-    <link rel="stylesheet" href="jquery-modal.css" />
+    <link rel="stylesheet" href="core.css" />
+    <link rel="stylesheet" href="index.css" />
     <script
       src="https://code.jquery.com/jquery-3.6.3.min.js"
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
       crossorigin="anonymous"></script>
       <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    <script src="notifications.js"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
-    <link rel="manifest" href="images/site.webmanifest" />
+        <script src="notifications.js"></script>
+        <script src="core.js"></script>
+        <script src="index.js"></script>
+        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+        <link rel="manifest" href="images/site.webmanifest" />
 
-    <script type="text/javascript">
+        <script type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>Azure Marketplace API Emulator <sub>BETA</sub></h1>
+        </header>
 
-    let offers = {};
+        <nav>
+            <ul>
+                <li><a href="/" class="active">Marketplace</a></li>
+                <li><a href="/subscriptions.html">Subscriptions</a></li>
+                <li><a href="/landing.html">Landing Page</a></li>
+                <li><a href="/offers.html">Offers</a></li>
+                <li><a href="/config.html">Config</a></li>
+                <li><a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
 
-     $(async () => {
-        const result = await fetch('/api/util/offers', { method: 'GET' });
+                    <svg height="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
+                        <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+                    </svg>
 
-        if (result.status != 200) {
-          // ?
-        }
-
-        offers = await result.json();
-
-        createFormFields($('#offer-container'), offers, '');
-
-        $('#generate-token')
-          .click(generateToken)
-          .addClass('bg-sky-200 hover:bg-sky-100 border border-sky-500 rounded px-1 m-1 text-sm');
-      });
-
-      // Generate the Purchase Token 
-      function generateToken() {
-        const sub = { 
-          "id": $('#id').text(),
-          "name": $('#name').val(),
-          "offerId": $('#offerId').val(),
-          "quantity": $('#quantity').val(),
-          "planId": $('#planId').val(),
-            "beneficiary": {
-              "emailId": $('#emailId').val(),
-              "objectId": $('#objectId').val(),
-              "tenantId": $('#tenantId').text()
-            },
-            "purchaser": {
-              "emailId": $("#emailId").val(),
-              "objectId": $('#objectId').val(),
-              "tenantId": $('#tenantId').text()
-            },
-            "autoRenew": false,
-            "isTest": false,
-            "isFreeTrial": false
-        };
-
-        const json = JSON.stringify(sub, null, 2);
-        const base64 = btoa(json);
-
-        $('#json-result').text(json);
-        $('#base64-result').text(base64);
-      }
-
-      const sid = guid();
-      const oid = guid();
-      const tid = guid();
-
-      // Update the plan select pane 
-      function select_click(e) {
-        filterList(e.target.id, false); 
-        $('#offername').text(offers[e.target.id].displayName);
-        $('#offerId').val(e.target.id);
-        $('#id').text(sid);
-        $('#emailId').val('test@fourthcoffee.com');
-        $('#name').val('FourthCoffee ' + offers[e.target.id].displayName);
-        $('#tenantId').text(tid);
-        $('#objectId').val(oid);
-        $('#offerId').text();
-        $('#offerDetail').hide();
-        $('#showDetail').text('Show Detail');
-        $('#order').show();
-      }
-
-      // Create fields for the form 
-      function createFormFields(parent, obj, path) {
-        for (const i in obj) {
-          const formRow = $(document.createElement('div')).addClass('text-sm text-gray-800 inline-block dark:text-gray-50');
-          let currentDiv = $(document.createElement('div')).addClass('w-44  my-2 mx-3 inline-block bg border border-slate-300 rounded-sm shadow-md');
-          currentDiv.append($(document.createElement('div')).prepend('<img id="theImg" src="images/fc_logo.png" width="35" height="35"/>').addClass('w-[100%] h-12 px-3 py-2 bg-blue-100 inline-block'));
-          currentDiv.append($(document.createElement('div')).text(obj[i].displayName).addClass('w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block'));         
-          currentDiv.append($(document.createElement('div')).text('by FourthCoffee').addClass('w-40 h-24 px-2 text-left font-semibold text-[10px] bg-white inline-block'));
-          currentDiv.append($(document.createElement('div')).text('Plans start from').addClass('w-40 px-2 text-[10px] text-left italic bg-white inline-block'));
-          currentDiv.append($(document.createElement('div')).attr('id', ('details'+i)).addClass('w-40 px-2 text-left pb-2 text-xs bg-white inline-block'));
-          filterList(i, true);
-          currentDiv.append($(document.createElement('div')).attr('id', i).text('Get it now').addClass('w-[100%] h-10 p-3 bg-white text-xs text-center text-cyan-500 hover:bg-sky-500 hover:cursor-pointer hover:text-white border-t border-slate-100 inline-block').attr('onclick', 'select_click(event)'));
-          formRow.append(currentDiv);
-          parent.append(formRow);
-        }
-      }
-
-      // Create a GUID 
-      function guid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-          var r = (Math.random() * 16) | 0,
-            v = c == 'x' ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        });
-      }
-
-      // On change to the Offer dropdown list 
-      $(document).ready(function(){
-        $('#offerId').change(function(e){
-          filterList([$('#offerId').val()], false);
-        });
-      });
-
-      // Update the plans dropdown based on the 
-      async function filterList(offer, once) {
-        let allplans = await offers;
-        let filter = allplans[offer].plans;
-        let getPrice = 0;
-        $(planId).empty()
-        let checkMin = [];
-        for (const planId in filter) {
-        if ($(`#${planId}`) !== null) {
-          $("<option />", {
-              val: filter[planId].planId,
-              text: filter[planId].planId +' (' + filter[planId].displayName + ')'
-          }).appendTo($('#planId'));
-          checkMin.push(filter[planId].planComponents.recurrentBillingTerms[0].price);
-          getPrice = filter[planId].planComponents.recurrentBillingTerms[0].price;
-        }
-      }
-
-      if (once === true) {
-          setDetails(offer,
-          filter[($('#planId')).val()].planComponents.recurrentBillingTerms[0].currency, 
-          filter[($('#planId')).val()].planComponents.recurrentBillingTerms[0].termUnit,
-          filter[($('#planId')).val()].isPricePerSeat,
-          Math.min(...checkMin))
-      }
-
-      if (filter[($('#planId')).val()].isPricePerSeat === false) {
-        $('#qtyRow').hide();  
-      } else { 
-        $('#qtyRow').show();
-      }
-      };
-
-      // Set the price from string 
-      function setDetails(offer, currency, termunit, peruser, min) {
-        let detailsCat = ('#details' + offer);
-        let currSymbol = '';
-        var currency_symbols = {
-            'USD': '$', // US Dollar
-            'EUR': '€', // Euro
-            'CRC': '₡', // Costa Rican Colón
-            'GBP': '£', // British Pound Sterling
-            'ILS': '₪', // Israeli New Sheqel
-            'INR': '₹', // Indian Rupee
-            'JPY': '¥', // Japanese Yen
-            'KRW': '₩', // South Korean Won
-            'NGN': '₦', // Nigerian Naira
-            'PHP': '₱', // Philippine Peso
-            'PLN': 'zł', // Polish Zloty
-            'PYG': '₲', // Paraguayan Guarani
-            'THB': '฿', // Thai Baht
-            'UAH': '₴', // Ukrainian Hryvnia
-            'VND': '₫', // Vietnamese Dong
-          };
-
-          if(currency_symbols[currency]!==undefined) {
-              currSymbol = (currency_symbols[currency]);
-          }
-        
-        let tUnit = '';
-        switch (termunit) {
-          case 'P1M':
-            tUnit = 'month';
-            break;
-          case 'P1Y':
-            tUnit = 'year';
-            break;
-        } 
-
-        if (peruser === true) { 
-            term = '/user/' + tUnit;
-          } else {
-            term = '/' + tUnit;
-        }
-
-        ($(detailsCat).text(currSymbol + min + term)); 
-      }
-
-      // Show and hide the advanced details 
-      function showDetail() {
-        let divText = $('#showDetail').text();
-        if (divText === 'Show Detail') {
-          $('#offerDetail').show();
-          $('#showDetail').text('Hide Detail');
-        } else {
-          $('#offerDetail').hide();
-          $('#showDetail').text('Show Detail');
-        };        
-      }
-
-      // Check if we're running on a remote host but the landing page has been left as default (localhost)
-      function checkLandingPageUrl(landingPageUrl) {
-        return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
-      }
-
-      // post the token to the given landing page URL
-      async function posttoLanding(element) {
-
-        if($('#qtyRow').is(':visible')) { 
-          if($('#quantity').val().length === 0) { 
-            alert('Quantity is required for a per-seat plan.');
-            return;
-          };
-        };
-      
-
-        generateToken();
-        const response = await fetch('/api/util/config', { method: 'GET' });
-
-        if (response != 200) {
-          // ?
-        }
-
-        const result = await response.json();
-        const landingPage = result.landingPageUrl;
-
-        if (!landingPage) {
-          alert('No landing page URL set in config.');
-        }
-
-        if (checkLandingPageUrl(landingPage)) {
-          alert(
-            'The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct. Visit the Config page to check.'
-          );
-        }
-
-        const mtoken = $(element).html();
-        const target = landingPage + '?token=' + mtoken;
-
-        window.open(target, '_blank');
-      }
-
-      // button copy to clipboard
-      function copyToClipboard() {
-        navigator.clipboard.writeText($('#base64-result').html());
-        const button = $(this).closest('.ui-dialog').find('.ui-button')[1];
-        button.innerHTML='Copied';
-        window.setTimeout(()=>button.innerHTML='Copy',2000);
-      }
-
-      // Load the token modal 
-      function getToken() {
-        generateToken();
-        $( "#dialog-confirm" ).dialog({
-          resizable: false,
-          height: "auto",
-          width: 400,
-          modal: true,
-          buttons: {
-            "Copy": copyToClipboard,
-            "Close": function() {
-              $( this ).dialog( "close" );
-            }
-          }
-        });
-      };
-
-    </script>
-  </head>
-
-  <body>
-    <!-- Form styles in template override - input.css -->
-    <!-- Page div -->
-    <div class="min-h-screen bg-gray-200 dark:bg-slate-800 px-6 lg:px-8">
-      <!-- Header div -->
-      <!-- <div class="static h-28"> -->
-      <div class="static h-36">
-        <div>
-          <p class="text-4xl font-bold text-gray-800 dark:text-gray-50 py-5 pl-6">
-            Azure Marketplace API Emulator <code class="text-xl font-bold text-gray-800 dark:text-gray-50">BETA</code>
-          </p>
-        </div>
-        <div class="pt-2">
-          <nav
-            class="relative w-full flex flex-wrap items-center justify-between rounded-md text-white bg-slate-700 shadow-lg navbar navbar-expand-lg navbar-light py-2">
-            <div class="px-4">
-              <ul class="flex">
-                <li class="display: inline px-3 text-orange-400">Marketplace Token</li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="offers.html">Offers</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="config.html">Config</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400">
-                  <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
-                    <img src="images/github-mark-white.png" title="Report an issue" height="25" width="25"
-                  /></a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        </div>
-      </div>
-      <!-- horizontal wrapper -->
-      <div class="w-full min-w-400 flex-row inline-flex flex-wrap">
-        <div
-          class="relative w-[400px] bg-slate-100 dark:bg-slate-700 px-6 pt-6 pb-4 shadow-xl rounded-xl ring-1 ring-gray-900/5 mr-4">
-          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
-            Introduction
-          </div>
-          <div class="text-sm text-gray-900 dark:text-gray-50">
-            <p>
-              To get started this page provides a mock view of the 
-              <a
-                class="text-cyan-600 hover:underline"
-                target="_blank"
-                href="https://azuremarketplace.microsoft.com/">
-                Marketplace </a>
-              purchase, high level, to help understand the purchase flow through to the Landing Page, from where you can view your subscription and see the Webhooks.
-            </p>
-            <p class="pt-2">
-              There are some default values for some of the fields. You can override these or any other values on the
-              page.
-            </p>
-            <p class="pt-2 font-semibold">The emulator ships with two sample offers:</p>
-            <ul style="list-style-type:disc;" class="pl-8">
-              <li>flat-rate</li>
-              <li>per-user</li>
+                </a></li>
             </ul>
-            <p class="pt-2">            
-            Each of the offers has 3 sample plans.
-            </p>
-            <p class="pt-2 font-semibold">To use the page:
-            </p>
-            <ul style="list-style-type:disc;" class="pl-8">
-              <li>Select an offer with 'Get it now'</li>
-              <li>Choose a plan from the dropdown</li>
-              <li>Enter the addition details</li>
-              <li>Click 'Continue'</li>
-            </ul>
-            <p class="pt-1">            
-              Name: a friendly name to identity the subscription after purchase.
-            </p>
-            <p class="pt-2">            
-              This is the intent to purchase a subscription, it will post to the Landing Page 
-              to complete and collect additional information about the customer.
-            </p>
-            <p class="pt-2">            
-                There is the option to view additional detail and view / copy the purchase token.
-              </p>
-            <p class="pt-6">
-              For full documentation on the APIs visit:
-              <a
-                class="text-cyan-600 hover:underline"
-                target="_blank"
-                href="https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription">
-                SaaS fulfillment Subscription APIs v2 in Microsoft commercial marketplace</a
-              >
-            </p>
-          </div>
-        </div>
-        <!-- Marketplace token box -->
-        <div
-          class="relative min-w-[820px] w-[100%] flex-1 bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
-          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
-            Sample Marketplace Behaviour
-          </div>
-          <div class="flex flex-wrap">
-            <!--Form side to build out offer cards-->
-            <div class="relative min-w-[460px] w-[100%] flex-1 px-4 overflow-x-auto">
-              <div id="offer-container"></div>
-            </div>
-            <!--Result side-->
-            <div class="w-[460px] h-[570px] p-3 text-sm bg-slate-100 dark:bg-slate-700 rounded-lg">
-              <!-- Result wrapper -->
-              <div id="order" style="display: none" class="p-3 bg-white text-gray-600 border-2 border-slate-200 shadow-md">
-                <div id="form-container">
-                  <div class="text-xl pt-2 pb-3">One more thing...</div>
-                  <div class="pt-2 pb-4 inline-block">
-                    <div class="inline-block"><img id="theImg" src="images/fc_logo.png" width="40" height="40"/></div>
-                    <div class="inline-block">
-                      <span id="offername" class="pl-2 font-bold"></span><br>
-                      <span class="text-[10px] font-bold pl-2">by FourthCoffee</span>
-                    </div>
-                  </div>
-                  <div class="text-sm">
-                    <select id="planId" class="rounded-none py-0">
-                    </select>
-                  </div>
-                  <div class="text-xs py-3">This app requires some basic profile information. We have pulled your Microsoft Account 
-                    data to help you get started. Azure Marketplace will save your information for next time.
-                  </div>
-                  <div class="py-1">
-                    <label class="form-label text-sm inline-block w-24">Name</label>
-                    <input type="text" id="name" for="selected" aria-label="emailId" class="rounded-none py-0">
-                  </div>
-                  <div id="qtyRow" style="display: none" class="py-1">
-                    <label class="form-label inline-block w-24 constols">Quantity</label>
-                    <input type="number" id="quantity" for="selected" aria-label="quantity" min="1" class="rounded-none py-0">  
-                  </div>
-                  <div class="py-1">
-                    <label class="form-label inline-block w-24">email</label>
-                    <input type="text" id="emailId" for="selected" aria-label="emailId" class="rounded-none py-0">
-                    <input type="hidden" id="objectId" value="">
-                    <input type="hidden" id="offerId" value="">
-                  </div>
-                  <div class="text-xs py-3">Collect additional information above, as desired.<br>
-                    The User also the Terms and Condtions and Privacy policy here to proceed.
-                  </div>
-                  <!-- <div id="base64-result" class="text-xs py-3" style="display: none"> -->
-                  </div>
-                  <div class="text-right">
-                    <button
-                    id="posttoken-button"
-                    onclick="posttoLanding('#base64-result')"
-                    aria-label="Post to Landing Page"
-                    class="text-sm border border-slate-500 text-white bg-sky-600 px-5 py-1 mt-3 mr-3">
-                    Continue
-                    </button>
-                    
-                  </div>
-                  <div class="inline-block w-[100%] text-center">
-                    <div class="w-1/3 inline-block"><hr class="border border-slate-300 align-middle"></div>
-                    <div class="inline-block text-center p-2 text-slate-600 text-xs hover:bg-slate-100 hover:cursor-pointer rounded-md" onclick="showDetail()" id="showDetail">Show Detail</div>
-                    <div class="w-1/3 inline-block"><hr class="border border-slate-300 align-middle"></div>
-                  </div>
-                  <!-- <div id="offerDetail" style="display: none" class="py-1"> -->
-                  <div id="offerDetail" style="display: none" class="py-1">
-                    <label class="form-label inline-block w-28 constols pb-1">Subscription Id:</label>
-                    <label id="id"></label>
-                    <br/>
-                    <label class="form-label inline-block w-28 constols">Tenant Id:</label>
-                    <label id="tenantId"></label>  
-                
-                    <div class="text-center">
-                      <button
-                      id="gettoken-button"
-                      onclick="getToken()"
-                      aria-label="View Purchase Token"
-                      class="text-xs border border-slate-500 text-gray-700 hover:text-cyan-700 hover:border-cyan-700 bg-slate-100 mt-3 px-2 mr-3">
-                      View Purchase Token
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                </div>
-              </div>
+        </nav>
 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <main>
+            <section class="info">
+                <header>Introduction</header>
+                <article>
+                    <p>To get started this page provides a mock view of the Marketplace purchase, high level, to help understand the purchase flow through to the Landing Page, from where you can view your subscription and see the Webhooks.</p>
+                    <p>There are some default values for some of the fields. You can override these or any other values on the page.</p>
+                    <p>
+                        <strong>The emulator ships with two sample offers:</strong>
+                        <ul>
+                            <li>flat-rate</li>
+                            <li>per-user</li>
+                        </ul>
+                        Each of the offers has 3 sample plans.
+                    </p>
+                    <p>
+                        <strong>To use the page:</strong>
+                        <ul>
+                            <li>Select an offer with 'Get it now'</li>
+                            <li>Choose a plan from the dropdown</li>
+                            <li>Enter the addition details</li>
+                            <li>Click 'Continue'</li>
+                        </ul>
+                    </p>
+                    <p>This is the intent to purchase a subscription, it will post to the Landing Page to complete and collect additional information about the customer.</p>
+                    <p>There is the option to view additional detail and view / copy the purchase token.</p>
+                    <p>
+                        For full documentation on the APIs visit: 
+                        <a href="https://learn.microsoft.com/azure/marketplace/partner-center-portal/pc-saas-fulfillment-subscription-api#resolve-a-purchased-subscription" target="_blank">
+                            SaaS fulfillment Subscription APIs v2 in Microsoft commercial marketplace
+                        </a>
+                    </p>
+                </article>
+            </section>
 
-    <div id="dialog-confirm" title="Synthetic Purchase Token">
-      <div id="base64-result" class="text-xs break-words text-gray-600"></div>
-    </div>
-  </body>
+            <section class="main">
+                <header>Sample Marketplace Behaviour</header>
+                <div>
+                    <section class="offers">
+                    </section>
+                    <section class="purchase">
+                        <div class="placeholder">
+                            Select an offer to the left to configure the purchase by clicking "Get it now"
+                        </div>
+                        <div class="hidden">
+                            <div class="header">Configure Purchase</div>
+                            <div class="offer"><span>#Offer Name#</span><span>#Publisher#</span></div>
+                            <div class="content">
+                                <div>
+                                    <div>
+                                        <label>Plan</label>
+                                        <select></select>
+                                    </div>
+                                </div>
+                                <p>This app requires some basic profile information. We have pulled your Microsoft Account data to help you get started. Azure Marketplace will save your information for next time.</p>
+                                <div>
+                                    <div>
+                                        <label>Subscription Name</label>
+                                        <input id="subscriptionName" type="text" />
+                                        <input id="subscriptionId" type="hidden" />
+                                    </div>
+                                    <div class="seat-count hidden">
+                                        <label>Quantity</label>
+                                        <input id="quantity" type="number" />
+                                    </div>
+                                    <div class="right toggle-optional">
+                                        <a href="#">Show optional fields</a>
+                                    </div>
+                                    <div class="optional hidden">
+                                        <p>To simulate a purchase with a real user, enter their AAD Object ID and Tenant ID below.</p>
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Beneficiary Email</label>
+                                        <input id="beneficiaryEmail" type="text" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Beneficiary Object ID</label>
+                                        <input id="beneficiaryOid" type="text" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Beneficiary Tenant ID</label>
+                                        <input id="beneficiaryTid" type="text" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <p>To simulate a purchase with a real user on behalf of another real user, check "Specify purchaser" enter their AAD Object ID and Tenant ID below.</p>
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Specify purchaser</label>
+                                        <input id="purchaserIsBeneficiary" type="checkbox" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Email</label>
+                                        <input id="purchaserEmail" type="text" disabled="disabled" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Object ID</label>
+                                        <input id="purchaserOid" type="text" disabled="disabled" />
+                                    </div>
+                                    <div class="optional hidden">
+                                        <label>Purchaser Tenant ID</label>
+                                        <input id="purchaserTid" type="text" disabled="disabled" />
+                                    </div>
+                                </div>
+                                <p>Collect additional information above, as desired.<br />
+                                    The user must also accept the Terms and Conditions and Privacy policy here to proceed.</p>
+                                <p class="justify">
+                                    <button id="viewJsonButton" class="secondary">View JSON</button>
+                                    <button id="viewTokenButton" class="secondary">View token</button>
+                                    <button id="purchaseButton" class="primary">Continue</button>
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+        </main>
+    </body>
 </html>

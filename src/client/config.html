@@ -2,236 +2,123 @@
 <html lang="en">
   <head>
     <title>Marketplace API Emulator</title>
-    <link rel="stylesheet" href="output.css" />
+    <link rel="stylesheet" href="core.css" />
+    <link rel="stylesheet" href="config.css" />
     <script
       src="https://code.jquery.com/jquery-3.6.3.min.js"
       integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
       crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="core.js"></script>
+        <script src="config.js"></script>
+        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+        <link rel="manifest" href="images/site.webmanifest" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
-    <link rel="manifest" href="images/site.webmanifest" />
+        <script type="text/javascript">
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>Azure Marketplace API Emulator <sub>BETA</sub></h1>
+        </header>
 
-    <script type="text/javascript">
-      $(async () => {
-        let response = await fetch('/api/util/config', { method: 'GET' });
+        <nav>
+            <ul>
+                <li><a href="/">Marketplace</a></li>
+                <li><a href="/subscriptions.html">Subscriptions</a></li>
+                <li><a href="/landing.html">Landing Page</a></li>
+                <li><a href="/offers.html">Offers</a></li>
+                <li><a href="/config.html" class="active">Config</a></li>
+                <li><a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
 
-        if (response != 200) {
-          // ?
-        }
+                    <svg height="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
+                        <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+                    </svg>
 
-        let result = await response.json();
+                </a></li>
+            </ul>
+        </nav>
 
-        const configRowTemplate = $('#config-row');
+        <main>
+            <section class="info">
+                <header>Warning</header>
+                <article>
+                    <p>
+                        This form allows you to update environment variables for the emulator.
+                        <strong>Understand the scope </strong>of the variables before updating to avoid unexpected
+                        behaviours from the emulator that may distort testing results.
+                      </p>
+                      <p>
+                        Note: The default value for "Landing Page URL" assumes you are running the emulator locally. If you are
+                        running the emulator on a remote host (eg in Azure Container Images) update the Landing Page URL with the
+                        IP address or FQDN of your remote host.
+                      </p>
+                </article>
+            </section>
 
-        for (const key in result) {
-          if ($(`#${key}`) !== null) {
-            $(`#${key}`).val(result[key].toString());
-          } else {
-          }
-        }
-      });
+            <section class="main">
+                <header>Configuration</header>
+                <summary>Changing configuration on this page will only store the values until the emulator is restarted.
+                    To run the emulator with the new values, set the appropriate environment variables on startup.
+                </summary>
 
-      async function updateConfig_click(e) {
-        const $this = $(e.target);
-        const value = $this.parent().children(':input').val();
-        const key = $this.parent().children(':input').attr('id');
+                <div class="form">
+                    <header>Webhook and Landing Page</header>
+                    <summary>The webhook and landing pages are required when creating an offer in Partner Center.</summary>
+                    <div>
+                        <label>Webhook URL</label>
+                        <input data-json-path="webhookUrl" />
+                        <button>Set</button>
+                    </div>
 
-        if (value !== false && !value) {
-          alert('Enter a value.');
-        } else {
-          if (key === 'landingPageUrl') {
-            if (checkLandingPageUrl(value)) {
-              alert(
-                'The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct.'
-              );
-            }
-          }
+                    <div>
+                        <label>Landing Page URL</label>
+                        <input data-json-path="landingPageUrl" />
+                        <button>Set</button>
+                    </div>
+                </div>
 
-          if (confirm('Are you really sure?')) {
-            const $this = $(e.target);
-            const value = $this.parent().children(':input').val();
-            const key = $this.parent().children(':input').attr('id');
+                <div class="form">
+                    <header>Emulator Behaviour</header>
+                    <summary>This section controls the behaviour of the emulator, timeouts, delays, etc</summary>
+                    <div>
+                        <label>Operation Timeout (ms)</label>
+                        <input type="number" data-json-path="operationTimeoutMS" />
+                        <button>Set</button>
+                    </div>
+                    <div>
+                        <label>Subscription Update Delay (ms)</label>
+                        <input type="number" data-json-path="subscriptionUpdateDelayMS" />
+                        <button>Set</button>
+                    </div>
+                    <div>
+                        <label>Webhook Call Delay (ms)</label>
+                        <input type="number" data-json-path="webhookCallDelayMS" />
+                        <button>Set</button>
+                    </div>
+                    <div>
+                        <label>Require Marketplace Auth Token</label>
+                        <select data-json-path="requireAuth">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                        <button>Set</button>
+                    </div>
+                </div>
+                    
+                <div class="form kenny-loggins">
+                    <header>Danger Zone!</header>
+                    
+                    <div>
+                        <label>Clear Data File</label>
+                        <button class="danger">Clear</button>
+                    </div>
 
-            const config = {};
-            config[key] = value;
+                </div>
+            </section>
 
-            const response = await fetch('/api/util/config', {
-              method: 'PATCH',
-              body: JSON.stringify(config),
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-
-            if (!response.ok) {
-              const text = await response.text();
-              console.log(response.status + '-' + text);
-              alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
-              window.location.reload(true);
-            }
-          } else {
-            window.location.reload(true);
-          }
-        }
-      }
-
-      // Check if we're running on a remote host but the landing page has been left as default (localhost)
-      function checkLandingPageUrl(landingPageUrl) {
-        return landingPageUrl.startsWith('http://localhost') && $(location).attr('hostname') !== 'localhost';
-      }
-    </script>
-  </head>
-
-  <body>
-    <!-- Form styles in template override - input.css -->
-    <!-- Page div -->
-    <div class="min-h-screen bg-gray-200 dark:bg-slate-800 px-6 lg:px-8">
-      <!-- Header div -->
-      <!-- <div class="static h-28"> -->
-      <div class="static h-36">
-        <div>
-          <p class="py-5 pl-6 text-4xl font-bold text-gray-800 dark:text-gray-50">
-            Azure Marketplace API Emulator <code class="text-xl font-bold text-gray-800 dark:text-gray-50">BETA</code>
-          </p>
-        </div>
-        <div class="pt-2">
-          <nav
-            class="relative w-full flex flex-wrap items-center justify-between rounded-md text-white bg-slate-700 shadow-lg navbar navbar-expand-lg navbar-light py-2">
-            <div class="px-4">
-              <ul class="flex">
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="index.html">Marketplace Token</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
-                <li class="display: inline px-3 hover:text-cyan-400"><a href="offers.html">Offers</a></li>
-                <li class="display: inline px-3 text-orange-400">Config</li>
-                <li class="display: inline px-3 hover:text-cyan-400">
-                  <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
-                    <img
-                      src="images/github-mark-white.png"
-                      title="Report an issue"
-                      alt="GitHub icon"
-                      height="25"
-                      width="25"
-                  /></a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        </div>
-      </div>
-      <!-- horizontal wrapper -->
-      <!-- Information box -->
-      <div class="flex flex-wrap">
-        <div
-          class="relative max-w-[400px] bg-slate-100 dark:bg-slate-700 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4 mr-4">
-          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">Warning</div>
-          <div class="text-sm text-gray-900 dark:text-gray-50">
-            <p>
-              This form allows you to update environment variables for the emulator.
-              <span class="font-bold">Understand the scope </span>of the variables before updating to avoid unexpexted
-              behaviours from the emulator that may distort testing retults.
-            </p>
-            <p class="py-2">
-              Note: The default value for "Landing Page URL" assumes you are running the emulator locally. If you are
-              running the emulator on a remote host (eg in Azure Container Images) update the Landing Page URL with the
-              IP address or FQDN of your remote host.
-            </p>
-          </div>
-        </div>
-        <!-- Marketplace token box -->
-        <div
-          class="relative max-w-[970px] bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
-          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
-            Emulator Configuration
-          </div>
-          <div class="w-[600px]">
-            <div class="text-sm p-3">
-              <div class="py-1">
-                <span class="inline-block w-56">Webhook URL</span>
-                <input id="webhookUrl" type="text" class="text-sm" aria-label="Webhook URL" />
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Webhook URL"
-                  class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-              <div class="py-1">
-                <span class="inline-block w-56">Landing Page URL</span>
-                <input id="landingPageUrl" type="text" aria-label="Landing Page URL" />
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Landing Page URL"
-                  class="text-sm bg-indigo-200 hover:bg-indigo-100 border border-indigo-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-            </div>
-            <div class="text-sm bg-slate-900 rounded-lg border-2 border-red-800 p-3 mt-14 mb-3">
-              <p class="text-center font-semibold text-red-400 pb-1">Proceed with caution!</p>
-              <div class="py-1">
-                <span class="inline-block text-slate-50 w-56">Operation Timeout (ms)</span>
-                <input
-                  id="operationTimeoutMS"
-                  type="text"
-                  aria-label="Operation Timeout"
-                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Operation Timeout"
-                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-              <div class="py-1">
-                <span class="inline-block text-slate-50 w-56">Subscription Update Delay (ms)</span>
-                <input
-                  id="subscriptionUpdateDelayMS"
-                  aria-label="Subscription Update Delay"
-                  type="text"
-                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Subscription Update Delay"
-                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-              <div class="py-1">
-                <span class="inline-block text-slate-50 w-56">Webhook Call Delay (ms)</span>
-                <input
-                  id="webhookCallDelayMS"
-                  aria-label="Webhook Call Delay"
-                  type="text"
-                  class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800" />
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Webhook Call Delay"
-                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-              <div class="py-1">
-                <span class="inline-block text-slate-50 w-56">Require Marketplace Auth Token</span>
-                <select
-                  id="requireAuth"
-                  aria-label="Require Auth" class="text-sm focus:border-red-500 focus:ring-red-500 focus:text-red-800">
-                  <option value="true">True</option>
-                  <option value="false">False</option>
-                </select>
-                <button
-                  onclick="updateConfig_click(event)"
-                  aria-label="Update Require Auth"
-                  class="text-sm bg-red-200 hover:bg-red-100 border hover:text-red-800 hover:border-red-500 border-red-500 rounded mx-1 px-3">
-                  set
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
+        </main>
+    </body>
 </html>
