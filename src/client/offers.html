@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Marketplace API Emulator</title>
+    <link rel="stylesheet" href="output.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"></script>
+
+      <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+      <link rel="manifest" href="images/site.webmanifest" />
+  
+  <script type="text/javascript">
+
+      let offers = {};
+      let checker = [];
+
+      $(async () => {
+        const result = await fetch('/api/util/offers', { method: 'GET' });
+
+        if (result.status != 200) {
+          // ?
+        }
+
+        offers = await result.json();
+
+        createFormFields($('#offer-container'), offers, '');
+
+      });
+
+      async function allPlans() {
+        const responsep = await fetch('/api/util/offers', { method: 'GET' });
+        if (responsep != 200) {
+          // ?
+        }
+
+        let resultp = await responsep.json();
+        let planx = resultp;
+        return planx;
+      }
+
+      // Create fields for the offer
+      function createFormFields(parent, obj, path) {
+        for (const i in obj) {
+          let bgc = 'bg-indigo-200';
+          if(i === 'flat-rate' || i === 'per-seat') { bgc = 'bg-blue-200'; };
+          const formRow = $(document.createElement('div')).addClass('text-sm text-gray-800 inline-block dark:text-gray-50');
+          let currentDiv = $(document.createElement('div')).addClass('w-44  my-2 mx-3 inline-block border border-slate-300 rounded-sm shadow-md');
+          currentDiv.append($(document.createElement('div')).prepend('<img id="theImg" src="images/fc_logo.png" width="35" height="35"/>').addClass('w-[100%] h-12 px-3 py-2 inline-block ' + bgc));
+          let hammer = $(document.createElement('div')).addClass('h-28');
+          currentDiv.append(hammer);
+          hammer.append($(document.createElement('div')).text(obj[i].displayName).addClass('w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block'));         
+          hammer.append($(document.createElement('div')).text('by FourthCoffee').addClass('w-40 px-2 text-left font-semibold text-[10px] bg-white inline-block'));
+          currentDiv.append($(document.createElement('div')).text('Plans start from').addClass('w-40 px-2 h-5 text-[10px] text-left italic bg-white inline-block'));
+          currentDiv.append($(document.createElement('div')).attr('id', ('details'+i)).addClass('w-40 px-2 h-5 text-left pb-2 text-xs bg-white inline-block'));
+          filterList(i, true);
+          currentDiv.append($(document.createElement('div')).attr('id', i).text('View').addClass('w-[100%] h-10 p-3 bg-white text-xs font-semibold text-center text-cyan-600 hover:bg-sky-500 hover:cursor-pointer hover:text-white border-t border-slate-300 inline-block').attr('onclick', 'loadOffer(event)'));
+          formRow.append(currentDiv);
+          parent.append(formRow);
+          checker.push(i);
+        }
+      }
+
+      // Add a new row to the Plans form
+      function addRowClick() {
+        $('#check').text('help');
+
+        if(valChecks('#planRows') === 'exit') {
+            return;
+          };
+
+         let $newplanRow = $('#planRow').clone();
+            $newplanRow.find('input').val('');
+            $newplanRow.appendTo($('#planRows'));   
+      }
+
+      // Remove a row from the plans form
+      function removeRowClick(e) {
+        if( $("#planRows > tr").length >1 ) {
+          $(event.target).closest('tr').remove();
+        } else {
+          $(event.target).closest('tr').find('input').val('').removeClass('bg-red-50 border-red-700');
+          $(event.target).closest('tr').find('select').val('').removeClass('bg-red-50 border-red-700');
+        };
+      }
+     
+      // Clear the form
+      function clearFields() {
+        let nLeft = $("#planRows > tr").length;
+        while ($("#planRows > tr").length > 1) {
+          $('#planRows> tr').last().remove();
+          nLeft = nLeft -1;
+        };
+        $('#offerForm').find('input').val('').removeClass('bg-red-50 border-red-700');
+        $('#offerForm').find("select").val('').removeClass('bg-red-50 border-red-700');
+        $('#uniqueWarning').hide();
+
+        editRowClick();
+      };
+
+      // Load an offer and plans into the form
+      function loadOffer(e) {
+
+        $('#offerForm').show();
+        clearFields();
+
+        let i = 0;
+
+        if(e.target.id != 'newClick') {
+        filter = offers[e.target.id].plans;
+        } else {
+          filter = {};
+        }
+
+        for (const Key in filter) {        
+
+        if(i > 0) {
+          let $newplanRow = $('#planRow').clone();
+          $newplanRow.appendTo($('#planRows'));  
+        }
+        i++;
+
+        let $newplanRow = $('#planRows> tr').last();
+        $newplanRow.find(".planName input").val(filter[Key].displayName);
+        $newplanRow.find(".planId input").val(filter[Key].planId);
+        // $newplanRow.find(".perSeat select").val(filter[Key].isPricePerSeat).change();
+        $newplanRow.find(".perSeat select").val(''+(filter[Key].isPricePerSeat)).change();
+        $newplanRow.find(".term select").val(filter[Key].planComponents.recurrentBillingTerms[0].termUnit);   
+        $newplanRow.find(".price input").val(filter[Key].planComponents.recurrentBillingTerms[0].price);
+        };
+
+        if(e.target.id != 'newClick') {
+        $('#offerForm').find('input').prop('disabled', true).addClass('border-white');
+        $('#offerForm').find('select').prop('disabled', true).addClass('border-white');
+        $('#offerForm').find('button').hide();
+        $('#offerId').val(offers[e.target.id].offerId);
+        $('#offerName').val(offers[e.target.id].displayName);
+        $('#clone').show();
+        }
+
+        if(e.target.id != 'flat-rate' && e.target.id != 'per-seat' && e.target.id != 'newClick') {
+          $('#edit').show();
+        }
+
+      }
+
+      // Check for empty fields in whole form or 
+      function valChecks(scope) {
+        let nulls = 0;
+        $(scope).find('input[type=text]').removeClass('bg-red-50 border-red-700');
+        $(scope).find('select').removeClass('bg-red-50 border-red-700');
+        $(scope).find('input[type=text]').each(function(){
+            if ($(this).val().length === 0) {
+              nulls++ ;
+              $(this).addClass('bg-red-50 border-red-700');
+            };
+        });
+
+        $(scope).find('select').each(function(){
+            if ($(this).val() === null) {
+              nulls++ ;
+              $(this).addClass('bg-red-50 border-red-700');
+            };
+        });
+
+        if(nulls > 0) {
+          return 'exit';
+        }
+
+      }
+
+      // Make loaded form editable
+      function editRowClick(task) {
+        $('#offerForm').find('input').prop('disabled', false).removeClass('border-white');
+        $('#offerForm').find('select').prop('disabled', false).removeClass('border-white');
+        $('#offerForm').find('button').show();
+
+        if(task === 'edit') {
+          $('#offerId').prop('disabled', true).addClass('border-white');
+          $('#deleteOffer').show();
+          $('#createOffer').html('Update');
+        } else {
+          $('#deleteOffer').hide();
+          $('#createOffer').html('Create');
+          $('#offerId').val('');
+          $('#offerName').val('');
+        }
+
+        $('#clone').hide();
+        $('#edit').hide();
+      }
+
+      // Create the offer JSON payload
+      function createOffer() {
+          if(valChecks('#offerForm') === 'exit') {
+            return;
+          };
+
+          // create offer 
+          let newOffer = 
+            {
+                "offerId": $('#offerId').val(),
+                "plans": {},
+                "persist": true,
+                "displayName": $('#offerName').val()
+            };
+
+          let plan = { };
+          let newplan = '';
+
+          // Build and add plans to the offer 
+          $('#planRows').find('tr').each(function()
+            {
+              if(plan) {
+                newplan = $(this).find(".planId input").val();
+                termDesc = '';
+                if ($(this).find(".term input").val() === 'P1M') {
+                  termDesc = 'price per month';
+                } else {
+                  termDesc = 'price per year';
+                };
+                plan = {
+                  "planId": $(this).find(".planId input").val(),
+                  "displayName": $(this).find(".planName input").val(),
+                  "isPrivate": false,
+                  "description": $(this).find(".planName input").val(),
+                  "hasFreeTrials": false,
+                  "isPricePerSeat": $(this).find(".perSeat select").val(),
+                  "isStopSell": false,
+                  "market": "GB",
+                  "planComponents": {
+                    "recurrentBillingTerms": [{
+                      "currency": "USD",
+                      "price": $(this).find(".price input").val(),
+                      "termUnit": $(this).find(".term select").val(),
+                      "termDescription": termDesc
+                    }],
+                    "meteringDimensions": []
+                  }
+                }
+            };
+            newOffer.plans[newplan] = plan;
+            }
+          );
+          sendOffer(JSON.stringify(newOffer));  
+        }
+
+        // POST offer to API to create / update
+        async function sendOffer(offer) {
+          const response = await fetch('/api/util/offers', {
+              method: 'POST',
+              body: offer,
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log(response.status + '-' + text);
+              alert('Response: ' + text + '\nStatus: ' + response.status, 'Status');
+            } else {
+              location.reload();
+            };
+        }
+
+        // DELETE offer API call 
+        async function deleteOffer(offer) {
+          if (confirm('Confirm you want to delete the offer?')) {
+           const response = await fetch('/api/util/offers/' + offer, {
+              method: 'DELETE',
+              // body: 'offerId:' offer,
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log(response.status + '-' + text);
+              alert('Response: ' + text + '\nStatus: ' + response.status + 
+                '\nOffer cannot be deleted when attached to a subscription.', 'Status');
+            } else {
+              location.reload();
+            }};
+        }
+
+      // On change to the offerId - check for unique and set status on page
+      $(document).ready(function(){
+        $('#offerId').change(function(){
+          if(checker.includes($('#offerId').val())) {
+            $('#uniqueWarning').show();  
+            $('#createOffer').hide();
+            $('#offerId').addClass('bg-red-50 border-red-700');
+          } else {
+            $('#uniqueWarning').hide();  
+            $('#createOffer').show();
+            $('#offerId').removeClass('bg-red-50 border-red-700');
+          }
+        });
+      });
+
+      // Update the plans detail for the offer card 
+      async function filterList(offer, once) {
+        filter = await offers[offer].plans;
+        let getPrice = 0;
+        let checkMin = [];
+        let planid = '';
+        let curr = '';
+        let tunit = '';
+        let pseat = '';
+        for (const Key in filter) {
+          checkMin.push(filter[Key].planComponents.recurrentBillingTerms[0].price);
+          getPrice = filter[Key].planComponents.recurrentBillingTerms[0].price;
+          curr = filter[Key].planComponents.recurrentBillingTerms[0].currency;
+          tunit = filter[Key].planComponents.recurrentBillingTerms[0].termUnit,
+          pseat = filter[Key].isPricePerSeat;
+          planid = Key;
+        }
+
+        if (once === true) {
+            setDetails(offer, curr, tunit, pseat,
+            Math.min(...checkMin));
+        }
+      };
+
+      // Set details for the offer string 
+      function setDetails(offer, currency, termunit, peruser, min) {
+        let detailsCat = ('#details' + offer);
+        let currSymbol = '';
+        var currency_symbols = {
+          'USD': '$', // US Dollar
+          'EUR': '€', // Euro
+          'CRC': '₡', // Costa Rican Colón
+          'GBP': '£', // British Pound Sterling
+          'ILS': '₪', // Israeli New Sheqel
+          'INR': '₹', // Indian Rupee
+          'JPY': '¥', // Japanese Yen
+          'KRW': '₩', // South Korean Won
+          'NGN': '₦', // Nigerian Naira
+          'PHP': '₱', // Philippine Peso
+          'PLN': 'zł', // Polish Zloty
+          'PYG': '₲', // Paraguayan Guarani
+          'THB': '฿', // Thai Baht
+          'UAH': '₴', // Ukrainian Hryvnia
+          'VND': '₫', // Vietnamese Dong
+        };
+
+        if(currency_symbols[currency]!==undefined) {
+          currSymbol = (currency_symbols[currency]);
+        }
+        
+        let tUnit = '';
+        switch (termunit) {
+          case 'P1M':
+            tUnit = 'month';
+            break;
+          case 'P1Y':
+            tUnit = 'year';
+            break;
+        } 
+
+        if (peruser === true) { 
+            term = '/user/' + tUnit;
+          } else {
+            term = '/' + tUnit;
+        }
+
+        ($(detailsCat).text(currSymbol + min + term)); 
+      }
+
+    </script>
+  </head>
+
+  <body>
+    <!-- Form styles in template override - input.css -->
+    <!-- Page div -->
+    <div class="min-h-screen bg-gray-200 dark:bg-slate-800 px-6 lg:px-8 ">
+      <!-- Header div -->
+      <!-- <div class="static h-28"> -->
+      <div class="static h-36">
+        <div>
+          <p class="py-5 pl-6 text-4xl font-bold text-gray-800 dark:text-gray-50">
+            Azure Marketplace API Emulator <code class="text-xl font-bold text-gray-800 dark:text-gray-50">BETA</code>
+          </p>
+        </div>
+        <div class="pt-2">
+          <nav
+            class="relative w-full flex flex-wrap items-center justify-between rounded-md text-white bg-slate-700 shadow-lg navbar navbar-expand-lg navbar-light py-2">
+            <div class="px-4">
+              <ul class="flex">
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="index.html">Marketplace Token</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="subscriptions.html">Subscriptions</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="landing.html">Landing Page</a></li>
+                <li class="display: inline px-3 text-orange-400">Offers</li>
+                <li class="display: inline px-3 hover:text-cyan-400"><a href="config.html">Config</a></li>
+                <li class="display: inline px-3 hover:text-cyan-400">
+                  <a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
+                    <img
+                      src="images/github-mark-white.png"
+                      title="Report an issue"
+                      alt="GitHub icon"
+                      height="25"
+                      width="25"
+                  /></a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- horizontal wrapper -->
+      <div >
+      <!-- Information box -->
+      <div class="w-full min-w-400 flex-row inline-flex flex-wrap">
+        <div
+          class="relative w-[400px] bg-slate-100 dark:bg-slate-700 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4 mr-4">
+          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">Usage</div>
+          <div class="text-sm text-gray-900 dark:text-gray-50">
+            <p>
+              Use <span class="font-semibold">Offer Central</span> to view, edit and create offers to use in the emulator.
+            </p>
+            <p class="py-2">
+              <span class="font-semibold">Points of note:</span>
+            </p>
+            <ul style="list-style-type:disc;" class="pl-5">
+              <li>Offer Id must be unique - the Emulator, can replicate Partner Center</li>
+              <li>Basic offer and plan details are used for the Emulator, not the full scope</li>
+              <li>Plans only have one billing paramater for simplicity (see below)</li>
+              <li>You can clone existing offers as a template for a new one</li>
+              <li>You cannot edit the sample offers that ship with the Emulator</li>
+              <li>You cannot delete an offer if it is in user</li>
+              <li>The only currency is USD</li>
+            </ul>
+            <p class="py-2">
+              <span class="font-semibold">In Partner Center</span> you would build the Offer > Plan > Billing, using M365 as an example:
+              <ul style="list-style-type:disc;" class="pl-5">
+                <li>Offer: the product, e.g. M365</li>
+                <li>Plan: a specific feature set, e.g. E3 and per user</li>
+                <li>Billing: pricing, e.g. per month, per annum</li>
+              </ul>
+            </p>
+            <p class="py-2">  
+              <span class="font-semibold">In the Emulator</span>, currently, the Plan and Billing elements are a single item - <span class="font-semibold">create a Plan as required and add a single
+              billing metric for that Plan</span>.
+            </p>
+          </div>
+        </div>
+        <!-- Marketplace token box -->
+        <div
+          class="relative min-w-[820px] w-[100%] min-h-[730px] flex-1 bg-white dark:bg-gray-900 shadow-xl rounded-xl ring-1 ring-gray-900/5 px-6 pt-6 pb-4">
+          <div class="text-2xl font-semibold text-center text-gray-600 dark:text-gray-50 space-y-6 py-3">
+            Offer Central
+          </div>
+          <div class="w-[100%]">
+            <div id="offer-container" class="flex overflow-y-auto h-72">
+              <div class="text-sm text-gray-800 inline-block dark:text-gray-50">
+                <div class="w-44 my-2 mx-3 inline-block bg border border-slate-300 rounded-sm shadow-md">
+                  <div class="w-[100%] h-12 px-3 py-2 bg-green-200 inline-block"><img id="theImg" src="images/fc_logo_new.png" width="35" height="35"></div>
+                  <div class="h-28">
+                    <div class="w-40 pt-1 px-2 text-sm text-left font-semibold bg-white inline-block">Make your own Offers and Plans</div>
+                    <div class="w-40 px-2 text-left font-semibold text-[10px] bg-white inline-block">by Design</div>
+                  </div>
+                  <div class="w-40 px-2 h-5 text-[10px] text-left italic bg-white inline-block">See Usage notes</div>
+                  <div class="w-40 px-2 h-5 text-left pb-2 text-xs bg-white inline-block">Click below to start.</div>
+                  <div id="newClick" class="w-[100%] h-10 p-3 bg-white text-xs font-semibold text-center text-green-600 hover:bg-emerald-500 hover:cursor-pointer hover:text-white border-t border-slate-300 inline-block" onclick="loadOffer(event)">Create</div>
+                </div>
+              </div>
+            </div>
+            </div>
+            <!-- Form container  -->
+            <div class="text-sm w-[100%]  min-h-[330px] flex justify-center bg-slate-50 rounded-md border border-sky-200">
+              
+              <div class="text-sm p-4" id="offerForm" style="display: none">
+                <!-- Offer form -->
+                <table> 
+                  <tr>
+                    <th class="text-sm font-semibold text-slate-600 w-24 h-9" >Offer Name</th>
+                    <td><input type="text" id="offerName" class="w-48" /></td>
+                  </tr>
+                  <tr>
+                    <th class="text-sm font-semibold text-slate-600 h-9">Offer id</th>
+                    <td><input type="text" id="offerId" class="w-48" /></td>
+                    <td id="uniqueWarning" style="display: none" class="text-red-700 pl-2">Offer Id must be unique!</td>
+                  </tr>
+                </table>
+
+                <table>
+                  <thead class="text-cyan-800 font-semibold border-t-2 border-b bg-slate-100 pt-1 h-10">
+                    <th class="planRow text-sm font-semibold text-slate-600 pl-3 mr-1">Plan Name</th>
+                    <th class="planRow text-sm font-semibold text-slate-600 pl-3 mr-1">Plan Id</th>
+                    <th class="planRow text-sm font-semibold text-slate-600 pl-3 mr-1">Price Model</th>
+                    <th class="planRow text-sm font-semibold text-slate-600 pl-3 mr-1">Biling Term</th>
+                    <th></th>
+                    <th class="planRow text-sm font-semibold text-slate-600">Price</th>
+                    <th></th>
+                  </thead>
+                  <tbody id="planRows">
+                    <tr id="planRow" class="planRow text-sm text-slate-600 my-5 h-11 bg-white border-b-2 border-b-sky-50">
+                      <td class="planName"><input type="text" id="planName" class="w-48 rounded-r-sm" /></td>
+                      <td class="planId"><input type="text" id="planId" class="w-48 rounded-none"/></td>
+                      <td class="perSeat text-center">
+                        <select name="perSeat" id="perSeat" class="w-24 rounded-none">
+                          <option value=false>Flat rate</option>
+                          <option value=true>Per user</option>
+                        </select>      
+                      </td>
+                      <td class="term">
+                        <select name="term" id="term" class="w-24 rounded-none">
+                          <option value="P1M">1-month</option>
+                          <option value="P1Y">1-year</option>
+                        </select>
+                      </td>
+                      <td class="currency rounded-none pl-2 pr-1">USD</td>
+                      <td class="price"><input type="text" id="price" class="w-24 rounded-l-sm" /></td>
+                      <td class="w-12 text-right"><button class="border border-gray-600 text-center w-6 h-6 px-1 rounded-lg bg-slate-50 hover:bg-red-100 ml-2"
+                        id="removeRow"
+                        title="Remove Row"
+                        onclick="removeRowClick()">
+                        x</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="5"></td>
+                      <td class="text-right"><button class="border border-sky-600 px-2 rounded-md bg-sky-100 hover:bg-sky-200 "
+                        id="addRow2"
+                        onclick="addRowClick()">
+                        Add Plan</button></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td colspan="7" class="pt-2 text-center">
+                        <div >
+                          <button class="border border-slate-400 px-2 rounded-md bg-slate-200 hover:bg-green-200 mx-1"
+                            id="createOffer"
+                            onclick="createOffer()">
+                            Create</button>
+                          <button class="border border-slate-400 px-2 rounded-md bg-slate-200 hover:bg-red-200 mx-1"
+                            id="clearFields"
+                            onclick="clearFields()">
+                            Clear</button>
+                          <button class="border border-slate-400 px-2 rounded-md bg-slate-200 hover:bg-green-200 mx-1"
+                            id="edit"
+                            onclick="editRowClick('edit')"
+                            style="display: none"
+                            title="Edit form">Edit Offer</button>
+                          <button class="border border-slate-400 px-2 rounded-md bg-slate-200 hover:bg-green-200 mx-1"
+                            id="clone"  
+                            onclick="editRowClick('clone')"
+                            style="display: none"
+                            title="Clone offer">Clone Offer</button>
+                          <button class="border border-slate-400 px-2 rounded-md bg-slate-200 hover:bg-red-200 mx-1"
+                            id="deleteOffer"
+                            onclick="deleteOffer($('#offerId').val())"
+                            style="display: none"
+                            title="Delete offer">Delete Offer</button>  
+                        </div>                      
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </body>
+</html>
