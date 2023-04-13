@@ -22,4 +22,79 @@ section.detail {
     background-color: rgb(248 250 252);
     border-radius: .5rem;
     flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: .875rem;
+    padding: 20px 20px 0 20px;
+}
+
+section.detail > div {
+    display: none;
+}
+
+section.detail > div > div {
+    display: flex;
+    margin-top: 10px;
+}
+
+section.detail > div > div > label {
+    flex: 0 0 150px;
+}
+
+section.detail > div > div > input {
+    flex: 0 0 150px;
+}
+
+section.detail input:disabled,
+section.detail select:disabled {
+    background-color: initial;
+    color: initial;
+    border-color: transparent;
+    appearance: none;
+}
+
+section.detail input.invalid,
+section.detail select.invalid {
+    border-color: red;
+}
+
+table {
+    display: table;
+    margin-top: 20px;
+    font-size: .875rem;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding-left: .5rem;
+}
+
+thead tr {
+    background-color: var(--row-highlight-bg-color);
+    border-top: 2px solid rgb(229 231 235);
+    border-bottom: 1px solid rgb(229 231 235);
+}
+
+td input, td select {
+    width: 100%;
+}
+
+td {
+    width: 150px;
+}
+
+td.price {
+    width: 100px;
+}
+
+td button {
+    padding: 0 7px;
+    margin-left: 5px;
+}
+
+tfoot td {
+    padding-top: 20px;
+    text-align: center;
 }

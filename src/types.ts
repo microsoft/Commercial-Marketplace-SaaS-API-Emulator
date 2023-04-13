@@ -10,6 +10,7 @@ export interface StateStore {
   updateSubscriptionAsync: (publisherId: string, subscription: Subscription) => Promise<boolean>;
   getSubscriptionsForPublisherAsync: (publisherId: string) => Promise<Subscription[] | undefined>;
   getSubscriptionAsync: (publisherId: string, subscriptionId: string) => Promise<Subscription | undefined>;
+  deleteSubscriptionAsync(publisherId: string, subscriptionId: string): Promise<boolean>;
   findSubscriptionAsync: (subscriptionId: string) => Promise<Subscription | undefined>;
   addOperationAsync: (publisherId: string, subscriptionId: string, operation: Operation) => Promise<void>;
   getOperationsAsync: (publisherId: string, subscriptionId: string) => Promise<Operation[] | undefined>;
@@ -19,7 +20,7 @@ export interface StateStore {
     operationId: string
   ) => Promise<Operation | undefined>;
   getPlansForOfferAsync: (offerId: string, planId?: string) => Promise<Plan[] | undefined>;
-  upsertOfferAsync: (offer: Partial<Offer>) => Promise<boolean>;
+  upsertOfferAsync: (offer: Partial<Offer>) => Promise<Offer | undefined>;
   deleteOfferAsync: (offerId: string) => Promise<boolean>;
   getAllOffers: () => Record<string, Offer>;
   getOffer: (offerId: string) => Offer | undefined;
@@ -97,6 +98,7 @@ export interface Offer {
   plans: PlanWrapper;
   persist: boolean;
   publisher: string;
+  builtIn: boolean;
 }
 export type PlanWrapper = Record<string, Plan>;
 

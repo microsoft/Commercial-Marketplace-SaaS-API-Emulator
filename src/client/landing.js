@@ -13,8 +13,8 @@ const apiVersion = '2018-08-31';
           return;
         }
 
-        const config = await callAPI('/api/util/config');
-        const publisherId = config['publisherId'];
+        const {result} = await callAPI('/api/util/config');
+        const publisherId = result['publisherId'];
 
         const response = await doFetch(
             "/resolve", 

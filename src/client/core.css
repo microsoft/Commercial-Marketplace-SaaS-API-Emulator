@@ -59,6 +59,9 @@ textarea, select {
     color: rgb(75 85 99);
     font-size: .875rem;
     margin: 0;
+    border: 1px solid rgb(48, 48, 48);
+    border-radius: .15rem;
+    line-height: 1.12rem;
 }
 
 /* Page title */

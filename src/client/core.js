@@ -1,7 +1,5 @@
 async function callAPI(path, method, body) {
 
-    console.log(body);
-
     method = method || "GET";
 
     const response = await fetch(path, {
@@ -12,11 +10,16 @@ async function callAPI(path, method, body) {
         }
     });
 
-    if (response.ok && method === "GET") {
-        return await response.json();
+    let result;
+
+    if (response.ok) {
+        try {
+            result = await response.json();
+        }
+        catch {}
     }
 
-    return undefined;
+    return {result, status: response.status};
 }
 
 function guid() {
@@ -177,36 +180,53 @@ const offerTemplate = $(`
     </div>
 `);
 
+function removeOffer($offerContainer, offerId) {
+    $offerContainer.find(`[data-offer-id='${offerId}']`).remove();
+}
+
 function renderOffer($offerContainer, offer, actionText, action, className) {
     
     const isPerUser = Object.values(offer.plans || {}).find((_, i) => i === 0)?.isPricePerSeat === true;
 
-    const $offer = offerTemplate.clone()
-        .appendTo($offerContainer);
+    let $offer = $offerContainer.find(`[data-offer-id='${offer.offerId}']`);
+
+    if ($offer.length === 0) {
+        $offer = offerTemplate.clone()
+            .attr('data-offer-id', offer.offerId)
+            .data('offer', offer)
+            .appendTo($offerContainer);
+    }
 
     if (className) {
         $offer.addClass(className);
     }
 
+    $offer.children(".publisher").html(offer.publisher);
+    $offer.children(".price").html(`$ XX/user/month`);
+    $offer.find('.action a')
+        .data('offer', offer)
+        .text(actionText)
+        .on('click', (e) => {
+            action(e, offer);
+            return false;
+        });
+
     $offer.children(".name").html(offer.displayName);
     $offer.children(".publisher").html(offer.publisher);
     $offer.children(".price").html(`$ XX/user/month`);
-    $offer.find('.action a').text(actionText);
-
-    $offer.find(".action a").on('click', (e) => action(e, offer));
 }
 
 async function renderOffers($offerContainer, actionText, action) {
-    const offers = await callAPI('/api/util/offers');
+    const {result} = await callAPI('/api/util/offers');
 
 
-    for (const offerId in offers) {
+    for (const offerId in result) {
 
-        if (!Object.prototype.hasOwnProperty.call(offers, offerId)) {
+        if (!Object.prototype.hasOwnProperty.call(result, offerId)) {
             continue;
         }
 
-        const offer = offers[offerId];
-        renderOffer($offerContainer, offer, actionText, action);
+        const offer = result[offerId];
+        renderOffer($offerContainer, offer, actionText, action, offer.builtIn ? 'built-in' : undefined);
     }
 }

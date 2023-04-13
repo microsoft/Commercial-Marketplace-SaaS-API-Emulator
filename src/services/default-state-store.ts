@@ -202,6 +202,16 @@ export default class DefaultStateStore implements StateStore {
     return this.getPublisherSubscription(publisherId, subscriptionId)?.subscription;
   }
 
+  async deleteSubscriptionAsync(publisherId: string, subscriptionId: string): Promise<boolean> {
+    try {
+      delete this.publishers[publisherId][subscriptionId];
+      return true;
+    }
+    catch {
+      return false;
+    }
+  }
+
   async findSubscriptionAsync(subscriptionId: string): Promise<Subscription | undefined> {
     const subscription = Object.values(this.publishers).filter((x) =>
       Object.prototype.hasOwnProperty.call(x, subscriptionId)
@@ -244,13 +254,14 @@ export default class DefaultStateStore implements StateStore {
     return plans.filter(x => x.planId === planId);
   }
 
-  async upsertOfferAsync(offer: Partial<Offer>) : Promise<boolean> {
+  async upsertOfferAsync(offer: Partial<Offer>) : Promise<Offer | undefined> {
 
     const newOffer : Offer = {
       displayName: "Sample Offer",
       offerId: "sampleOfferId",
       publisher: "ForthCoffee",
-      persist: false,
+      persist: true,
+      builtIn: false,
       plans: {},
 
       // Overwrite offer properties from request
@@ -264,7 +275,7 @@ export default class DefaultStateStore implements StateStore {
         if (subscription.subscription.offerId === offer.offerId) {
           
           if (!Object.prototype.hasOwnProperty.call(offer.plans, subscription.subscription.planId)) {
-            return false;
+            return undefined;
           }
 
         }
@@ -273,7 +284,7 @@ export default class DefaultStateStore implements StateStore {
 
     this.offers[newOffer.offerId] = newOffer;
     await this.save();
-    return true;
+    return newOffer;
   }
 
   async deleteOfferAsync(offerId: string) : Promise<boolean> {

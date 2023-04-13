@@ -78,7 +78,63 @@
                 </section>
 
                 <section class="detail">
+                    <div>
+                        <div>
+                            <label>Offer Name</label>
+                            <input id="offer-name" />
+                        </div>
 
+                        <div>
+                            <label>Offer Id</label>
+                            <input id="offer-id" />
+                        </div>
+
+                        <div>
+                            <label>Price Model</label>
+                            <select id="per-seat">
+                                <option value="true">Per Seat</option>
+                                <option value="false">Flat Rate</option>
+                            </select>
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Plan Name</th>
+                                    <th>Plan Id</th>
+                                    <th>Billing Term</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="template">
+                                    <td class="plan-name"><input /></td>
+                                    <td class="plan-id"><input /></td>
+                                    <td class="billing-term">
+                                        <select>
+                                            <option value="P1M">1 Month</option>
+                                            <option value="P1Y">1 Year</option>
+                                        </select>
+                                    </td>
+                                    <td class="price"><input /></td>
+                                    <td>
+                                        <button onclick="addRow_click(event)">+</button>
+                                        <button onclick="deleteRow_click(event)" class="danger">x</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5">
+                                        <button onclick="saveOffer_click(event)" class="primary">Save</button>
+                                        <button onclick="deleteOffer_click(event)" class="danger">Delete</button>
+                                        <button onclick="cancel_click(event)">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </section>
 
             </section>

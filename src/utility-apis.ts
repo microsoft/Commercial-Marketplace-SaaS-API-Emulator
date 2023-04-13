@@ -23,6 +23,14 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
 
     res.send(publishers);
   }) as RequestHandler);
+  
+  //
+  // Get all publishers
+  //
+  app.delete('/api/util/publishers/:pid/subscriptions/:sid', (async (req, res) => {
+    const success = await services.stateStore.deleteSubscriptionAsync(req.params.pid, req.params.sid);
+    res.sendStatus(success ? 204 : 404);
+  }) as RequestHandler);
 
   //
   // Get sample offer
@@ -52,8 +60,15 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   //
   app.post('/api/util/offers', (async (req, res) => {
     const offer = req.body as Partial<Offer>;
-    const success = await services.stateStore.upsertOfferAsync(offer);
-    res.sendStatus(success ? 204 : 400);
+    const newOffer = await services.stateStore.upsertOfferAsync(offer);
+    
+    if (newOffer === undefined) {
+      res.sendStatus(404);
+    }
+    else {
+      res.send(newOffer);
+    }
+
   }) as RequestHandler);
 
   //

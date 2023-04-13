@@ -2,12 +2,12 @@
 /// <reference path="notifications.js" />
 
 $(async () => {
-  const publishers = await callAPI('/api/util/publishers');
+  const {result} = await callAPI('/api/util/publishers');
 
   const publisherRowTemplate = $('#publisher-row');
 
-  for (const pid in publishers) {
-    const publisherSubscriptions = publishers[pid];
+  for (const pid in result) {
+    const publisherSubscriptions = result[pid];
 
     publisherRowTemplate
       .clone()
@@ -25,9 +25,9 @@ $(async () => {
 
 $(document).on('subscription-update', async (e, sid, pid) => {
         
-    const subscription = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
+    const {result} = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
 
-    const row = addRow(subscription);
+    const row = addRow(result);
 
     row.addClass("animate-fade");
 
@@ -98,6 +98,22 @@ async function activate_click(e) {
   $(e.target).attr('enabled', false);
 }
 
+async function delete_click(e) {
+
+    if (!await showYesNo("Deleting a subscription cannot be undone<br /> <br />Are you sure you want to continue?", "Delete Subscription")) {
+        return;
+    }
+
+    const subscriptionId = $(e.target).data('subscriptionId');
+    const publisherId = $(e.target).data('publisherId');
+
+    const {status} = await callAPI(`/api/util/publishers/${publisherId}/subscriptions/${subscriptionId}`, 'delete');
+
+    if (status === 204) {
+        $(`tr[data-sid='${subscriptionId}']`).remove();
+    }
+}
+
 async function changeQuantity_click(e) {
   const subscription = $(e.target).data('subscriptionId');
   const quantity = parseInt(prompt('How many licenses?', subscription.quantity));
@@ -105,7 +121,8 @@ async function changeQuantity_click(e) {
 }
 
 async function getPlans(sub, pub) {
-  return callAPI(`/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
+  const {result} =  callAPI(`/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
+  return result;
 }
 
 async function changePlan_click(e) {
@@ -160,7 +177,7 @@ async function renew_click(e) {
 }
 
 async function callWebhook(name, sid, endpoint, body) {
-  const response = await doFetch(
+  await doFetch(
     '<b>[Webhook]</b> ' + name,
     `/api/webhook/subscription/${sid}/${endpoint}`,
     body ? JSON.stringify(body) : undefined,

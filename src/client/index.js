@@ -135,14 +135,14 @@ async function showToken() {
 async function postToLanding() {
     const {base64} = generateToken();
 
-    const config = await callAPI("/api/util/config");
+    const {result} = await callAPI("/api/util/config");
 
-    if (config === undefined) {
+    if (result === undefined) {
       await showAlert("Something went wrong trying to get config from the emulator", "Error");
       return;
     }
 
-    const landingPage = config.landingPageUrl;
+    const landingPage = result.landingPageUrl;
 
     if (!landingPage) {
         await showAlert("No landing page URL set in config", "Landing Page");
