@@ -54,11 +54,6 @@ section.detail select:disabled {
     appearance: none;
 }
 
-section.detail input.invalid,
-section.detail select.invalid {
-    border-color: red;
-}
-
 table {
     display: table;
     margin-top: 20px;

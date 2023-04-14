@@ -42,6 +42,11 @@ function showDialog(content, title, buttons) {
     return _showModal(content, title, { ...buttons, "Close": true });
 }
 
+async function showDialogWithResult(content, title, buttons, resultCallback) {
+    await _showModal(content, title, { ...buttons, "Cancel": true });
+    return resultCallback();
+}
+
 function _showModal(content, title, buttons, contentClass) {
     
     return new Promise((resolve, reject) => {
@@ -51,14 +56,14 @@ function _showModal(content, title, buttons, contentClass) {
                 .addClass("modal")
                 .appendTo("body");
         }
-        $body = $modal.children("div");
+        const $body = $modal.children("div");
 
         $body.children("header").html(title);
-        $content = $body.children("div").html(content);
+        const $content = $body.children("div").html(typeof content === 'string' ? content : content.html());
         if (contentClass !== undefined) {
             $content.addClass(contentClass);
         }
-        $footer = $body.children("footer").empty();
+        const $footer = $body.children("footer").empty();
 
         if (buttons !== undefined) {
             for (const buttonText in buttons) {
@@ -68,7 +73,11 @@ function _showModal(content, title, buttons, contentClass) {
                     .text(buttonText)
                     .on("click", () => {
                         if (typeof button === 'function') {
-                            button($button);
+                            const buttonResult = button($button, $body);
+                            if (buttonResult !== undefined) {
+                                $modal.hide();
+                                resolve(buttonResult);
+                            }
                         }
                         else {
                             $modal.hide();

@@ -120,48 +120,61 @@ async function delete_click(e) {
 }
 
 async function changeQuantity_click(e) {
-  const subscription = $(e.target).data('subscriptionId');
-  const quantity = parseInt(prompt('How many licenses?', subscription.quantity));
-  await callWebhook('Change quantity', $(e.target).data('subscriptionId'), '', { quantity });
+  const quantity = await showDialog($('#change-quantity-dialog'), "Change Quantity", {
+    'Ok': (button, body) => {
+        const $input = body.find('input');
+        const val = $input.val();
+        if (val.trim() === '') {
+            $input.attr('title', 'Value is required').addClass('invalid');
+            return;
+        }
+        if (isNaN(val) || val <= 0 || val > 1000000) {
+            $input.attr('title', 'Invalid value').addClass('invalid');
+            return;
+        }
+        return parseInt(val);
+    }
+    });
+
+    if (typeof quantity === 'number' && !isNaN(quantity)) {
+        await callWebhook('Change quantity', $(e.target).data('subscriptionId'), '', { quantity });
+    }
 }
 
 async function getPlans(sub, pub) {
-  const {result} =  callAPI(`/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
+  const {result} = await callAPI(`/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
   return result;
 }
 
 async function changePlan_click(e) {
   const subscription = $(e.target).data('subscriptionId');
   const publisherId = $(e.target).data('publisherId');
-  const planCheck = $(e.target).data('planID');
+  const existingPlan = $(e.target).data('planID');
 
-  let plansData = await getPlans(subscription, publisherId);
-  let plansList = plansData.plans;
+  const plansData = await getPlans(subscription, publisherId);
 
-  let i = 0;
-  let messagePlans = '';
-  let message = 'Your current plan is ' + planCheck + '.\n\n';
+  const plansList = plansData.plans;
 
-  for (const planId in plansList) {
-    if (planCheck != plansList[planId].planId) {
-      messagePlans = messagePlans + '   ' + plansList[planId].planId + '\n';
-      i++;
+    if (plansList.length <= 1) {
+        await showAlert('There are no other plans defined on this offer', 'Change Plan');
+        return;
     }
+
+  const $dialog = $('#change-plan-dialog');
+  const $select = $dialog.find('select').empty();
+
+  $select.append(...plansList.map(x => $(`<option value='${x.planId}'>${x.displayName}</option>`)));
+
+  const planId = await showDialog($dialog, "Change Plan", {
+    'Ok': (button, body) => {
+        return body.find('select').val();
+    }
+  });
+
+  if (typeof planId !== 'string' || planId === existingPlan) {
+    return;
   }
 
-  if (i === 0) {
-    message = message + 'No other plans are available for this offer.';
-    alert(message);
-    // return;
-  } else {
-    message = message + 'You can change to one of the following plans, enter the id below:\n';
-    message = message + messagePlans;
-    planId = prompt(message, subscription.planId);
-  }
-
-  if (planId === null) {
-    return; //break out of the function early
-  }
   await callWebhook('Change plan', $(e.target).data('subscriptionId'), '', { planId });
 }
 

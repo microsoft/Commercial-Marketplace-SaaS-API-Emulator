@@ -48,10 +48,6 @@ a {
     color: var(--base-link-color);
 }
 
-[type="text"], 
-[type="email"], 
-[type="number"], 
-[type="url"],
 input,
 textarea, select {
     box-sizing: border-box;
@@ -62,6 +58,11 @@ textarea, select {
     border: 1px solid rgb(48, 48, 48);
     border-radius: .15rem;
     line-height: 1.12rem;
+}
+
+input.invalid,
+select.invalid {
+    border-color: red;
 }
 
 /* Page title */
