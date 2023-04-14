@@ -198,6 +198,7 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
         $offer = offerTemplate.clone()
             .attr('data-offer-id', offer.offerId)
             .data('offer', offer)
+            .addClass(offer.builtIn ? 'built-in' : 'custom')
             .appendTo($offerContainer);
     }
 

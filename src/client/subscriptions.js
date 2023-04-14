@@ -1,7 +1,13 @@
 /// <reference path="core.js" />
 /// <reference path="notifications.js" />
 
+let offers;
+
 $(async () => {
+
+  const o = await callAPI('/api/util/offers');
+  offers = o.result;
+
   const {result} = await callAPI('/api/util/publishers');
 
   const publisherRowTemplate = $('#publisher-row');
@@ -48,6 +54,8 @@ function addRow(subscription) {
 
   row.addClass(subscription.saasSubscriptionStatus.toLowerCase());
 
+  const offer = offers[subscription.offerId];
+
   const cells = row.children('td');
   const status = subscription.saasSubscriptionStatus;
 
@@ -58,7 +66,7 @@ function addRow(subscription) {
   $(cells[1]).text(subscription.name);
   $(cells[2]).text(subscription.offerId);
   $(cells[3]).text(subscription.planId);
-  $(cells[4]).text(subscription.quantity || 0);
+  $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : 'N/A');
   if (status === 'PendingFulfillmentStart') {
     $(cells[5]).text('Pending');
   } else {
@@ -76,6 +84,12 @@ function addRow(subscription) {
         enabled = requiredStatus.substring(1) != status;
       } else {
         enabled = requiredStatus == status;
+      }
+
+      if (button.is('.change-quantity')) {
+        if (!offer.plans[subscription.planId].isPricePerSeat) {
+          enabled = false;
+        }
       }
 
       button.attr('disabled', !enabled).data({

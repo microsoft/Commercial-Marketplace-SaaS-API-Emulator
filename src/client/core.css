@@ -415,12 +415,22 @@ section.offers > div div {
 
 section.offers div.icon {
     flex: 0 0 50px;
-    background-color: rebeccapurple;
-    background: rgb(219 234 254);
     background: linear-gradient(90deg, 
         rgba(219 234 254 0.6) 0%,
         rgba(219 234 254 .8) 50%,
         rgba(219 234 254 1) 100%);
+    background-image: url(images/fc_logo.png);
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    background-position: 5px;
+}
+
+section.offers div.custom div.icon {
+    flex: 0 0 50px;
+    background: linear-gradient(90deg, 
+        rgba(252, 219, 254, 0.6) 0%,
+        rgba(252, 219, 254, .8) 50%,
+        rgba(252, 219, 254, 1) 100%);
     background-image: url(images/fc_logo.png);
     background-size: 35px 35px;
     background-repeat: no-repeat;

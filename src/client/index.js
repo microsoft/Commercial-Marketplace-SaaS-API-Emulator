@@ -33,7 +33,8 @@ $(async () => {
 
     $planSelect.on("change", () => {
         const offer = $planSelect.data("offer");
-        $("section.purchase .seat-count").toggleClass("hidden", !offer.plans[$planSelect.val()].isPricePerSeat);
+        $("section.purchase .seat-count input").val('');
+        $("section.purchase .seat-count").css({visibility: offer.plans[$planSelect.val()].isPricePerSeat ? 'visible' : 'hidden'});
     });
 
     // Configure buttons
