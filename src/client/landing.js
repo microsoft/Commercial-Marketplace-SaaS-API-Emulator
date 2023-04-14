@@ -8,10 +8,11 @@ const apiVersion = '2018-08-31';
         const token = urlParams.get('token');
 
         if (!token) {
-            $('section.main').children().not('.no-token, header').hide();
-          $('.no-token').show();
-          return;
+            $('.no-token').css({visibility: 'visible'});
+            return;
         }
+
+        $('section.main > div').not('.no-token').css({visibility: 'visible'});
 
         const {result} = await callAPI('/api/util/config');
         const publisherId = result['publisherId'];

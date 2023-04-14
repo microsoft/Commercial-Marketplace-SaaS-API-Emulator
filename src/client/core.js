@@ -172,7 +172,7 @@ const offerTemplate = $(`
         <div class="icon"></div>
         <div class="name"></div>
         <div class="publisher"></div>
-        <div class="starts-from"></div>
+        <div class="starts-from">Plans start at</div>
         <div class="price"></div>
         <div class="action">
             <a href="#"></a>
@@ -201,8 +201,6 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
         $offer.addClass(className);
     }
 
-    $offer.children(".publisher").html(offer.publisher);
-    $offer.children(".price").html(`$ XX/user/month`);
     $offer.find('.action a')
         .data('offer', offer)
         .text(actionText)
@@ -213,7 +211,7 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
 
     $offer.children(".name").html(offer.displayName);
     $offer.children(".publisher").html(offer.publisher);
-    $offer.children(".price").html(`$ XX/user/month`);
+    $offer.children(".price").html(getMinPriceAndTerm(offer));
 }
 
 async function renderOffers($offerContainer, actionText, action) {
@@ -229,4 +227,32 @@ async function renderOffers($offerContainer, actionText, action) {
         const offer = result[offerId];
         renderOffer($offerContainer, offer, actionText, action, offer.builtIn ? 'built-in' : undefined);
     }
+}
+
+function getMinPriceAndTerm(offer) {
+    if (!offer || !offer.plans) {
+        return 'Free';
+    }
+
+    const plans = Object.values(offer.plans);
+
+    if (plans.length === 0) {
+        return 'Free';
+    }
+
+    const billingTerms = plans.flatMap(x => x.planComponents.recurrentBillingTerms);
+    const perMonthMinPrice = Math.min(...billingTerms.filter(x => x.termUnit === 'P1M').map(x => x.price));
+    const perYearMinPrice = Math.min(...billingTerms.filter(x => x.termUnit === 'P1Y').map(x => x.price));
+    
+    const type = (plans[0].isPricePerSeat) ? 'user/' : '';
+
+    if (!isNaN(perMonthMinPrice) && isFinite(perMonthMinPrice)) {
+        return `$ ${perMonthMinPrice}/${type}month`;
+    }
+
+    if (!isNaN(perYearMinPrice) && isFinite(perYearMinPrice)) {
+        return `$ ${perYearMinPrice}/${type}year`;
+    }
+
+    return 'Unknown price';
 }

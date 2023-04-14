@@ -51,16 +51,21 @@ function addRow(subscription) {
   const cells = row.children('td');
   const status = subscription.saasSubscriptionStatus;
 
-  $(cells[0]).text(subscription.id);
-  $(cells[1]).text(subscription.planId);
-  $(cells[2]).text(subscription.quantity || 0);
+  const id = subscription.id;
+
+  $(cells[0]).text(id.substring(0, 4) + ' ... ' + id.substring(id.length - 4, id.length));
+  $(cells[0]).attr('title', id);
+  $(cells[1]).text(subscription.name);
+  $(cells[2]).text(subscription.offerId);
+  $(cells[3]).text(subscription.planId);
+  $(cells[4]).text(subscription.quantity || 0);
   if (status === 'PendingFulfillmentStart') {
-    $(cells[3]).text('Pending');
+    $(cells[5]).text('Pending');
   } else {
-    $(cells[3]).text(status);
+    $(cells[5]).text(status);
   }
 
-  $(cells[4])
+  $(cells[6])
     .children('button')
     .each((i, e) => {
       const button = $(e);

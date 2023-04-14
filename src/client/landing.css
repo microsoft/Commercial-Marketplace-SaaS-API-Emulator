@@ -1,18 +1,29 @@
 section.main {
+    font-size: .875rem;
+}
+
+section.main > div {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: .875rem;
+    visibility: collapse;
 }
-section.main > div {
+
+section.main > div.no-token {
+    display: initial;
+    visibility: collapse;
+    margin-top: 20px;
+}
+
+section.main > div > div {
     display: flex;
 }
 
-section.main > div > label {
+section.main > div > div > label {
     flex: 0 0 200px;
 }
 
-section.main > div > p {
+section.main > div > div > p {
     flex-basis: 500px;
     padding: 0;
     margin: 0;
