@@ -1,16 +1,16 @@
 /// <reference path="core.js" />
 
 $(async () => {
-    const config = await callAPI('/api/util/config');
+    const {result} = await callAPI('/api/util/config');
 
-    for (const i in config) {
-        if (!Object.prototype.hasOwnProperty.call(config, i)) {
+    for (const i in result) {
+        if (!Object.prototype.hasOwnProperty.call(result, i)) {
             continue;
         }
 
         const $input = $(`input[data-json-path='${i}'],select[data-json-path='${i}']`);
 
-        $input.val(config[i].toString());
+        $input.val(result[i].toString());
     }
 
     $('button').not('.danger').on('click', async (e) => {
@@ -20,7 +20,7 @@ $(async () => {
 
         let val;
 
-        if (typeof config[jsonPath] === 'boolean') {
+        if (typeof result[jsonPath] === 'boolean') {
             val = $input.val() === 'true';
         }
         else {
@@ -31,8 +31,16 @@ $(async () => {
             val = parseInt(val);
         }
 
-        config[jsonPath] = val;
+        result[jsonPath] = val;
 
-        await callAPI('/api/util/config', 'PATCH', config);
+        await callAPI('/api/util/config', 'PATCH', result);
     });
 });
+
+async function clear_click() {
+    if (!await showYesNo("Clearing the data file will remove all custom offers and subscriptions and cannot be undone.<br /><br />Are you sure you want to continue?", "Clear Data")) {
+        return;
+    }
+
+    await callAPI('/api/util/data-file', 'DELETE');
+}

@@ -122,6 +122,12 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
     }
     res.sendStatus(200);
   }) as RequestHandler);
+
+
+  app.delete('/api/util/data-file', (async (req, res) => {
+    await services.stateStore.clearState();
+    res.sendStatus(204);
+  }) as RequestHandler);
 };
 
 export default configure;

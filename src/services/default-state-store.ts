@@ -104,6 +104,10 @@ export default class DefaultStateStore implements StateStore {
   }
 
   async load(): Promise<void> {
+
+    this.offers = {};
+    this.publishers = {};
+
     // Always initialize some sample offers - they should not be persisted
     const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
     const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
@@ -147,6 +151,17 @@ export default class DefaultStateStore implements StateStore {
     } catch (e) {
       this.logger.log(`Failed to save - ${e as string}`, 'StateStore');
     }
+  }
+
+  async clearState(): Promise<void> {
+    if (this.config.fileLocation === undefined) {
+      this.logger.log('Missing file location from config - skipping data clear', 'StateStore');
+      return;
+    }
+    const filePath = path.resolve(this.config.fileLocation, 'data.json');
+    await this.checkDir(filePath);
+    await fs.writeFile(filePath, '{}', { encoding: 'utf8' });
+    await this.load();
   }
 
   private getOrCreatePublisher(publisherId: string): PublisherSubscriptions {

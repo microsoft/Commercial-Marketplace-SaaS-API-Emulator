@@ -5,6 +5,7 @@ export const MarketplaceResource = "20e940b3-4c77-4b0b-9a53-9e16a1b010a7";
 export interface StateStore {
   load: () => Promise<void>;
   save: () => Promise<void>;
+  clearState: () => Promise<void>;
   getPublishersAsync: () => Promise<Publishers>;
   addSubscriptionAsync: (publisherId: string, subscription: Subscription) => Promise<void>;
   updateSubscriptionAsync: (publisherId: string, subscription: Subscription) => Promise<boolean>;
