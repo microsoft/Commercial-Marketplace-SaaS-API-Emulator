@@ -301,12 +301,14 @@ div.modal > div > footer > button {
 
 div.modal > div > div {
     flex: 1 0 400px;
-    padding: 2px;
+    padding: 10px;
     overflow-y: auto;
+    flex-basis: content;
 }
 
-div.modal > div > div.alert {
-    flex-basis: content;
+div.modal > div > div > input,
+div.modal > div > div > select {
+    width: 200px;
 }
 
 div.modal pre {

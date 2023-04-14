@@ -38,13 +38,8 @@ function showYesNo(content, title) {
     return _showModal(content, title, {"Yes": true, "No": false}, "alert");
 }
 
-function showDialog(content, title, buttons) {
-    return _showModal(content, title, { ...buttons, "Close": true });
-}
-
-async function showDialogWithResult(content, title, buttons, resultCallback) {
-    await _showModal(content, title, { ...buttons, "Cancel": true });
-    return resultCallback();
+function showDialog(content, title, buttons, contentClass) {
+    return _showModal(content, title, { ...buttons, "Close": true }, contentClass);
 }
 
 function _showModal(content, title, buttons, contentClass) {
