@@ -4,7 +4,20 @@ section.main > div {
     align-items: flex-start;
 }
 
+section.offers div.no-offers {
+    border: 0;
+    box-shadow: none;
+    flex-grow: 1;
+    display: block;
+    text-align: center;
+    margin-top: 50px;
+    display: none;
+}
 
+section.offers div.no-offers a {
+    border: 0;
+    box-shadow: none;
+}
 
 section.purchase {
     flex: 0 0;

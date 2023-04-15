@@ -24,6 +24,10 @@ tr.unsubscribed td:last-child {
     opacity: 1;
 }
 
+tr.missing-offer td:first-child {
+    font-style: italic;
+}
+
 @keyframes fadeInOut {
     0% { background-color: transparent; }
     50% { background-color: orange; }

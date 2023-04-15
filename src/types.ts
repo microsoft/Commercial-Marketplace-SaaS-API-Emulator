@@ -36,6 +36,7 @@ export interface Config {
   fileLocation: string | undefined;
   publisherId: string | undefined;
   requireAuth: boolean | undefined;
+  noSamples: boolean | undefined;
 
   run: {
     skipDataLoad: boolean | undefined;

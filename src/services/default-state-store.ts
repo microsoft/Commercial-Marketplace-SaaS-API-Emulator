@@ -108,11 +108,13 @@ export default class DefaultStateStore implements StateStore {
     this.offers = {};
     this.publishers = {};
 
-    // Always initialize some sample offers - they should not be persisted
-    const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
-    const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
-    this.offers[sampleOffer1.offerId] = sampleOffer1;
-    this.offers[sampleOffer2.offerId] = sampleOffer2;
+
+    if (!this.config.noSamples) {
+      const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
+      const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
+      this.offers[sampleOffer1.offerId] = sampleOffer1;
+      this.offers[sampleOffer2.offerId] = sampleOffer2;
+    }
 
     if (this.config.fileLocation === undefined) {
       this.logger.log('Missing file location from config - skipping data load', 'StateStore');

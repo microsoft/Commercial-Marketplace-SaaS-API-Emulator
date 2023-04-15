@@ -1,7 +1,12 @@
 /// <reference path="core.js" />
 
+let config;
+
 $(async () => {
     // Configure purchase form
+
+    const {result} = await callAPI("/api/util/config");
+    config = result;
 
     const defaultPurchaser = {
         email: "user@forthcoffee.com",
@@ -45,12 +50,18 @@ $(async () => {
 
     // Retrieve offers
 
-    await renderOffers($('section.offers'), 'Get it now', (e, offer) => {
+    const offerCount = await renderOffers($('section.offers'), 'Get it now', (e, offer) => {
         $("section.purchase > div").removeClass("hidden");
         $("section.purchase > div.placeholder").addClass("hidden");
         selectOffer(offer);
         return false;
     });
+
+    if (offerCount === 0) {
+        $('article .samples').hide();
+        $('section.purchase').hide();
+        $('section.offers .no-offers').show();
+    }
 
 });
 
@@ -136,14 +147,12 @@ async function showToken() {
 async function postToLanding() {
     const {base64} = generateToken();
 
-    const {result} = await callAPI("/api/util/config");
-
-    if (result === undefined) {
+    if (config === undefined) {
       await showAlert("Something went wrong trying to get config from the emulator", "Error");
       return;
     }
 
-    const landingPage = result.landingPageUrl;
+    const landingPage = config.landingPageUrl;
 
     if (!landingPage) {
         await showAlert("No landing page URL set in config", "Landing Page");

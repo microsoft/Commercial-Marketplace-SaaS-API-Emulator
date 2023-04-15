@@ -99,6 +99,17 @@
             <tr class="template" id="publisher-row">
               <td class="publisher" colspan="7"></td>
             </tr>
+            <tr class="template missing-offer" id="missing-offer-row">
+              <td colspan="6">The offer associated with this subscription has not been loaded or been deleted.</td>
+              <td>
+                <button
+                  class="danger"
+                  onclick="delete_click(event)"
+                  aria-label="Delete">
+                  Delete
+                </button>
+              </td>
+            </tr>
             <tr class="template" id="subscription-row">
               <td class="copy"></td>
               <td></td>

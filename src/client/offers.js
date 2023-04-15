@@ -41,6 +41,11 @@ function clone_click(e) {
     const offer = $('section.detail').data('selected-offer');
 
     offer.offerId = '';
+
+    if (offer.displayName.length > 0) {
+        offer.displayName += " Copy";
+    }
+
     offer.builtIn = false;
 
     if (offer.plans) {

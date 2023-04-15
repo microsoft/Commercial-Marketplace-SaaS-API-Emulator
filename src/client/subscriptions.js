@@ -4,11 +4,10 @@
 let offers;
 
 $(async () => {
-
   const o = await callAPI('/api/util/offers');
   offers = o.result;
 
-  const {result} = await callAPI('/api/util/publishers');
+  const { result } = await callAPI('/api/util/publishers');
 
   const publisherRowTemplate = $('#publisher-row');
 
@@ -30,18 +29,30 @@ $(async () => {
 });
 
 $(document).on('subscription-update', async (e, sid, pid) => {
-        
-    const {result} = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
+  const { result } = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
 
-    const row = addRow(result);
+  const row = addRow(result);
 
-    row.addClass("animate-fade");
-
+  row.addClass('animate-fade');
 });
 
 function addRow(subscription) {
   const subscriptionRowTemplate = $('#subscription-row');
-  const row = subscriptionRowTemplate.clone().removeClass('template').attr({ id: '', 'data-sid': subscription.id });
+  const noOfferRowTemplate = $('#missing-offer-row');
+
+  const offer = offers[subscription.offerId];
+  let row;
+
+  if (offer) {
+    row = subscriptionRowTemplate.clone().removeClass('template').attr({ id: '', 'data-sid': subscription.id });
+  } else {
+    row = noOfferRowTemplate.clone().removeClass('template').attr({ id: '', 'data-sid': subscription.id });
+    row.find('button').data({
+        subscriptionId: subscription.id,
+        planID: subscription.planId,
+        publisherId: subscription.publisherId
+      });
+  }
 
   const replace = subscriptionRowTemplate.parent().children(`tr[data-sid='${subscription.id}']`);
 
@@ -52,68 +63,74 @@ function addRow(subscription) {
     row.appendTo(subscriptionRowTemplate.parent());
   }
 
-  row.addClass(subscription.saasSubscriptionStatus.toLowerCase());
+  if (offer) {
+    row.addClass(subscription.saasSubscriptionStatus.toLowerCase());
 
-  const offer = offers[subscription.offerId];
+    const cells = row.children('td');
+    const status = subscription.saasSubscriptionStatus;
 
-  const cells = row.children('td');
-  const status = subscription.saasSubscriptionStatus;
+    const id = subscription.id;
 
-  const id = subscription.id;
+    $(cells[0])
+      .text(id.substring(0, 4) + ' ... ' + id.substring(id.length - 4, id.length))
+      .attr('title', id);
+    $(cells[0]).attr('title', id).data('copy', id);
+    $(cells[1]).text(subscription.name);
+    $(cells[2]).text(subscription.offerId).data('copy', subscription.offerId);
+    $(cells[3]).text(subscription.planId).data('copy', subscription.planId);
+    $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : '-');
+    if (status === 'PendingFulfillmentStart') {
+      $(cells[5]).text('Pending');
+    } else {
+      $(cells[5]).text(status);
+    }
 
-  $(cells[0]).text(id.substring(0, 4) + ' ... ' + id.substring(id.length - 4, id.length)).attr('title', id);
-  $(cells[0]).attr('title', id).data('copy', id);
-  $(cells[1]).text(subscription.name);
-  $(cells[2]).text(subscription.offerId).data('copy', subscription.offerId);
-  $(cells[3]).text(subscription.planId).data('copy', subscription.planId);
-  $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : '-');
-  if (status === 'PendingFulfillmentStart') {
-    $(cells[5]).text('Pending');
-  } else {
-    $(cells[5]).text(status);
-  }
+    $(cells[6])
+      .children('button')
+      .each((i, e) => {
+        const button = $(e);
+        const requiredStatus = button.attr('data-requiredStatus');
+        let enabled = false;
 
-  $(cells[6])
-    .children('button')
-    .each((i, e) => {
-      const button = $(e);
-      const requiredStatus = button.attr('data-requiredStatus');
-      let enabled = false;
-
-      if (requiredStatus.startsWith('!') && status != 'Unsubscribed') {
-        enabled = requiredStatus.substring(1) != status;
-      } else {
-        enabled = requiredStatus == status;
-      }
-
-      if (button.is('.change-quantity')) {
-        if (!offer.plans[subscription.planId].isPricePerSeat) {
-          enabled = false;
+        if (requiredStatus.startsWith('!') && status != 'Unsubscribed') {
+          enabled = requiredStatus.substring(1) != status;
+        } else {
+          enabled = requiredStatus == status;
         }
-      }
 
-      button.attr('disabled', !enabled).data({
-        subscriptionId: subscription.id,
-        planID: subscription.planId,
-        publisherId: subscription.publisherId
+        if (button.is('.change-quantity')) {
+          if (!offer.plans[subscription.planId].isPricePerSeat) {
+            enabled = false;
+          }
+        }
+
+        button.attr('disabled', !enabled).data({
+          subscriptionId: subscription.id,
+          planID: subscription.planId,
+          publisherId: subscription.publisherId
+        });
+        if (enabled === false) {
+          button.hide();
+        }
       });
-      if (enabled === false) {
-        button.hide();
-      }
-    });
 
-    $('section.main > .template.copy-icon').clone().removeClass('template').appendTo(row.find('td.copy')).on('click', (e) => {
-        const $e = $(e.target)
+    $('section.main > .template.copy-icon')
+      .clone()
+      .removeClass('template')
+      .appendTo(row.find('td.copy'))
+      .on('click', (e) => {
+        const $e = $(e.target);
         const td = $e.closest('td');
         navigator.clipboard.writeText(td.data('copy') || td.text());
         $e.closest('td').find('svg.copy').hide();
         $e.closest('td').find('svg.done').show();
 
         window.setTimeout(() => {
-            $e.closest('td').find('svg.copy').show();
-            $e.closest('td').find('svg.done').hide();
+          $e.closest('td').find('svg.copy').show();
+          $e.closest('td').find('svg.done').hide();
         }, 2000);
-    });
+      });
+  }
 
   return row;
 }
@@ -131,45 +148,51 @@ async function activate_click(e) {
 }
 
 async function delete_click(e) {
+  if (
+    !(await showYesNo(
+      'Deleting a subscription cannot be undone<br /> <br />Are you sure you want to continue?',
+      'Delete Subscription'
+    ))
+  ) {
+    return;
+  }
 
-    if (!await showYesNo("Deleting a subscription cannot be undone<br /> <br />Are you sure you want to continue?", "Delete Subscription")) {
-        return;
-    }
+  const subscriptionId = $(e.target).data('subscriptionId');
+  const publisherId = $(e.target).data('publisherId');
 
-    const subscriptionId = $(e.target).data('subscriptionId');
-    const publisherId = $(e.target).data('publisherId');
+  const { status } = await callAPI(`/api/util/publishers/${publisherId}/subscriptions/${subscriptionId}`, 'delete');
 
-    const {status} = await callAPI(`/api/util/publishers/${publisherId}/subscriptions/${subscriptionId}`, 'delete');
-
-    if (status === 204) {
-        $(`tr[data-sid='${subscriptionId}']`).remove();
-    }
+  if (status === 204) {
+    $(`tr[data-sid='${subscriptionId}']`).remove();
+  }
 }
 
 async function changeQuantity_click(e) {
-  const quantity = await showDialog($('#change-quantity-dialog'), "Change Quantity", {
-    'Ok': (button, body) => {
-        const $input = body.find('input');
-        const val = $input.val();
-        if (val.trim() === '') {
-            $input.attr('title', 'Value is required').addClass('invalid');
-            return;
-        }
-        if (isNaN(val) || val <= 0 || val > 1000000) {
-            $input.attr('title', 'Invalid value').addClass('invalid');
-            return;
-        }
-        return parseInt(val);
+  const quantity = await showDialog($('#change-quantity-dialog'), 'Change Quantity', {
+    Ok: (button, body) => {
+      const $input = body.find('input');
+      const val = $input.val();
+      if (val.trim() === '') {
+        $input.attr('title', 'Value is required').addClass('invalid');
+        return;
+      }
+      if (isNaN(val) || val <= 0 || val > 1000000) {
+        $input.attr('title', 'Invalid value').addClass('invalid');
+        return;
+      }
+      return parseInt(val);
     }
-    });
+  });
 
-    if (typeof quantity === 'number' && !isNaN(quantity)) {
-        await callWebhook('Change quantity', $(e.target).data('subscriptionId'), '', { quantity });
-    }
+  if (typeof quantity === 'number' && !isNaN(quantity)) {
+    await callWebhook('Change quantity', $(e.target).data('subscriptionId'), '', { quantity });
+  }
 }
 
 async function getPlans(sub, pub) {
-  const {result} = await callAPI(`/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`);
+  const { result } = await callAPI(
+    `/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`
+  );
   return result;
 }
 
@@ -182,19 +205,19 @@ async function changePlan_click(e) {
 
   const plansList = plansData.plans;
 
-    if (plansList.length <= 1) {
-        await showAlert('There are no other plans defined on this offer', 'Change Plan');
-        return;
-    }
+  if (plansList.length <= 1) {
+    await showAlert('There are no other plans defined on this offer', 'Change Plan');
+    return;
+  }
 
   const $dialog = $('#change-plan-dialog');
   const $select = $dialog.find('select').empty();
 
-  $select.append(...plansList.map(x => $(`<option value='${x.planId}'>${x.displayName}</option>`)));
+  $select.append(...plansList.map((x) => $(`<option value='${x.planId}'>${x.displayName}</option>`)));
 
-  const planId = await showDialog($dialog, "Change Plan", {
-    'Ok': (button, body) => {
-        return body.find('select').val();
+  const planId = await showDialog($dialog, 'Change Plan', {
+    Ok: (button, body) => {
+      return body.find('select').val();
     }
   });
 

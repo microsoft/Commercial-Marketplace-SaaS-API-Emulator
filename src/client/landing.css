@@ -9,10 +9,13 @@ section.main > div {
     visibility: collapse;
 }
 
-section.main > div.no-token {
-    display: initial;
+section.main .no-token {
+    display: block;
     visibility: collapse;
-    margin-top: 20px;
+    margin-top: 50px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: normal;
 }
 
 section.main > div > div {

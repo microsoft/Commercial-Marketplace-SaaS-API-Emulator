@@ -223,6 +223,7 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
 async function renderOffers($offerContainer, actionText, action) {
     const {result} = await callAPI('/api/util/offers');
 
+    let offerCount = 0;
 
     for (const offerId in result) {
 
@@ -232,7 +233,10 @@ async function renderOffers($offerContainer, actionText, action) {
 
         const offer = result[offerId];
         renderOffer($offerContainer, offer, actionText, action, offer.builtIn ? 'built-in' : undefined);
+        offerCount++;
     }
+
+    return offerCount;
 }
 
 function getMinPriceAndTerm(offer) {
