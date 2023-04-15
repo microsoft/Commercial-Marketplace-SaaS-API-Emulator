@@ -247,6 +247,10 @@ button.danger {
     display: none;
 }
 
+*.hidden {
+    display: none;
+}
+
 /* Dialog classes */
 
 div.modal {

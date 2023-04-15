@@ -36,6 +36,22 @@ td {
     border-right: 1px solid rgb(209 213 219);
     padding: .1rem .25rem;
     height: 1.25rem;
+    position: relative;
+}
+
+td.copy {
+    padding-right: 15px;
+}
+
+td a.copy-icon {
+    position: absolute;
+    right: 20px;
+    top: 8px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    width: 0;
+    background-color: orange;
 }
 
 td:last-child {

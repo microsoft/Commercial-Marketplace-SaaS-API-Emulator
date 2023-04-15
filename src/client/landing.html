@@ -45,12 +45,23 @@
         <main>
             <section class="info">
                 <header>Introduction</header>
-                <article>
+                <article class="hidden with-token">
                     <p>This is the emulator's built-in landing page. It's a very simple implementation to provide something that works out the box.</p>
                     <p>The landing page resolves (decodes) the purchase token passed to it from the marketplace.</p>
                     <p>The token contains the purchase details, these are used to populate the fields on the right.</p>
                     <p>It is also the place to capture any additional details from the customer prior to onboarding.</p>
                     <p>Click the "Activate Subscription" button to activate the displayed subscription.</p>
+                </article>
+                <article>
+                    <p>This is the emulator's built-in landing page. It's a very simple implementation to provide something that works out the box.</p>
+                    <p>To make it function, a purchase token needs to be passed in the query string.</p>
+                    <p>
+                        <ul>
+                            <li>Return to the Marketplace Token page</li>
+                            <li>Generate a token</li>
+                            <li>Configure your purchase</li>
+                        </ul>
+                    </p>
                 </article>
             </section>
 

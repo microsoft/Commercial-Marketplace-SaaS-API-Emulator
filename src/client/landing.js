@@ -12,6 +12,9 @@ const apiVersion = '2018-08-31';
             return;
         }
 
+        $('article').hide();
+        $('article.with-token').show();
+
         $('section.main > div').not('.no-token').css({visibility: 'visible'});
 
         const {result} = await callAPI('/api/util/config');

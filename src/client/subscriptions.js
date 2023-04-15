@@ -61,12 +61,12 @@ function addRow(subscription) {
 
   const id = subscription.id;
 
-  $(cells[0]).text(id.substring(0, 4) + ' ... ' + id.substring(id.length - 4, id.length));
-  $(cells[0]).attr('title', id);
+  $(cells[0]).text(id.substring(0, 4) + ' ... ' + id.substring(id.length - 4, id.length)).attr('title', id);
+  $(cells[0]).attr('title', id).data('copy', id);
   $(cells[1]).text(subscription.name);
-  $(cells[2]).text(subscription.offerId);
-  $(cells[3]).text(subscription.planId);
-  $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : 'N/A');
+  $(cells[2]).text(subscription.offerId).data('copy', subscription.offerId);
+  $(cells[3]).text(subscription.planId).data('copy', subscription.planId);
+  $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : '-');
   if (status === 'PendingFulfillmentStart') {
     $(cells[5]).text('Pending');
   } else {
@@ -100,6 +100,19 @@ function addRow(subscription) {
       if (enabled === false) {
         button.hide();
       }
+    });
+
+    $('section.main > .template.copy-icon').clone().removeClass('template').appendTo(row.find('td.copy')).on('click', (e) => {
+        const $e = $(e.target)
+        const td = $e.closest('td');
+        navigator.clipboard.writeText(td.data('copy') || td.text());
+        $e.closest('td').find('svg.copy').hide();
+        $e.closest('td').find('svg.done').show();
+
+        window.setTimeout(() => {
+            $e.closest('td').find('svg.copy').show();
+            $e.closest('td').find('svg.done').hide();
+        }, 2000);
     });
 
   return row;
