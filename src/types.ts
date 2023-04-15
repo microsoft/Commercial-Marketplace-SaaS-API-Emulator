@@ -48,7 +48,7 @@ export interface Config {
     tenantId: string | undefined;
   }
 
-  internal: {
+  internal?: {
     webhook: {
       response: number | undefined;
       processDelayMS: number | undefined;

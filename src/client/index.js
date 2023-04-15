@@ -123,7 +123,7 @@ function generateToken() {
 
 async function showJson() {
     const {json} = generateToken();
-    await showDialog(`<pre>${json}</pre>`, "Subscription JSON", {
+    await showDialog(`<pre>${highlightJson(json)}</pre>`, "Subscription JSON", {
         "Copy": ($btn) => {
             $btn.text("Copied");
             navigator.clipboard.writeText(json);

@@ -35,6 +35,12 @@ $(async () => {
 
         await callAPI('/api/util/config', 'PATCH', result);
     });
+
+    $('.buttons > button').on('click', async () => {
+        const config = JSON.parse(JSON.stringify(result));
+        config.webhook['clientSecret'] = "&lt;redacted&gt;";
+        await showDialog('<pre>' + highlightJson(JSON.stringify(result, undefined, 2)) + '</pre>', 'Config');
+    });
 });
 
 async function clear_click() {

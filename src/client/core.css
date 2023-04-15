@@ -270,7 +270,7 @@ div.modal > div {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    width: 400px;
+    width: 500px;
     background-color: white;
     margin: auto;
     display: flex;
@@ -319,6 +319,23 @@ div.modal pre {
     word-break: break-all;
     overflow-wrap: break-word;
     white-space: pre-wrap;
+    font-size: .875rem;
+}
+
+div.modal pre .key {
+    color: rgb(58, 94, 117);
+}
+
+div.modal pre .number {
+    color: rgb(105, 122, 51);
+}
+
+div.modal pre .boolean {
+    color: rgb(69, 78, 138);
+}
+
+div.modal pre .string {
+    color: rgb(112, 68, 13);
 }
 
 /* Notification classes */

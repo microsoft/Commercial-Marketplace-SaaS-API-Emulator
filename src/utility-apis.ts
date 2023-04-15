@@ -94,6 +94,7 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
   app.get('/api/util/config', (async (req, res) => {
     const config = JSON.parse(JSON.stringify(services.config)) as Config;
     delete config.webhook.clientSecret;
+    delete config.internal;
     res.status(200).send(config);
   }) as RequestHandler);
 
