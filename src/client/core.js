@@ -270,7 +270,8 @@ function getMinPriceAndTerm(offer) {
 function highlightJson(json) {
     json = json.replace(/(\"[^\"]+\")\:/gm, '<span class="key">$1</span>:')
     json = json.replace(/:\s?([0-9\.]+)(,?)$/gm, ': <span class="number">$1</span>$2')
-    json = json.replace(/:\s?\"([^\"]+)\"(,?)$/gm, ': <span class="string">$1</span>$2')
+    json = json.replace(/:\s?\"(&lt;[^&]+&gt;)\"(,?)$/gm, ': <span class="redacted">$1</span>$2')
+    json = json.replace(/:\s?\"([^\"]+)\"(,?)$/gm, ': <span class="string">"$1"</span>$2')
     json = json.replace(/:\s?(true|false|null)(,?)$/gm, ': <span class="boolean">$1</span>$2')
     return json;
 }

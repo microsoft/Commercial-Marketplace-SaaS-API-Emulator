@@ -39,7 +39,7 @@ $(async () => {
     $('.buttons > button').on('click', async () => {
         const config = JSON.parse(JSON.stringify(result));
         config.webhook['clientSecret'] = "&lt;redacted&gt;";
-        await showDialog('<pre>' + highlightJson(JSON.stringify(result, undefined, 2)) + '</pre>', 'Config');
+        await showDialog('<pre>' + highlightJson(JSON.stringify(config, undefined, 2)) + '</pre>', 'Config');
     });
 });
 

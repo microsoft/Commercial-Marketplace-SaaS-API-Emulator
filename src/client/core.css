@@ -338,6 +338,11 @@ div.modal pre .string {
     color: rgb(112, 68, 13);
 }
 
+div.modal pre .redacted {
+    color: rgb(87, 87, 87);
+    font-style: italic;
+}
+
 /* Notification classes */
 
 .notifications {
