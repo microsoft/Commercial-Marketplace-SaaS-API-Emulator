@@ -26,6 +26,10 @@ $(async () => {
       addRow(publisherSubscriptions[sid].subscription, pid);
     }
   }
+
+  if (window.location.hash) {
+    $(`tr[data-sid=${window.location.hash.substring(1)}]`).addClass('animate-fade');
+  }
 });
 
 $(document).on('subscription-update', async (e, sid, pid) => {

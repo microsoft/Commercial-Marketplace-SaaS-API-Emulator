@@ -11,9 +11,12 @@ const apiVersion = '2018-08-31';
             $('.no-token').css({visibility: 'visible'});
             return;
         }
+        else {
+            $('.no-token').addClass('hidden');
+        }
 
         $('article').hide();
-        $('article.with-token').show();
+        $('article.with-token').removeClass('hidden').show();
 
         $('section.main > div').not('.no-token').css({visibility: 'visible'});
 
@@ -58,8 +61,13 @@ const apiVersion = '2018-08-31';
           );
 
           if (response.ok) {
-            $(e.target).text('Subscription Activated');
+            $(e.target).addClass('hidden');
+            $('button.subscriptions').removeClass('hidden');
           }
+        });
+
+        $('button.subscriptions').on('click', async (e) => {
+            window.location.href = '/subscriptions.html#' + subscriptionId;
         });
 
       });

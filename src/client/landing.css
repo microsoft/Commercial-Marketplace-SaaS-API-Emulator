@@ -18,6 +18,10 @@ section.main .no-token {
     font-weight: normal;
 }
 
+section.main .with-token {
+    margin-top: 20px;
+}
+
 section.main > div > div {
     display: flex;
 }

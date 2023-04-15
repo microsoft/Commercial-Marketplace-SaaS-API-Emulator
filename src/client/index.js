@@ -168,7 +168,12 @@ async function postToLanding() {
 
     const target = landingPage + '?token=' + base64;
 
-    window.open(target, '_blank');
+    if (config.landingPageUrl.toLowerCase().startsWith(window.location.origin.toLowerCase())) {
+        window.location.href = target;
+    }
+    else {
+        window.open(target, '_blank');
+    }
   }
 
   // Check if we're running on a remote host but the landing page has been left as default (localhost)
