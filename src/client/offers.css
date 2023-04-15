@@ -25,7 +25,7 @@ section.detail {
     border: 1px solid rgb(186 230 253);
     background-color: rgb(248 250 252);
     border-radius: .5rem;
-    flex: 0 0 300px;
+    flex: 0 0 350px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

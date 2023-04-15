@@ -37,7 +37,22 @@ function addRow_click(e) {
     addRow($(e.target).closest('tr'));
 }
 
-function selectOffer(offer) {    
+function clone_click(e) {
+    const offer = $('section.detail').data('selected-offer');
+
+    offer.offerId = '';
+    offer.builtIn = false;
+
+    if (offer.plans) {
+        for (const plan of Object.values(offer.plans)) {
+            plan.planId = '';
+        }
+    }
+
+    selectOffer(offer, true);
+}
+
+function selectOffer(offer, cloned) {    
     $('section.detail > div').show();
 
     $('tbody tr').not('.template').remove();
@@ -46,25 +61,25 @@ function selectOffer(offer) {
 
     $('section.detail').data('selected-offer', offer);
     
-    if (offer && offer.builtIn) {
-        $('section.detail input, section.detail select').attr('disabled', true);
-        $('section.detail button').not(':contains("Cancel")').attr('disabled', true).hide();
-    }
-    else {
-        $('section.detail input, section.detail select').attr('disabled', false);
-        $('section.detail button').show().attr('disabled', false);
-    }
+    const $buttons = $('section.detail tfoot button').attr('disabled', false).show();
+    const $header = $('section.detail header');
 
-    if (offer && !offer.builtIn) {
-        $('section.detail tfoot button.danger').show();
+    if (!offer || cloned) {
+        $buttons.not('.new').attr('disabled', true).hide();
+        $header.text('New Offer');
+    }
+    else if (offer.builtIn) {
+        $buttons.not('.built-in').attr('disabled', true).hide();
+        $header.text('View Offer');
     }
     else {
-        $('section.detail tfoot button.danger').hide();
+        $buttons.not('.custom').attr('disabled', true).hide();
+        $header.text('Edit Offer');
     }
 
     if (offer) {
 
-        $('#offer-name').val(offer.displayName);
+        $('#offer-name').val(offer.displayName).attr('disabled', offer.builtIn);
 
         $('#offer-id').val(offer.offerId);
         $('#offer-id').attr('disabled', offer.offerId.length > 0);
@@ -74,10 +89,10 @@ function selectOffer(offer) {
         if (plans.length > 0) {
             $('#per-seat').val(plans[0].isPricePerSeat.toString());
 
-            $('#per-seat').val(plans[0].isPricePerSeat.toString()).attr('disabled', true);
+            $('#per-seat').val(plans[0].isPricePerSeat.toString()).attr('disabled', !cloned);
 
             for (const plan of plans) {
-                addRow(undefined, plan);
+                addRow(undefined, plan, offer.builtIn);
             }
         }
     }
@@ -150,11 +165,7 @@ function validateDetail() {
     return valid;
 }
 
-async function saveOffer_click() {
-    if (!validateDetail()) {
-        return;
-    }
-
+function getOffer() {
     const offer = {
         displayName: $('#offer-name').val().trim(),
         offerId: $('#offer-id').val().trim(),
@@ -180,6 +191,16 @@ async function saveOffer_click() {
             }
         }
     });
+
+    return offer;
+}
+
+async function saveOffer_click() {
+    if (!validateDetail()) {
+        return;
+    }
+
+    const offer = getOffer();
 
     const {result} = await callAPI('/api/util/offers', 'POST', offer);
 
@@ -213,7 +234,7 @@ async function deleteOffer_click() {
     }
 }
 
-function addRow(after, plan) {
+function addRow(after, plan, builtIn) {
     const newRow = $('tbody tr.template').clone().removeClass('template');
 
     if (after) {
@@ -226,9 +247,11 @@ function addRow(after, plan) {
     if (plan) {
         newRow.find('td.plan-name input').val(plan.displayName);
         newRow.find('td.plan-id input').val(plan.planId);
-        newRow.find('td.plan-id input').attr('disabled', plan.planId.length > 0);
         newRow.find('td.billing-term select').val(plan.planComponents.recurrentBillingTerms[0].termUnit);
         newRow.find('td.price input').val(plan.planComponents.recurrentBillingTerms[0].price);
+
+        newRow.find('td input, td select').attr('disabled', builtIn);
+        newRow.find('td.plan-id input').attr('disabled', builtIn || plan.planId.length > 0);
     }
 
     checkDeleteRow();

@@ -79,6 +79,7 @@
 
                 <section class="detail">
                     <div>
+                        <header>Offer</header>
                         <div>
                             <label>Offer Name</label>
                             <input id="offer-name" />
@@ -127,9 +128,10 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="5">
-                                        <button onclick="saveOffer_click(event)" class="primary">Save</button>
-                                        <button onclick="deleteOffer_click(event)" class="danger">Delete</button>
-                                        <button onclick="cancel_click(event)">Cancel</button>
+                                        <button class="custom new primary" onclick="saveOffer_click(event)">Save</button>
+                                        <button class="custom danger" onclick="deleteOffer_click(event)">Delete</button>
+                                        <button class="custom built-in" onclick="clone_click(event)">Clone</button>
+                                        <button class="custom new built-in" onclick="cancel_click(event)">Cancel</button>
                                     </td>
                                 </tr>
                             </tfoot>
