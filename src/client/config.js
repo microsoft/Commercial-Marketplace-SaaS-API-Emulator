@@ -33,6 +33,10 @@ $(async () => {
 
         result[jsonPath] = val;
 
+        if (!await showYesNo(`<p>This change will occur but not be persisted and will be lost if the emulator is restarted, to start the emulator with this new value use the following environment variable:</p><pre>${$input.data('env')} = ${val}</pre><p>Do you want to continue?</p>`, 'Change Config')) {
+            return;
+        }
+
         await callAPI('/api/util/config', 'PATCH', result);
     });
 

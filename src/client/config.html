@@ -69,13 +69,13 @@
                     <summary>The webhook and landing pages are required when creating an offer in Partner Center.</summary>
                     <div>
                         <label>Webhook URL</label>
-                        <input data-json-path="webhookUrl" />
+                        <input data-env="WEBHOOK_URL" data-json-path="webhookUrl" />
                         <button>Set</button>
                     </div>
 
                     <div>
                         <label>Landing Page URL</label>
-                        <input data-json-path="landingPageUrl" />
+                        <input data-env="LANDING_PAGE_URL" data-json-path="landingPageUrl" />
                         <button>Set</button>
                     </div>
                 </div>
@@ -85,22 +85,22 @@
                     <summary>This section controls the behaviour of the emulator, timeouts, delays, etc</summary>
                     <div>
                         <label>Operation Timeout (ms)</label>
-                        <input type="number" data-json-path="operationTimeoutMS" />
+                        <input type="number" data-env="OPERATION_TIMEOUT" data-json-path="operationTimeoutMS" />
                         <button>Set</button>
                     </div>
                     <div>
                         <label>Subscription Update Delay (ms)</label>
-                        <input type="number" data-json-path="subscriptionUpdateDelayMS" />
+                        <input type="number" data-env="SUBSCRIPTION_UPDATE_DELAY" data-json-path="subscriptionUpdateDelayMS" />
                         <button>Set</button>
                     </div>
                     <div>
                         <label>Webhook Call Delay (ms)</label>
-                        <input type="number" data-json-path="webhookCallDelayMS" />
+                        <input type="number" data-env="WEBHOOK_CALL_DELAY" data-json-path="webhookCallDelayMS" />
                         <button>Set</button>
                     </div>
                     <div>
                         <label>Require Marketplace Auth Token</label>
-                        <select data-json-path="requireAuth">
+                        <select data-env="REQUIRE_AUTH" data-json-path="requireAuth">
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select>
