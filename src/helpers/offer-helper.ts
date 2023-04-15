@@ -51,6 +51,8 @@ export function generateSampleOffer(offerId: string, displayName: string, isPric
     offerId,
     plans,
     persist,
-    displayName
+    displayName,
+    publisher: "ForthCoffee",
+    builtIn: true
   };
 }

@@ -104,11 +104,17 @@ export default class DefaultStateStore implements StateStore {
   }
 
   async load(): Promise<void> {
-    // Always initialize some sample offers - they should not be persisted
-    const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
-    const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
-    this.offers[sampleOffer1.offerId] = sampleOffer1;
-    this.offers[sampleOffer2.offerId] = sampleOffer2;
+
+    this.offers = {};
+    this.publishers = {};
+
+
+    if (!this.config.noSamples) {
+      const sampleOffer1: Offer = generateSampleOffer('flat-rate', 'Sample Flat Rate', false, false);
+      const sampleOffer2: Offer = generateSampleOffer('per-seat', 'Sample Per Seat', true, false);
+      this.offers[sampleOffer1.offerId] = sampleOffer1;
+      this.offers[sampleOffer2.offerId] = sampleOffer2;
+    }
 
     if (this.config.fileLocation === undefined) {
       this.logger.log('Missing file location from config - skipping data load', 'StateStore');
@@ -147,6 +153,17 @@ export default class DefaultStateStore implements StateStore {
     } catch (e) {
       this.logger.log(`Failed to save - ${e as string}`, 'StateStore');
     }
+  }
+
+  async clearState(): Promise<void> {
+    if (this.config.fileLocation === undefined) {
+      this.logger.log('Missing file location from config - skipping data clear', 'StateStore');
+      return;
+    }
+    const filePath = path.resolve(this.config.fileLocation, 'data.json');
+    await this.checkDir(filePath);
+    await fs.writeFile(filePath, '{}', { encoding: 'utf8' });
+    await this.load();
   }
 
   private getOrCreatePublisher(publisherId: string): PublisherSubscriptions {
@@ -202,6 +219,16 @@ export default class DefaultStateStore implements StateStore {
     return this.getPublisherSubscription(publisherId, subscriptionId)?.subscription;
   }
 
+  async deleteSubscriptionAsync(publisherId: string, subscriptionId: string): Promise<boolean> {
+    try {
+      delete this.publishers[publisherId][subscriptionId];
+      return true;
+    }
+    catch {
+      return false;
+    }
+  }
+
   async findSubscriptionAsync(subscriptionId: string): Promise<Subscription | undefined> {
     const subscription = Object.values(this.publishers).filter((x) =>
       Object.prototype.hasOwnProperty.call(x, subscriptionId)
@@ -244,12 +271,14 @@ export default class DefaultStateStore implements StateStore {
     return plans.filter(x => x.planId === planId);
   }
 
-  async upsertOfferAsync(offer: Partial<Offer>) : Promise<boolean> {
+  async upsertOfferAsync(offer: Partial<Offer>) : Promise<Offer | undefined> {
 
     const newOffer : Offer = {
       displayName: "Sample Offer",
       offerId: "sampleOfferId",
-      persist: false,
+      publisher: "ForthCoffee",
+      persist: true,
+      builtIn: false,
       plans: {},
 
       // Overwrite offer properties from request
@@ -263,7 +292,7 @@ export default class DefaultStateStore implements StateStore {
         if (subscription.subscription.offerId === offer.offerId) {
           
           if (!Object.prototype.hasOwnProperty.call(offer.plans, subscription.subscription.planId)) {
-            return false;
+            return undefined;
           }
 
         }
@@ -272,7 +301,7 @@ export default class DefaultStateStore implements StateStore {
 
     this.offers[newOffer.offerId] = newOffer;
     await this.save();
-    return true;
+    return newOffer;
   }
 
   async deleteOfferAsync(offerId: string) : Promise<boolean> {

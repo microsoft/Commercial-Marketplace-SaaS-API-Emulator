@@ -152,6 +152,7 @@ const isAckable: (operation: Operation) => boolean = (operation) => {
   switch (operation.action) {
     case 'ChangePlan':
     case 'ChangeQuantity':
+      return true;
   }
 
   return false;

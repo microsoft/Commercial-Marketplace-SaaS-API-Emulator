@@ -10,41 +10,10 @@
 			]
 		},
 		{
-			"label": "Watch tailwind",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tailwindcss",
-				"-i",
-				"./src/client/input.css",
-				"-o",
-				"./src/client/output.css",
-				"--watch"
-			],
-			"problemMatcher": {
-                "pattern": [
-                    {
-                        "regexp": "^CssSyntaxError: tailwindcss: (.*):(\\d+):(\\d+): (.+)$",
-                        "file": 1,
-                        "line": 2,
-                        "column": 3,
-                        "message": 4
-                    }
-                ],
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "^Rebuilding\\.\\.\\..*",
-                    "endsPattern":"^Done in .*$"
-                },
-            },
-			"isBackground": true
-		},
-		{
 			"label": "build",
 			"dependsOrder": "sequence",
 			"dependsOn": [
-				"Run tsc",
-				"Watch tailwind"
+				"Run tsc"
 			]
 		}
 	]

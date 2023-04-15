@@ -1,0 +1,50 @@
+section.main > summary {
+    font-size: .875rem;
+}
+
+div.form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    border: 2px solid transparent;
+    padding: 10px;
+    border-radius: .5rem;
+}
+
+div.form > header {
+    font-size: 1.2rem;
+}
+
+div.form > summary {
+    font-size: .8rem;
+    margin-bottom: 10px;
+}
+
+div.form > div {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+}
+
+div.form > div > label {
+    flex: 0 0 250px;
+    font-size: 14px;
+}
+
+div.form > div > input,
+select {
+    flex: 1 1;
+    max-width: 250px;
+}
+
+div.form.kenny-loggins {
+    margin-top: 30px;
+    border-color: var(--danger-color);
+    background-color: #1e1e1e;
+    color: #f2f2f2;
+}
+
+div.form.kenny-loggins > header {
+    color: var(--danger-color);
+}

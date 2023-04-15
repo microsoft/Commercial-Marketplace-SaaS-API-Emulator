@@ -5,11 +5,13 @@ export const MarketplaceResource = "20e940b3-4c77-4b0b-9a53-9e16a1b010a7";
 export interface StateStore {
   load: () => Promise<void>;
   save: () => Promise<void>;
+  clearState: () => Promise<void>;
   getPublishersAsync: () => Promise<Publishers>;
   addSubscriptionAsync: (publisherId: string, subscription: Subscription) => Promise<void>;
   updateSubscriptionAsync: (publisherId: string, subscription: Subscription) => Promise<boolean>;
   getSubscriptionsForPublisherAsync: (publisherId: string) => Promise<Subscription[] | undefined>;
   getSubscriptionAsync: (publisherId: string, subscriptionId: string) => Promise<Subscription | undefined>;
+  deleteSubscriptionAsync(publisherId: string, subscriptionId: string): Promise<boolean>;
   findSubscriptionAsync: (subscriptionId: string) => Promise<Subscription | undefined>;
   addOperationAsync: (publisherId: string, subscriptionId: string, operation: Operation) => Promise<void>;
   getOperationsAsync: (publisherId: string, subscriptionId: string) => Promise<Operation[] | undefined>;
@@ -19,7 +21,7 @@ export interface StateStore {
     operationId: string
   ) => Promise<Operation | undefined>;
   getPlansForOfferAsync: (offerId: string, planId?: string) => Promise<Plan[] | undefined>;
-  upsertOfferAsync: (offer: Partial<Offer>) => Promise<boolean>;
+  upsertOfferAsync: (offer: Partial<Offer>) => Promise<Offer | undefined>;
   deleteOfferAsync: (offerId: string) => Promise<boolean>;
   getAllOffers: () => Record<string, Offer>;
   getOffer: (offerId: string) => Offer | undefined;
@@ -34,6 +36,7 @@ export interface Config {
   fileLocation: string | undefined;
   publisherId: string | undefined;
   requireAuth: boolean | undefined;
+  noSamples: boolean | undefined;
 
   run: {
     skipDataLoad: boolean | undefined;
@@ -45,7 +48,7 @@ export interface Config {
     tenantId: string | undefined;
   }
 
-  internal: {
+  internal?: {
     webhook: {
       response: number | undefined;
       processDelayMS: number | undefined;
@@ -96,6 +99,8 @@ export interface Offer {
   displayName: string;
   plans: PlanWrapper;
   persist: boolean;
+  publisher: string;
+  builtIn: boolean;
 }
 export type PlanWrapper = Record<string, Plan>;
 

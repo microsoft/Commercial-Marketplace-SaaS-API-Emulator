@@ -16,6 +16,9 @@ There are a number of configuration options that can be set on the emulator.
 - SKIP_DATA_LOAD (boolean)
   - Tell the emulator not to load any existing data file on startup. This value is only used during startup. Useful for debugging.
   - `Default: false`
+- NO_SAMPLES (boolean)
+  - Tell the emulator not to configure any sample offers on startup. This value is only used during startup.
+  - `Default: false`
 
 **Publisher Options**
 

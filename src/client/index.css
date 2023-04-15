@@ -1,0 +1,96 @@
+section.main > div {
+    display: flex;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+section.offers div.no-offers {
+    border: 0;
+    box-shadow: none;
+    flex-grow: 1;
+    display: block;
+    text-align: center;
+    margin-top: 50px;
+    display: none;
+}
+
+section.offers div.no-offers a {
+    border: 0;
+    box-shadow: none;
+}
+
+section.purchase {
+    flex: 0 0;
+    flex-basis: 400px;
+    background-color: var(--info-bg-color);
+}
+
+section.purchase > div {
+    margin: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+section.purchase > div.hidden {
+    display: none;
+}
+
+section.purchase div.header {
+    font-size: 1.3rem;
+    line-height: 2rem;
+    color: var(--info-header-color);
+}
+
+section.purchase div.offer {
+    background-image: url(images/fc_logo.png);
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    background-position: 5px;
+    padding-left: 50px;
+    font-weight: 500;
+}
+
+section.purchase div.offer > span:last-child {
+    font-size: .7rem;
+    display: block;
+    font-weight: normal;
+}
+
+section.purchase div.content {
+    font-size: .75rem;
+    line-height: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+section.purchase div.content > div > div {
+    display: flex;
+    margin-top: 5px;
+    align-items: center;
+}
+
+section.purchase div.content > div > div.hidden {
+    display: none;
+}
+
+section.purchase label {
+    flex: 0 0 130px;
+}
+
+section.purchase input,
+section.purchase select {
+    flex: 1 0;
+}
+
+section.purchase input[type=checkbox] {
+    flex: 0 0;
+}
+
+section.purchase input[type=number] {
+    flex: 0 0;
+    width: 100px;
+}

@@ -1,0 +1,49 @@
+section.main {
+    font-size: .875rem;
+}
+
+section.main > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    visibility: collapse;
+}
+
+section.main .no-token {
+    display: block;
+    visibility: collapse;
+    margin-top: 50px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+section.main .with-token {
+    margin-top: 20px;
+}
+
+section.main > div > div {
+    display: flex;
+}
+
+section.main > div > div > label {
+    flex: 0 0 200px;
+}
+
+section.main > div > div > p {
+    flex-basis: 500px;
+    padding: 0;
+    margin: 0;
+}
+
+div.seperator {
+    border-bottom: 1px solid rgb(209 213 219);
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+div.no-token {
+    display: none;
+    font-weight: 600;
+    margin-top: 50px;
+}

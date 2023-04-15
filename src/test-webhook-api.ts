@@ -3,7 +3,7 @@ import { ServicesContainer } from './services/container';
 import { MarketplaceResource, SetTimeoutHandler } from './types';
 
 const Configure = (app: Express, services: ServicesContainer): void => {
-  const _config = services.config.internal.webhook;
+  const _config = services.config.internal!.webhook;
   const clientConfig = services.config.webhook;
   const logger = services.logger;
 
