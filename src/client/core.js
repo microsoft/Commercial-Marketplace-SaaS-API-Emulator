@@ -173,7 +173,7 @@ async function doFetch(name, url, body, method, headers) {
 
 const offerTemplate = $(`
     <div>
-        <div class="icon"></div>
+        <div class="icon"><div></div></div>
         <div class="name"></div>
         <div class="publisher"></div>
         <div class="starts-from">Plans start at</div>
@@ -198,6 +198,7 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
         $offer = offerTemplate.clone()
             .attr('data-offer-id', offer.offerId)
             .data('offer', offer)
+            .addClass('offer')
             .addClass(offer.builtIn ? 'built-in' : 'custom')
             .appendTo($offerContainer);
     }

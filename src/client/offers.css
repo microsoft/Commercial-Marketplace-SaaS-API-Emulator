@@ -8,8 +8,12 @@ section.offers {
     flex: 0 0;
 }
 
+
 div.new div.icon {
-    background-color: rgb(187 247 208);
+    background: linear-gradient(90deg, 
+        rgb(219 254 221 / 0.6) 0%,
+        rgb(219 254 221 / .8) 50%,
+        rgb(219 254 221 / 1) 100%) !important;
 }
 
 div.new div.action a:hover {

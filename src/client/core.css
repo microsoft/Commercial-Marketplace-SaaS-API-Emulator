@@ -417,28 +417,44 @@ section.offers > div div {
     padding: 0 .5rem;
 }
 
-section.offers div.icon {
+/* section.offers div.icon {
     flex: 0 0 50px;
     background: linear-gradient(90deg, 
-        rgba(219 234 254 0.6) 0%,
-        rgba(219 234 254 .8) 50%,
-        rgba(219 234 254 1) 100%);
+        rgb(219 234 254 / 0.6) 0%,
+        rgb(219 234 254 / .8) 50%,
+        rgb(219 234 254 / 1) 100%);
+    background-image: url(images/fc_logo.png);
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    background-position: 5px;
+} */
+
+section.offers div.icon > div {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 7px;
     background-image: url(images/fc_logo.png);
     background-size: 35px 35px;
     background-repeat: no-repeat;
     background-position: 5px;
 }
 
-section.offers div.custom div.icon {
+section.offers div.icon {
+    position: relative;
     flex: 0 0 50px;
+    padding: 0;
     background: linear-gradient(90deg, 
-        rgba(252, 219, 254, 0.6) 0%,
-        rgba(252, 219, 254, .8) 50%,
-        rgba(252, 219, 254, 1) 100%);
-    background-image: url(images/fc_logo.png);
-    background-size: 35px 35px;
-    background-repeat: no-repeat;
-    background-position: 5px;
+        rgb(219 234 254 / 0.6) 0%,
+        rgb(219 234 254 / .8) 50%,
+        rgb(219 234 254 / 1) 100%);
+}
+
+section.offers div.custom div.icon {
+    background: linear-gradient(90deg, 
+        rgb(252 219 254 / 0.6) 0%,
+        rgb(252 219 254 / .8) 50%,
+        rgb(252 219 254 / 1) 100%);
 }
 
 section.offers div.name {
