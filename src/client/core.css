@@ -53,7 +53,7 @@ textarea, select {
     box-sizing: border-box;
     padding: .2rem .5rem;
     color: rgb(75 85 99);
-    font-size: .875rem;
+    font-size: 14px;
     margin: 0;
     border: 1px solid rgb(48, 48, 48);
     border-radius: .15rem;
@@ -439,18 +439,6 @@ section.offers > div div {
     padding: 0 .5rem;
 }
 
-/* section.offers div.icon {
-    flex: 0 0 50px;
-    background: linear-gradient(90deg, 
-        rgb(219 234 254 / 0.6) 0%,
-        rgb(219 234 254 / .8) 50%,
-        rgb(219 234 254 / 1) 100%);
-    background-image: url(images/fc_logo.png);
-    background-size: 35px 35px;
-    background-repeat: no-repeat;
-    background-position: 5px;
-} */
-
 section.offers div.icon > div {
     width: 35px;
     height: 35px;
@@ -467,9 +455,9 @@ section.offers div.icon {
     flex: 0 0 50px;
     padding: 0;
     background: linear-gradient(90deg, 
-        rgb(219 234 254 / 0.6) 0%,
-        rgb(219 234 254 / .8) 50%,
-        rgb(219 234 254 / 1) 100%);
+        rgb(191 219 254 / 0.6) 0%,
+        rgb(191 219 254 / .8) 50%,
+        rgb(191 219 254 / 1) 100%);
 }
 
 section.offers div.custom div.icon {
@@ -487,18 +475,19 @@ section.offers div.name {
 
 section.offers div.publisher {
     flex: 1 0;
-    font-size: .7rem;
+    font-size: 10px;
 }
 
 section.offers div.starts-from {
     flex: 0 0;
     font-style: italic;
-    font-size: .7rem;
+    font-size: 10px;
 }
 
 section.offers div.price {
     flex: 0 0;
-    font-size: .9rem;
+    font-size: 14px;
+    padding-bottom: 2px;
 }
 
 section.offers div.action {

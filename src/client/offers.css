@@ -5,15 +5,18 @@ section.main {
 }
 
 section.offers {
-    flex: 0 0;
+    flex: none;
+    height: 262px;
+    overflow-y: auto;
+    padding-left: 10px;
+    padding-bottom: 5px;
 }
-
 
 div.new div.icon {
     background: linear-gradient(90deg, 
-        rgb(219 254 221 / 0.6) 0%,
-        rgb(219 254 221 / .8) 50%,
-        rgb(219 254 221 / 1) 100%) !important;
+        rgb(134 239 172 / 0.6) 0%,
+        rgb(134 239 172 / .8) 50%,
+        rgb(134 239 172 / 1) 100%) !important;
 }
 
 div.new div.action a:hover {
@@ -44,6 +47,7 @@ section.detail > div > div {
 
 section.detail > div > div > label {
     flex: 0 0 150px;
+    padding-top: 2px;
 }
 
 section.detail > div > div > input {
@@ -74,6 +78,13 @@ thead tr {
     background-color: var(--row-highlight-bg-color);
     border-top: 2px solid rgb(229 231 235);
     border-bottom: 1px solid rgb(229 231 235);
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+tbody td {
+    padding-top: 5px;
+    padding-right: 4px;
 }
 
 td input, td select {

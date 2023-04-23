@@ -1,5 +1,5 @@
 section.main > summary {
-    font-size: .875rem;
+    font-size: .8rem;
 }
 
 div.form {
@@ -29,13 +29,22 @@ div.form > div {
 
 div.form > div > label {
     flex: 0 0 250px;
-    font-size: 14px;
+    font-size: .8rem;
 }
 
 div.form > div > input,
 select {
     flex: 1 1;
     max-width: 250px;
+    font-size: .8rem;
+}
+
+div.form > div > button {
+    font-size: .8rem;
+}
+
+div.buttons > button {
+    font-size: .8rem;
 }
 
 div.form.kenny-loggins {

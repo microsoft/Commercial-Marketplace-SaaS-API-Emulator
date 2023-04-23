@@ -257,11 +257,11 @@ function getMinPriceAndTerm(offer) {
     const type = (plans[0].isPricePerSeat) ? 'user/' : '';
 
     if (!isNaN(perMonthMinPrice) && isFinite(perMonthMinPrice)) {
-        return `$ ${perMonthMinPrice}/${type}month`;
+        return `$${perMonthMinPrice}/${type}month`;
     }
 
     if (!isNaN(perYearMinPrice) && isFinite(perYearMinPrice)) {
-        return `$ ${perYearMinPrice}/${type}year`;
+        return `$${perYearMinPrice}/${type}year`;
     }
 
     return 'Unknown price';

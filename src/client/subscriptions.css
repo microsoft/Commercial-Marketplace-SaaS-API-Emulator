@@ -18,6 +18,12 @@ table {
 
 th {
     text-align: left;
+    padding-bottom: 6px;
+}
+
+
+table > tbody > tr {
+    border-top: 1px solid rgb(243 244 246);
 }
 
 tr.animate-fade {
