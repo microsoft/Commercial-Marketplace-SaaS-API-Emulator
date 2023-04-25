@@ -384,7 +384,8 @@ div.modal pre .redacted {
     color: #22c55e;
 }
 
-.notifications .response.error {
+.notifications .response.error,
+.error {
     color: #ef4444;
 }
 

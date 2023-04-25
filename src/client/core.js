@@ -18,6 +18,9 @@ async function callAPI(path, method, body) {
         }
         catch {}
     }
+    else {
+        result = await response.text();
+    }
 
     return {result, status: response.status};
 }

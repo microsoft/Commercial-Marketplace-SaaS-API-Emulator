@@ -76,10 +76,8 @@ export const createNotificationService: (contextService: ContextService) => Noti
         upgradeConnection: (socket, req, head) => {
             wsServer.handleUpgrade(req, socket, head, socket => {
                 sockets.push(socket);
-                console.log("Opened socket");
                 socket.addEventListener('close', e => {
                     sockets = sockets.filter(x => x !== socket);
-                    console.log("Closed socket");
                 });
             });
         }

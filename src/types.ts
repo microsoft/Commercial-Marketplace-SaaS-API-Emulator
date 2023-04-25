@@ -33,6 +33,7 @@ export interface Config {
   operationTimeoutMS: number | undefined;
   subscriptionUpdateDelayMS: number | undefined;
   webhookCallDelayMS: number | undefined;
+  webhookCallPatchDelayMS: number | undefined;
   fileLocation: string | undefined;
   publisherId: string | undefined;
   requireAuth: boolean | undefined;

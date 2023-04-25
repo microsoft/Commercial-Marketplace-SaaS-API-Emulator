@@ -37,7 +37,11 @@ $(async () => {
             return;
         }
 
-        await callAPI('/api/util/config', 'PATCH', result);
+        const patchResult = await callAPI('/api/util/config', 'PATCH', result);
+
+        if (patchResult.status >= 300) {
+            await showAlert(`<p>Failed to update config</p><p class="error">${patchResult.result}</p>`);
+        }
     });
 
     $('.buttons > button').on('click', async () => {
