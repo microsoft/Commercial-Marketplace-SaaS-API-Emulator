@@ -39,26 +39,6 @@ export default class DefaultStateStore implements StateStore {
     return (await fs.stat(filePath).catch((_) => false)) as boolean;
   }
 
-  private async loadOffers(fileLocation: string): Promise<void> {
-    const offerFilePath = path.resolve(fileLocation, 'offers.json');
-
-    if (!(await this.fileExists(offerFilePath))) {
-      this.logger.log("Offers file doesn't exist - skipping offers load", 'StateStore');
-      return;
-    }
-
-    const offerBuffer = await fs.readFile(offerFilePath, 'utf8');
-    const offerData: Offers = JSON.parse(offerBuffer);
-
-    try {
-      const combinedOffers = { ...this.offers, ...offerData };
-      this.offers = combinedOffers;
-      this.logger.log('Custom offers loaded.', 'StateStore');
-    } catch (error) {
-      this.logger.log('Problem loading custom offers - check the JSON - skipping custom offers load', 'StateStore');
-    }
-  }
-
   async loadSubscriptions(fileLocation: string): Promise<void> {
     const filePath = path.resolve(fileLocation, 'data.json');
 
@@ -121,7 +101,6 @@ export default class DefaultStateStore implements StateStore {
       return;
     }
 
-    await this.loadOffers(this.config.fileLocation);
     await this.loadSubscriptions(this.config.fileLocation);
   }
 

@@ -7,7 +7,6 @@ RUN mkdir -p ./config
 COPY ./src ./src
 COPY ./package* ./
 COPY ./tsconfig.json ./
-COPY ./tailwind.config.js ./
 
 ENV PORT=80
 
@@ -19,8 +18,6 @@ RUN npm install -g npm
 # Find any affected files and do a chown to root
 RUN npm install && find ./node_modules/ ! -user root -exec chown root:root {} \;
 RUN ./node_modules/typescript/bin/tsc
-    
-RUN npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --minify
 
 EXPOSE 80
 

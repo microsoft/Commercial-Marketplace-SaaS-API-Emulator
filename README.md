@@ -148,6 +148,10 @@ The format of the marketplace [purchase identification token](https://learn.micr
 
 - The activate call does not validate the publisher (as the 'faux' purchase token isn't associated with a specific publisher. This may be implemented in future.
 
+## Accelerator Integration
+
+There are two Open Source projects from teams at Microsoft, the SaaS Accelerator and MONA SaaS that have been updated to work with the Emulator in place of the Azure Marketplace. Documentation: [Integrations](/docs/integration.md).
+
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a

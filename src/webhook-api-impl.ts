@@ -191,7 +191,7 @@ const doWebhookCallAsync: (
       // try to update the status of the operation
       services.logger.log('Waiting 10 seconds for the webhook to patch', 'Webhook API');
 
-      services.notifications.sendMessage("Waiting... [10s]");
+      services.notifications.sendMessage(`Waiting... [${services.config.webhookCallPatchDelayMS}ms]`);
 
       setTimeout(
         (async () => {
@@ -213,7 +213,7 @@ const doWebhookCallAsync: (
             await queueSubscriptionUpdate(services, operation);
           }
         }) as SetTimeoutHandler,
-        10000
+        services.config.webhookCallPatchDelayMS
       );
     } else {
       // The webhook wasn't called or returned an error...

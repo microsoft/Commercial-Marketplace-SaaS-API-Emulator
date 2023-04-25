@@ -1,8 +1,25 @@
 section.main > div {
     display: flex;
+    flex: wrap;
+    width: 100%;
     margin-top: 20px;
-    align-items: flex-start;
 }
+
+
+section.offers {
+    flex: 1 1 0%;
+    min-width: 460px; 
+    width: 100%;
+    height: 530px;
+    overflow-y: auto;
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+
+section.main > header {
+    padding-left: 10px;
+}
+
 
 section.offers div.no-offers {
     border: 0;
@@ -20,9 +37,13 @@ section.offers div.no-offers a {
 }
 
 section.purchase {
-    flex: 0 0;
-    flex-basis: 400px;
+    /* flex: 0 0; */
+    width: 400px;
+    /* height: 570px; */
+    margin-left: 10px;
+    /* flex-basis: 400px; */
     background-color: var(--info-bg-color);
+    min-height: 480px;
 }
 
 section.purchase > div {
@@ -32,6 +53,16 @@ section.purchase > div {
     flex-direction: column;
     gap: 10px;
     padding: 10px;
+}
+
+section.purchase > div.placeholder {
+    font-size: 1rem;
+    font-weight: normal;
+    /* font-size: 14px; */
+    height: 300px;
+    /* font-weight: bold; */
+    text-align: center;
+    padding-top: 142px;
 }
 
 section.purchase > div.hidden {
@@ -79,6 +110,7 @@ section.purchase div.content > div > div.hidden {
 
 section.purchase label {
     flex: 0 0 130px;
+    font-size: 14px;
 }
 
 section.purchase input,

@@ -112,9 +112,9 @@ const configure: (app: Express, services: ServicesContainer) => void = (app, ser
             return;
           }
         }
-
+        
         if (i === "requireAuth") {
-          (services.config as any)[i] = req.body[i] === "true";
+          (services.config as any)[i] = req.body[i] === true;
         }
         else {
           (services.config as any)[i] = req.body[i];

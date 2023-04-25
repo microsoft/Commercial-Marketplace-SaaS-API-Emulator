@@ -85,7 +85,6 @@ function selectOffer(offer, cloned) {
     if (offer) {
 
         $('#offer-name').val(offer.displayName).attr('disabled', offer.builtIn);
-
         $('#offer-id').val(offer.offerId);
         $('#offer-id').attr('disabled', offer.offerId.length > 0);
 
@@ -102,7 +101,7 @@ function selectOffer(offer, cloned) {
         }
     }
     else {
-        $('#offer-name').val('');
+        $('#offer-name').val('').attr('disabled', false);
         $('#offer-id').val('').attr('disabled', false);
         $('#per-seat').val('true').attr('disabled', false);
         addRow();

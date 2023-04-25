@@ -59,6 +59,7 @@ if (publisherId !== undefined && (publisherTenantId !== undefined || publisherAp
     operationTimeoutMS: durationToMS(process.env.OPERATION_TIMEOUT as string),
     subscriptionUpdateDelayMS: durationToMS(process.env.SUBSCRIPTION_UPDATE_DELAY as string),
     webhookCallDelayMS: durationToMS(process.env.WEBHOOK_CALL_DELAY as string),
+    webhookCallPatchDelayMS: durationToMS(process.env.WEBHOOK_CALL_PATCH_DELAY as string, true, 10000),
     fileLocation: process.env.FILE_LOC ?? './config',
     requireAuth: (process.env.REQUIRE_AUTH ?? '').toLocaleLowerCase() === 'true',
     noSamples: (process.env.NO_SAMPLES ?? '').toLocaleLowerCase() === 'true',

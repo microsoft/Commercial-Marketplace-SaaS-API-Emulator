@@ -1,8 +1,8 @@
 import moment from 'moment';
 
-export const durationToMS = (duration: string | number, durationInSeconds: boolean = true): number => {
+export const durationToMS = (duration: string | number, durationInSeconds: boolean = true, defaultValue: number = 0): number => {
   if (duration === undefined) {
-    return 0;
+    return defaultValue;
   }
   if (typeof duration === 'number') {
     return duration / (durationInSeconds ? 1000 : 1);
