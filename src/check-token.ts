@@ -30,7 +30,7 @@ export const checkToken = (services: ServicesContainer) => (req: Request, res: R
     return;
   }
 
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authentication as (string | undefined);
 
   if (authHeader === undefined) {
       return res.sendStatus(401);
