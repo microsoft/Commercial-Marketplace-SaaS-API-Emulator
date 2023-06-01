@@ -392,9 +392,10 @@ div.modal pre .redacted {
 .notifications .service div {
     margin: .5rem;
     margin-right: 0;
-    padding-left: .5rem;
+    padding: 0 .5rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
+    overflow-wrap: break-word;
 }
 
 .notifications .service .info {
