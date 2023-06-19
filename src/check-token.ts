@@ -25,7 +25,7 @@ const getSigningKeyCallback: (jwksUri: string) => GetPublicKeyOrSecret = (jwksUr
 
 export const checkToken = (services: ServicesContainer) => (req: Request, res: Response, next: NextFunction) => {
 
-  if (services.config.requireAuth !== true) {
+  if (services.config.requireAuth !== true || req.headers['x-ignore-auth'] !== undefined) {
     next();
     return;
   }

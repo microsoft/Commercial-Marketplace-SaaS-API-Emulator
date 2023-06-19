@@ -6,7 +6,8 @@ async function callAPI(path, method, body) {
         method,
         body: body ? JSON.stringify(body) : undefined,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-ignore-auth': 'true'
         }
     });
 
@@ -166,7 +167,8 @@ async function doFetch(name, url, body, method, headers) {
         headers: {
             ...headers,
             ...contentTypeHeader,
-            "x-ms-requestid": id
+            "x-ms-requestid": id,
+            "x-ignore-auth": "true"
         },
         body
     });

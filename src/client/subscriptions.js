@@ -1,5 +1,4 @@
 /// <reference path="core.js" />
-/// <reference path="notifications.js" />
 
 let offers;
 
