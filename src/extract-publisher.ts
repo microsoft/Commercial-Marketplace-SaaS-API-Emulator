@@ -10,11 +10,15 @@ export const extractPublisher = (services: ServicesContainer) => (req: Request, 
 
   if (token === undefined) {
     if (req.query.publisherId === undefined || req.query.publisherId === '') {
-      res.status(401).send('Either a bearer token in the header or a PublisherId query string parameter is required.');
-      return;
+      if (services.config.publisherId === undefined) {
+        res.status(401).send('Either a bearer token in the header or a PublisherId query string parameter is required.');
+        return;
+      }
+      publisherId = services.config.publisherId;
     }
-
-    publisherId = req.query.publisherId as string;
+    else {
+      publisherId = req.query.publisherId as string;
+    }
   } else {
     const decoded = services.jwt.decodeToken(token);
 
